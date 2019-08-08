@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">nvblog</string>
+
+    <!--bottom nav-->
+    <string name="nav_new_article">이웃새글</string>
+    <string name="nav_recommended">추천</string>
+    <string name="nav_write">글쓰기</string>
+    <string name="nav_mynotification">내소식</string>
+    <string name="nav_myblog">내블로그</string>
+
+    <!--main-->
+
+    <string name="main_title">이웃새글 ∨</string>
+    <string name="main_my">MY</string>
 </resources>

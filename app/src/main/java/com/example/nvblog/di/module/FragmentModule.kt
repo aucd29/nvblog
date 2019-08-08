@@ -1,7 +1,7 @@
 package com.example.nvblog.di.module
 
-import com.example.nvblog.ui.article.ArticleFragment
 import com.example.nvblog.ui.main.MainFragment
+import com.example.nvblog.ui.main.search.SearchFragment
 import com.example.nvblog.ui.myblog.MyblogFragment
 import com.example.nvblog.ui.notification.NotificationFragment
 import com.example.nvblog.ui.recommended.RecommendedFragment
@@ -13,7 +13,8 @@ import dagger.Module
  */
 
 @Module(includes = [ MainFragment.Module::class
-    , ArticleFragment.Module::class
+    , SearchFragment.Module::class
+
     , MyblogFragment.Module::class
     , NotificationFragment.Module::class
     , RecommendedFragment.Module::class

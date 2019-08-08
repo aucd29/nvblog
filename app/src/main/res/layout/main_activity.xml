@@ -14,7 +14,7 @@
             android:id="@+id/drawer_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:openDrawer="start">
+            tools:openDrawer="end">
 
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/root"
@@ -29,7 +29,29 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-            />
+            >
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/root_bottom_navigation_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toTopOf="@+id/root_bottom_navigation"
+                />
+
+                <com.google.android.material.bottomnavigation.BottomNavigationView
+                        android:id="@+id/root_bottom_navigation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:menu="@menu/bottom_nav_menu"
+                />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             <View
                     android:id="@+id/splash"
@@ -52,7 +74,7 @@
                 android:id="@+id/main_nav_view"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_gravity="start"
+                android:layout_gravity="end"
         >
             <include layout="@layout/main_navigation"
                      app:naviModel="@{naviModel}"

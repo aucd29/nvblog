@@ -4,11 +4,11 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <variable name="model" type="com.example.nvblog.ui.article.ArticleViewModel" />
+        <variable name="model" type="com.example.nvblog.ui.main.search.SearchViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/article_container"
+            android:id="@+id/search_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 

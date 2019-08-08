@@ -16,5 +16,7 @@ class NavigationViewModel @Inject @JvmOverloads constructor(
 
     companion object {
         private val mLog = LoggerFactory.getLogger(NavigationViewModel::class.java)
+
+        const val CMD_SHOW_NAVI = "show-navi"
     }
 }

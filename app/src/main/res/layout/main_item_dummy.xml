@@ -1,0 +1,29 @@
+<layout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable name="model" type="com.example.nvblog.ui.main.MainViewModel" />
+        <variable name="item" type="com.example.nvblog.model.remote.entity.MainDummy" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/main_item_notification_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+    >
+
+        <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/main_item_dummy_image"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:bindImageRes="@{item.pic}"
+                android:onClick="@{() -> model.command(model.CMD_OPEN_BLOG, item.link)}"
+        />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

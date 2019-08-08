@@ -1,7 +1,8 @@
-package com.example.nvblog.ui.article
+package com.example.nvblog.ui.main.search
 
 import brigitte.BaseDaggerFragment
-import com.example.nvblog.databinding.ArticleFragmentBinding
+import com.example.nvblog.databinding.SearchFragmentBinding
+import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import javax.inject.Inject
 
@@ -9,8 +10,8 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-08-08 <p/>
  */
 
-class ArticleFragment @Inject constructor(
-): BaseDaggerFragment<ArticleFragmentBinding, ArticleViewModel>() {
+class SearchFragment @Inject constructor(
+): BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>() {
     override fun initViewBinding() {
     }
 
@@ -26,7 +27,7 @@ class ArticleFragment @Inject constructor(
     @dagger.Module
     abstract class Module {
         @ContributesAndroidInjector
-        abstract fun contributeArticleFragmentInjector(): ArticleFragment
+        abstract fun contributeSearchFragmentInjector(): SearchFragment
 
         // @dagger.Module
         // companion object {
