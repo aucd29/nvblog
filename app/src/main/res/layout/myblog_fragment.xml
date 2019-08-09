@@ -206,14 +206,14 @@
                 </com.google.android.material.appbar.CollapsingToolbarLayout>
             </com.google.android.material.appbar.AppBarLayout>
 
-            <brigitte.widget.VerticalSwipeRefreshLayout
-                    android:id="@+id/myblog_swipe_refresh"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-            >
+            <!--<brigitte.widget.VerticalSwipeRefreshLayout-->
+                    <!--android:id="@+id/myblog_swipe_refresh"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--app:layout_constraintStart_toStartOf="parent"-->
+                    <!--app:layout_constraintEnd_toEndOf="parent"-->
+                    <!--app:layout_constraintBottom_toBottomOf="parent"-->
+            <!--&gt;-->
 
                 <androidx.core.widget.NestedScrollView
                         android:id="@+id/myblog_scroll"
@@ -231,12 +231,11 @@
                             android:layout_height="500dp"
                             android:clickable="true"
                             android:background="#7F252525"
-                            android:nestedScrollingEnabled="false"
                     >
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.core.widget.NestedScrollView>
-            </brigitte.widget.VerticalSwipeRefreshLayout>
+            <!--</brigitte.widget.VerticalSwipeRefreshLayout>-->
 
             <!--<androidx.recyclerview.widget.RecyclerView-->
             <!--android:id="@+id/detail_recycler"-->

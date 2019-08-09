@@ -23,19 +23,18 @@ class MyblogFragment @Inject constructor(
 
         mBinding.apply {
             titlebarModel = mTitlebarModel
-
         }
     }
 
     override fun initViewBinding() {
-        mBinding.myblogSwipeRefresh.setOnRefreshListener {
-            mDisposable.add(interval(2000)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    // 로드 했다고 가정 하에
-                    mBinding.myblogSwipeRefresh.isRefreshing = false
-                })
-        }
+//        mBinding.myblogSwipeRefresh.setOnRefreshListener {
+//            mDisposable.add(interval(2000)
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe {
+//                    // 로드 했다고 가정 하에
+//                    mBinding.myblogSwipeRefresh.isRefreshing = false
+//                })
+//        }
     }
 
     override fun initViewModelEvents() {
