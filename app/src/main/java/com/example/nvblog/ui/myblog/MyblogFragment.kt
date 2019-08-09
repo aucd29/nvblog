@@ -1,9 +1,11 @@
 package com.example.nvblog.ui.myblog
 
 import brigitte.BaseDaggerFragment
+import brigitte.interval
 import com.example.nvblog.databinding.MyblogFragmentBinding
 import com.example.nvblog.ui.titlebar.TitlebarViewModel
 import dagger.android.ContributesAndroidInjector
+import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 /**
@@ -25,8 +27,15 @@ class MyblogFragment @Inject constructor(
         }
     }
 
-
     override fun initViewBinding() {
+        mBinding.myblogSwipeRefresh.setOnRefreshListener {
+            mDisposable.add(interval(2000)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    // 로드 했다고 가정 하에
+                    mBinding.myblogSwipeRefresh.isRefreshing = false
+                })
+        }
     }
 
     override fun initViewModelEvents() {

@@ -10,9 +10,10 @@ data class MyBlogData(
     val id: Int,
     val userId: String,
     val userImage: String,
-    val title: String,
+    val blogTitle: String,
     val todayCount: Int,
-    val allCount: Int,
+    val totalCount: Int,
+    val friendCount: Int,
     val background: String
 ) : IRecyclerDiff {
     override fun itemSame(item: IRecyclerDiff): Boolean {
@@ -22,6 +23,6 @@ data class MyBlogData(
 
     override fun contentsSame(item: IRecyclerDiff): Boolean {
         val newItem = item as MyBlogData
-        return title == newItem.title && allCount == newItem.allCount
+        return blogTitle == newItem.blogTitle && totalCount == newItem.totalCount
     }
 }

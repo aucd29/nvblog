@@ -24,5 +24,7 @@
     
     <!--myblog-->
     <string name="myblog_edit_home">홈편집</string>
+    <string name="myblog_visiter_count">"오늘 %d * 전체 %s"</string>
+    <string name="myblog_friend_count">"%d명의 이웃"</string>
     
 </resources>
