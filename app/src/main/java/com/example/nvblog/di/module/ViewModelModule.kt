@@ -3,6 +3,8 @@ package com.example.nvblog.di.module
 import androidx.lifecycle.ViewModel
 import brigitte.di.dagger.module.ViewModelKey
 import brigitte.viewmodel.SplashViewModel
+import com.example.nvblog.ui.titlebar.TitlebarViewModel
+import com.example.nvblog.ui.browser.BrowserViewModel
 import com.example.nvblog.ui.main.MainViewModel
 import com.example.nvblog.ui.main.search.SearchViewModel
 import com.example.nvblog.ui.myblog.MyblogViewModel
@@ -34,6 +36,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(NavigationViewModel::class)
     abstract fun bindNavigationViewModel(vm: NavigationViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(TitlebarViewModel::class)
+    abstract fun bindTitlebarViewModel(vm: TitlebarViewModel): ViewModel
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
@@ -95,4 +102,14 @@ abstract class ViewModelModule {
     @ViewModelKey(WriteViewModel::class)
     abstract fun bindWriteViewModel(vm: WriteViewModel): ViewModel
 
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    //
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(BrowserViewModel::class)
+    abstract fun bindBrowserViewModel(vm: BrowserViewModel): ViewModel
 }

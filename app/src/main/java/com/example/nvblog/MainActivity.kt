@@ -9,12 +9,8 @@ import brigitte.viewmodel.SplashViewModel
 import com.example.nvblog.common.Config
 import com.example.nvblog.databinding.MainActivityBinding
 import com.example.nvblog.ui.ViewController
-import com.example.nvblog.ui.main.MainFragment
-import com.example.nvblog.ui.myblog.MyblogFragment
 import com.example.nvblog.ui.navigation.NavigationViewModel
-import com.example.nvblog.ui.notification.NotificationFragment
-import com.example.nvblog.ui.recommended.RecommendedFragment
-import com.example.nvblog.ui.write.WriteFragment
+import com.example.nvblog.ui.titlebar.TitlebarViewModel
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import okhttp3.OkHttpClient
 import org.slf4j.LoggerFactory
@@ -28,8 +24,10 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() 
     }
 
     @Inject lateinit var config: Config
+    @Inject lateinit var adapter: MainAdapter
     @Inject lateinit var viewController: ViewController
 
+    private lateinit var mTitlebarModel: TitlebarViewModel
     private lateinit var mNavigationModel: NavigationViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,9 +39,6 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() 
 
         if (mLog.isDebugEnabled) {
             mLog.debug("START ACTIVITY")
-        }
-        if (savedInstanceState == null) {
-            viewController.mainFragment()
         }
     }
 
@@ -65,24 +60,19 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() 
         super.bindViewModel()
 
         mNavigationModel = inject()
+        mTitlebarModel   = inject()
 
-        mBinding.naviModel = mNavigationModel
+        mBinding.apply {
+            naviModel     = mNavigationModel
+            titlebarModel = mTitlebarModel
+        }
 
-        addCommandEventModels(mNavigationModel)
+        addCommandEventModels(mNavigationModel, mTitlebarModel)
     }
 
-    override fun initViewBinding() {
-        mBinding.rootBottomNavigation.setOnNavigationItemSelectedListener {
-            when (it.itemId) {
-                R.id.nav_new_article -> viewController.mainFragment()
-                R.id.nav_recommeded -> viewController.recommendedFragment()
-                R.id.nav_write -> viewController.writeFragment()
-                R.id.nav_mynotification -> viewController.notificationFragment()
-                R.id.nav_myblog -> viewController.myblogFragment()
-
-                else -> false
-            }
-        }
+    override fun initViewBinding() = mBinding.run {
+        rootViewpager.adapter = adapter
+        rootViewpager.offscreenPageLimit = adapter.count
 
         resizeNavigation()
         mViewModel.closeSplash()
@@ -93,11 +83,13 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() 
         mBinding.mainNavView.layoutWidth(config.SCREEN.x * .85f)
     }
 
-    override fun initViewModelEvents() = mViewModel.run {
-        observe(closeEvent) {
-            viewSplash.gone()
+    override fun initViewModelEvents() {
+        mViewModel.run {
+            observe(closeEvent) {
+                viewSplash.gone()
 
-            mBinding.root.removeView(mBinding.splash)
+                mBinding.root.removeView(mBinding.splash)
+            }
         }
     }
 
@@ -108,16 +100,25 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() 
     ////////////////////////////////////////////////////////////////////////////////////
 
     override fun onCommandEvent(cmd: String, data: Any) {
-        when (cmd) {
-            NavigationViewModel.CMD_SHOW_NAVI -> showNavigation()
+        TitlebarViewModel.apply {
+            when (cmd) {
+                CMD_MOVE_FIRST_TAB  -> {}
+                CMD_GROUP_DIALOG    -> {}
+                CMD_SEARCH_FRAGMENT -> {}
+                CMD_WRITE_FRAGMENT  -> showWriteFragment()
+                CMD_SHOW_NAVI       -> showNavigation()
+            }
         }
+    }
+
+    private fun showWriteFragment() {
+        viewController.writeFragment()
     }
 
     private fun showNavigation() {
         hideKeyboard(mBinding.root)
         mBinding.drawerLayout.openDrawer(NAVI_GRAVITY)
     }
-
 
     ////////////////////////////////////////////////////////////////////////////////////
     //

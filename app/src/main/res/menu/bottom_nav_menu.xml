@@ -7,7 +7,7 @@
             android:title="@string/nav_new_article"/>
 
     <item
-            android:id="@+id/nav_recommeded"
+            android:id="@+id/nav_recommended"
             android:icon="@drawable/ic_favorite_black_24dp"
             android:title="@string/nav_recommended"/>
 

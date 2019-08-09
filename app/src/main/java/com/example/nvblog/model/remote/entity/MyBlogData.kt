@@ -6,19 +6,22 @@ import brigitte.IRecyclerDiff
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-08-08 <p/>
  */
 
-data class NotificationData(
+data class MyBlogData(
     val id: Int,
-    val type: Int,
+    val userId: String,
+    val userImage: String,
     val title: String,
-    val date: Long
+    val todayCount: Int,
+    val allCount: Int,
+    val background: String
 ) : IRecyclerDiff {
     override fun itemSame(item: IRecyclerDiff): Boolean {
-        val newItem = item as NotificationData
+        val newItem = item as MyBlogData
         return id == newItem.id
     }
 
     override fun contentsSame(item: IRecyclerDiff): Boolean {
-        val newItem = item as NotificationData
-        return title == newItem.title && type == newItem.type && date == newItem.date
+        val newItem = item as MyBlogData
+        return title == newItem.title && allCount == newItem.allCount
     }
 }

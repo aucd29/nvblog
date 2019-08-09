@@ -4,13 +4,95 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <variable name="model" type="com.example.nvblog.ui.notification.NotificationViewModel" />
+        <import type="android.view.View"/>
+
+        <variable name="model" type="com.example.nvblog.ui.notification.NotificationViewModel"/>
+        <variable name="titlebarModel" type="com.example.nvblog.ui.titlebar.TitlebarViewModel"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/notification_container"
+            android:id="@+id/noti_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
+
+        <include
+                android:id="@+id/titlebar"
+                layout="@layout/titlebar_layout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:titlebarModel="@{titlebarModel}"
+        />
+
+        <RadioGroup
+                android:id="@+id/noti_radio_group"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/titlebar"
+                android:orientation="horizontal"
+        >
+
+            <androidx.appcompat.widget.AppCompatCheckedTextView
+                    android:id="@+id/noti_news"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/noti_news"
+            />
+
+            <androidx.appcompat.widget.AppCompatCheckedTextView
+                    android:id="@+id/noti_posted"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/noti_posted"
+            />
+        </RadioGroup>
+
+        <TextView
+                android:id="@+id/noti_not_read"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="@string/noti_not_read"
+                app:layout_constraintTop_toBottomOf="@+id/titlebar"
+                app:layout_constraintEnd_toEndOf="parent"
+        />
+
+        <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/noti_notice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/noti_radio_group"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:paddingBottom="@dimen/dp20"
+                android:text="@{model.convertNotification(model.noticeData)}"
+                android:visibility="@{model.viewNotice}"
+        />
+
+        <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/noti_hide_notice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="@+id/noti_notice"
+                app:layout_constraintEnd_toEndOf="@+id/noti_notice"
+                android:layout_marginTop="@dimen/dp10"
+                android:layout_marginEnd="@dimen/dp10"
+                android:padding="@dimen/dp20"
+                android:text="@string/noti_hide_notice"
+                android:visibility="@{model.viewNotice == View.GONE ? View.VISIBLE : View.GONE}"
+                android:onClick="@{() -> model.command(model.IN_HIDE_NOTICE)}"
+        />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/noti_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/noti_notice"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:bindAdapter="@{model.adapter}"
+            app:bindItems="@{model.items}"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

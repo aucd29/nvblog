@@ -1,4 +1,4 @@
-package com.example.nvblog.common.widget
+package brigitte.widget
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -14,7 +14,9 @@ import kotlin.math.abs
  * https://stackoverflow.com/questions/34136178/swiperefreshlayout-blocking-horizontally-scrolled-recyclerview
  */
 
-class VerticalSwipeRefreshLayout(context: Context, attrs: AttributeSet) : SwipeRefreshLayout(context, attrs) {
+class VerticalSwipeRefreshLayout(context: Context
+    , attrs: AttributeSet
+) : SwipeRefreshLayout(context, attrs) {
     private var touchSlop: Int
     private var prevX: Float = 0f
     private var decliend: Boolean = false

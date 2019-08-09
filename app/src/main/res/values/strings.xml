@@ -8,8 +8,21 @@
     <string name="nav_mynotification">내소식</string>
     <string name="nav_myblog">내블로그</string>
 
-    <!--main-->
+    <!--titlebar-->
+    <string name="titlebar_title">이웃새글 ∨</string>
+    <string name="titlebar_my">MY</string>
 
-    <string name="main_title">이웃새글 ∨</string>
-    <string name="main_my">MY</string>
+    <!--notification-->
+    <string name="noti_news">새소식</string>
+    <string name="noti_posted">이전글</string>
+    <string name="noti_not_read">안읽음</string>
+    <string name="noti_hide_notice">X</string>
+
+    <string name="noti_empathy">공감</string>
+    <string name="noti_reply">댓글</string>
+    <string name="noti_lorem">"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s"</string>
+    
+    <!--myblog-->
+    <string name="myblog_edit_home">홈편집</string>
+    
 </resources>

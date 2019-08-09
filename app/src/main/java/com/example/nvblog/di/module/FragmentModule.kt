@@ -1,5 +1,6 @@
 package com.example.nvblog.di.module
 
+import com.example.nvblog.ui.browser.BrowserFragment
 import com.example.nvblog.ui.main.MainFragment
 import com.example.nvblog.ui.main.search.SearchFragment
 import com.example.nvblog.ui.myblog.MyblogFragment
@@ -19,6 +20,7 @@ import dagger.Module
     , NotificationFragment.Module::class
     , RecommendedFragment.Module::class
     , WriteFragment.Module::class
+    , BrowserFragment.Module::class
 ])
 class FragmentModule {
 

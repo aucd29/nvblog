@@ -27,18 +27,19 @@ class MainViewModel @Inject @JvmOverloads constructor(
     companion object {
         private val mLog = LoggerFactory.getLogger(MainViewModel::class.java)
 
-        const val CMD_MOVE_FIRST_TAB    = "move-first-tab"
-        const val CMD_GROUP_DIALOG      = "group-dialog"
-        const val CMD_SEARCH_FRAGMENT   = "search-fragment"
+
         const val CMD_OPEN_BLOG         = "open-blog"
         const val CMD_OPTION_DIALOG     = "option-dialog"
         const val CMD_CONNECT_APP       = "connect-app"
     }
 
-    val horDecoration = ObservableField(R.drawable.shape_divider_gray)
-    val verDecoration = ObservableField(R.drawable.shape_divider_gray)
-    val circleCrop = ObservableBoolean(true)
+    val horDecoration  = ObservableField(R.drawable.shape_divider_gray)
+    val verDecoration  = ObservableField(R.drawable.shape_divider_gray)
+    val circleCrop     = ObservableBoolean(true)
     val roundedCorners = ObservableInt(10.dpToPx(app))
+
+    //
+    val searchGroup = ObservableField<String>("all")
 
     init {
         val list = arrayListOf<IMainData>(MainNotification(1, "내가 추가한 이웃의 새글이 없을 경우"))
@@ -73,5 +74,5 @@ class MainViewModel @Inject @JvmOverloads constructor(
     }
 
     fun convertNotification(str: String) =
-        """<font color="#008577"><b>알림!</b></font> $str""".html()
+        """<font color="#00AC09"><b>알림!</b></font> $str""".html()
 }

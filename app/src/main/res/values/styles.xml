@@ -16,6 +16,8 @@
         <item name="android:background">@drawable/splash_background</item>
     </style>
 
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
     <style name="dingbat">
         <item name="android:textAppearance">@style/solid</item>
     </style>

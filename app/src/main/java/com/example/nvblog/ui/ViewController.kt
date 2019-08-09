@@ -1,16 +1,15 @@
 package com.example.nvblog.ui
 
+import android.os.Bundle
 import androidx.fragment.app.FragmentManager
+import brigitte.FragmentAnim
 import brigitte.FragmentCommit
 import brigitte.FragmentParams
 import brigitte.showBy
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import com.example.nvblog.R
-import com.example.nvblog.ui.main.MainFragment
-import com.example.nvblog.ui.myblog.MyblogFragment
-import com.example.nvblog.ui.notification.NotificationFragment
-import com.example.nvblog.ui.recommended.RecommendedFragment
+import com.example.nvblog.ui.browser.BrowserFragment
 import com.example.nvblog.ui.write.WriteFragment
 
 /**
@@ -20,68 +19,36 @@ class ViewController @Inject constructor(private val manager: FragmentManager) {
     companion object {
         private val mLog = LoggerFactory.getLogger(ViewController::class.java)
 
-        const val CONTAINER  = R.id.root_bottom_navigation_container
+        const val CONTAINER  = R.id.root
     }
 
-    @Inject lateinit var main: dagger.Lazy<MainFragment>
-    @Inject lateinit var recommended: dagger.Lazy<RecommendedFragment>
-    @Inject lateinit var write: dagger.Lazy<WriteFragment>
-    @Inject lateinit var notification: dagger.Lazy<NotificationFragment>
-    @Inject lateinit var myblog: dagger.Lazy<MyblogFragment>
+    @Inject lateinit var mWrite: dagger.Lazy<WriteFragment>
+    @Inject lateinit var mBrowserFragment: dagger.Lazy<BrowserFragment>
 
-    fun mainFragment(): Boolean {
-        if (mLog.isInfoEnabled) {
-            mLog.info("MAIN FRAGMENT")
-        }
-
-        manager.showBy(FragmentParams(CONTAINER, commit = FragmentCommit.NOW,
-            fragment  = main.get(), add = false, backStack = false))
-
-        return true
-    }
-
-    fun recommendedFragment(): Boolean {
-        if (mLog.isInfoEnabled) {
-            mLog.info("RECOMMENDED FRAGMENT")
-        }
-
-        manager.showBy(FragmentParams(CONTAINER, commit = FragmentCommit.NOW,
-            fragment  = recommended.get(), add = false, backStack = false))
-
-        return true
-    }
-
-    fun writeFragment(): Boolean {
+    fun writeFragment() {
         if (mLog.isInfoEnabled) {
             mLog.info("WRITE FRAGMENT")
         }
 
-        manager.showBy(FragmentParams(CONTAINER, commit = FragmentCommit.NOW,
-            fragment  = write.get(), add = false, backStack = false))
-
-        return true
+        manager.showBy(FragmentParams(CONTAINER,
+            fragment = mWrite.get(), anim = FragmentAnim.UP))
     }
 
-    fun notificationFragment(): Boolean {
+    fun browserFragment(url: String?) {
         if (mLog.isInfoEnabled) {
-            mLog.info("NOTIFICATION FRAGMENT")
+            mLog.info("BROWSER FRAGMENT $url")
         }
 
-        manager.showBy(FragmentParams(CONTAINER, commit = FragmentCommit.NOW,
-            fragment  = notification.get(), add = false, backStack = false))
+        if (url == null) {
+            mLog.error("ERROR: URL == NULL")
 
-        return true
-    }
-
-
-    fun myblogFragment(): Boolean {
-        if (mLog.isInfoEnabled) {
-            mLog.info("MYBLOG FRAGMENT")
+            return
         }
 
-        manager.showBy(FragmentParams(CONTAINER, commit = FragmentCommit.NOW,
-            fragment  = myblog.get(), add = false, backStack = false))
-
-        return true
+        manager.showBy(FragmentParams(CONTAINER,
+            fragment = mBrowserFragment.get(), anim = FragmentAnim.RIGHT_ALPHA,
+            bundle = Bundle().apply {
+                putString(BrowserFragment.K_URL, url)
+            }))
     }
 }

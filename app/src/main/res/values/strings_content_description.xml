@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="cd_main_logo">main logo</string>
+    <string name="cd_titlebar_logo">main logo</string>
 </resources>

@@ -3,10 +3,10 @@ package com.example.nvblog.ui.main
 import androidx.fragment.app.FragmentManager
 import brigitte.BaseDaggerFragment
 import brigitte.interval
+import com.example.nvblog.ui.titlebar.TitlebarViewModel
 import com.example.nvblog.databinding.MainFragmentBinding
 import com.example.nvblog.ui.ViewController
 import com.example.nvblog.ui.navigation.NavigationViewModel
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.Provides
 import dagger.android.ContributesAndroidInjector
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -26,14 +26,19 @@ class MainFragment @Inject constructor(
 
     @Inject lateinit var viewController: ViewController
 
+    private lateinit var mTitlebarModel: TitlebarViewModel
     private lateinit var mNaviViewModel: NavigationViewModel
 
     override fun bindViewModel() {
         super.bindViewModel()
 
+        mTitlebarModel = inject(requireActivity())
         mNaviViewModel = inject(requireActivity())
 
-        mBinding.naviModel = mNaviViewModel
+        mBinding.apply {
+            naviModel     = mNaviViewModel
+            titlebarModel = mTitlebarModel
+        }
     }
 
     override fun initViewBinding() {
@@ -60,25 +65,7 @@ class MainFragment @Inject constructor(
         if (mLog.isDebugEnabled) {
             mLog.debug("COMMAND : $cmd")
         }
-
-        when (cmd) {
-            CMD_MOVE_FIRST_TAB  -> reloadContent()
-            CMD_GROUP_DIALOG    -> groupDialog()
-            CMD_SEARCH_FRAGMENT -> searchFragment()
-        }
     }
-
-    private fun reloadContent() {
-    }
-
-    private fun groupDialog() {
-    }
-
-    private fun searchFragment() {
-
-    }
-
-    
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
@@ -90,15 +77,5 @@ class MainFragment @Inject constructor(
     abstract class Module {
         @ContributesAndroidInjector
         abstract fun contributeMainFragmentInjector(): MainFragment
-
-         @dagger.Module
-         companion object {
-             @JvmStatic
-             @Provides
-             @Named("child_fragment_manager")
-             fun provide(fragment: MainFragment): FragmentManager {
-                 return fragment.childFragmentManager
-             }
-         }
     }
 }

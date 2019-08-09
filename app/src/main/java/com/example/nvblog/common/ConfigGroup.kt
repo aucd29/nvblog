@@ -7,7 +7,9 @@ import android.os.Build
 import android.view.WindowManager
 import brigitte.actionBarSize
 import brigitte.runtimepermission.RuntimePermission
+import brigitte.string
 import brigitte.systemService
+import com.example.nvblog.R
 import org.slf4j.LoggerFactory
 import java.util.*
 import javax.inject.Inject
@@ -27,6 +29,7 @@ import javax.inject.Singleton
 class Config @Inject constructor(val context: Context) {
     val ACTION_BAR_HEIGHT: Float
     val SCREEN = Point()
+    val TIMEOUT_RELOAD_ICO = 2000L
 
     init {
         //
@@ -56,16 +59,6 @@ class PreloadConfig @Inject constructor(
 ) {
     companion object {
         private val mLog = LoggerFactory.getLogger(PreloadConfig::class.java)
-    }
-
-    val mainTabTitle = arrayListOf<String>()
-
-    init {
-        mainTabTitle.add("이웃새글")
-        mainTabTitle.add("추천")
-        mainTabTitle.add("글쓰기")
-        mainTabTitle.add("내소식")
-        mainTabTitle.add("내블로그")
     }
 
 }

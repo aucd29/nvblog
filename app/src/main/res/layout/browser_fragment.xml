@@ -4,38 +4,33 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <variable name="model" type="com.example.nvblog.ui.recommended.RecommendedViewModel" />
-        <variable name="titlebarModel" type="com.example.nvblog.ui.titlebar.TitlebarViewModel"/>
+        <variable name="model" type="com.example.nvblog.ui.browser.BrowserViewModel"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/recommended_container"
+            android:id="@+id/browser_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
         <brigitte.widget.VerticalSwipeRefreshLayout
-                android:id="@+id/recommended_swipe_refresh"
+                android:id="@+id/browser_swipe_refresh"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="match_parent"
                 android:fillViewport="true"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
         >
             <WebView
-                    android:id="@+id/recommended_webview"
+                    android:id="@+id/browser_webview"
                     android:layout_width="match_parent" android:layout_height="match_parent"
             />
         </brigitte.widget.VerticalSwipeRefreshLayout>
 
-        <include
-                android:id="@+id/titlebar"
-                layout="@layout/titlebar_layout"
+        <ProgressBar
+                android:id="@+id/browser_progress"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:titlebarModel="@{titlebarModel}"
+                app:layout_constraintBottom_toBottomOf="parent"
         />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,6 +7,7 @@
 
     <data>
         <variable name="model" type="brigitte.viewmodel.SplashViewModel"/>
+        <variable name="titlebarModel" type="com.example.nvblog.ui.titlebar.TitlebarViewModel"/>
         <variable name="naviModel" type="com.example.nvblog.ui.navigation.NavigationViewModel"/>
     </data>
 
@@ -31,14 +32,16 @@
                     app:layout_constraintBottom_toBottomOf="parent"
             >
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/root_bottom_navigation_container"
+                <brigitte.widget.viewpager.NoSwipeViewPager
+                        android:id="@+id/root_viewpager"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintBottom_toTopOf="@+id/root_bottom_navigation"
+                        app:bindCurrentItem="@{titlebarModel.viewpagerPos}"
+                        app:bindSmoothScroll="@{titlebarModel.viewpagerSmooth}"
                 />
 
                 <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -48,8 +51,11 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
+                        app:labelVisibilityMode="labeled"
                         app:menu="@menu/bottom_nav_menu"
+                        app:bindNavigationItemSelectedListener="@{titlebarModel.naviItemSelectedListener}"
                 />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
