@@ -95,6 +95,9 @@ object RecyclerBindingAdapter {
             mLog.debug("BIND DECORATION: hor($horDrawable), ver($verDrawable)")
         }
 
+        val count = recycler.itemDecorationCount - 1
+        (0..count).forEach(recycler::removeItemDecorationAt)
+
         recycler.apply {
             horDrawable?.let { decorator(it) }
             verDrawable?.let { decorator(it, DividerItemDecoration.VERTICAL) }
@@ -108,6 +111,9 @@ object RecyclerBindingAdapter {
             mLog.debug("BIND ITEM DECORATION")
         }
 
+        val count = recycler.itemDecorationCount - 1
+        (0..count).forEach(recycler::removeItemDecorationAt)
+
         decoration?.let { recycler.addItemDecoration(it) }
     }
 
@@ -117,6 +123,9 @@ object RecyclerBindingAdapter {
         if (mLog.isDebugEnabled) {
             mLog.debug("BIND ITEM DECORATION")
         }
+
+        val count = recycler.itemDecorationCount - 1
+        (0..count).forEach(recycler::removeItemDecorationAt)
 
         decorations?.let { it.forEach { recycler.addItemDecoration(it) } }
     }

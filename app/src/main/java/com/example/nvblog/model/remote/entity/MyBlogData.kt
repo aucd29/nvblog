@@ -38,7 +38,7 @@ data class BlogData(
     val tag: String,
     val like: Int = 0,
     val replyCount: Int = 10,
-    val isSearch: Boolean = false,
+    var isSearch: Boolean = false,
     val date: Long = System.currentTimeMillis(),
     val likeCount: String = "0",
     val commentCount: String = "2"

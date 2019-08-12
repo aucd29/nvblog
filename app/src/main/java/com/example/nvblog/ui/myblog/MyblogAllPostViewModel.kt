@@ -2,12 +2,15 @@ package com.example.nvblog.ui.myblog
 
 import android.app.Application
 import android.graphics.Rect
+import androidx.core.content.ContextCompat
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import brigitte.*
+import brigitte.widget.viewpager.GridItemDecoration
 import brigitte.widget.viewpager.SpaceItemDecoration
 import com.example.nvblog.R
 import com.example.nvblog.model.remote.entity.BlogData
@@ -29,13 +32,15 @@ class MyblogAllPostViewModel @Inject @JvmOverloads constructor(
         private val mLog = LoggerFactory.getLogger(MyblogAllPostViewModel::class.java)
 
         private const val PREF_VIEW_TYPE = "myblog-view-type"
+
+        const val CMD_CONNECT_APP = "connect-app"
     }
 
     lateinit var disposable: CompositeDisposable
 
     val viewTypeCheckedListener = ObservableField<(Int) -> Unit>()
     val layoutManager  = ObservableField<RecyclerView.LayoutManager>()
-    val itemDecoration = ObservableField<SpaceItemDecoration>()
+    val itemDecoration = ObservableField<Array<out RecyclerView.ItemDecoration>>()
     val roundedCorners = ObservableInt(7.dpToPx(app))
 
     init {
@@ -54,16 +59,14 @@ class MyblogAllPostViewModel @Inject @JvmOverloads constructor(
 
     fun convertDate(date: Long) = date.toDateString(SimpleDateFormat("yyyy. M. d.", Locale.getDefault()))
 
-
     private fun initItemDecoration(type: Int) {
-        itemDecoration.set( when (type) {
-            0 -> SpaceItemDecoration(Rect().apply {
-                    left   = 10.dpToPx(app)
-                    bottom = right
-                })
-            else -> SpaceItemDecoration(Rect().apply {
-                left   = 0.dpToPx(app)
-                bottom = right
+        itemDecoration.set(when (type) {
+            0 -> arrayOf(GridItemDecoration(10.dpToPx(app), 3))
+            else -> arrayOf(SpaceItemDecoration(Rect().apply {
+                left  = 20.dpToPx(app)
+                right = left
+            }), DividerItemDecoration(app, DividerItemDecoration.HORIZONTAL).apply {
+                setDrawable(ContextCompat.getDrawable(app, R.drawable.shape_divider_gray)!!)
             })
         })
     }
@@ -84,15 +87,16 @@ class MyblogAllPostViewModel @Inject @JvmOverloads constructor(
             initLayoutManager(type)
             initItemDecoration(type)
             initAdapter(viewType(type))
+            initData(type)
         }
     }
 
     private fun viewType(type: Int = 2): Int {
         val viewType = when (type) {
-//            0 -> R.layout.myblog_item_all_post_grid_image
-//            1 -> R.layout.myblog_item_all_post_list
-//            3 -> R.layout.myblog_item_all_post_video
-            else -> R.layout.myblog_item_all_post_large_image
+            0 -> R.layout.myblog_item_all_post_grid_image
+            1 -> R.layout.myblog_item_all_post_list
+            3 -> R.layout.myblog_item_all_post_video
+            else -> R.layout.myblog_item_all_post_blog
         }
 
         if (mLog.isDebugEnabled) {
@@ -244,6 +248,10 @@ class MyblogAllPostViewModel @Inject @JvmOverloads constructor(
                     if (it.blogImage != null) {
                         tmpList.add(it)
                     }
+                }
+
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("GRID IMAGE SIZE : ${tmpList.size}")
                 }
 
                 items.set(tmpList)

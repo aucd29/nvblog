@@ -27,9 +27,12 @@ class MyblogPopularPostViewModel @Inject @JvmOverloads constructor(
 
     lateinit var disposable: CompositeDisposable
 
+    //https://stackoverflow.com/questions/37011982/how-to-add-margins-to-a-recyclerview-for-the-last-element/37012503
     val itemDecoration = ObservableField(SpaceItemDecoration(Rect().apply {
         left   = 15.dpToPx(app)
-        bottom = right
+    }, Rect().apply {
+        left   = 15.dpToPx(app)
+        right  = left
     }))
 
     init {

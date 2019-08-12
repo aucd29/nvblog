@@ -216,7 +216,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-
                     app:bindSwipeRefreshListener="@{model.swipeRefreshListener}"
                     app:bindSwipeIsRefreshing="@{model.swipeIsRefresh}"
             >
@@ -290,7 +289,6 @@
                                 android:descendantFocusability="blocksDescendants"
                                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                                 android:orientation="horizontal"
-                                android:paddingEnd="@dimen/dp15"
                                 app:bindAdapter="@{popularPostModel.adapter}"
                                 app:bindItems="@{popularPostModel.items}"
                                 app:bindItemDecoration="@{popularPostModel.itemDecoration}"
@@ -358,7 +356,7 @@
                                 />
 
                                 <androidx.appcompat.widget.AppCompatRadioButton
-                                        android:id="@+id/myblog_view_type_list_large_image"
+                                        android:id="@+id/myblog_view_type_blog"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:background="@drawable/selector_checked_view_agenda"
@@ -391,6 +389,7 @@
                                 app:bindLayoutManager="@{allPostModel.layoutManager}"
                                 app:bindAdapter="@{allPostModel.adapter}"
                                 app:bindItems="@{allPostModel.items}"
+                                app:bindItemDecorations="@{allPostModel.itemDecoration}"
                         />
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.core.widget.NestedScrollView>
