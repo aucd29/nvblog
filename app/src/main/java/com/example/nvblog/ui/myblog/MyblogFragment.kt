@@ -48,7 +48,7 @@ class MyblogFragment @Inject constructor(
             mDisposable.add(interval(300)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    // 데이터를 로드 했다고 가정 하에
+                    // 여러 데이터를 로드 했다고 가정 하에
                     mViewModel.swipeIsRefresh.set(false)
                 })
         }

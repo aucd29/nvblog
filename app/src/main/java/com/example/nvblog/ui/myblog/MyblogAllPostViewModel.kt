@@ -89,9 +89,9 @@ class MyblogAllPostViewModel @Inject @JvmOverloads constructor(
 
     private fun viewType(type: Int = 2): Int {
         val viewType = when (type) {
-            0 -> R.layout.myblog_item_all_post_grid_image
-            1 -> R.layout.myblog_item_all_post_list
-            3 -> R.layout.myblog_item_all_post_video
+//            0 -> R.layout.myblog_item_all_post_grid_image
+//            1 -> R.layout.myblog_item_all_post_list
+//            3 -> R.layout.myblog_item_all_post_video
             else -> R.layout.myblog_item_all_post_large_image
         }
 

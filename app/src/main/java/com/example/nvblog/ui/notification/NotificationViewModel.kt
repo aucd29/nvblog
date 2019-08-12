@@ -130,6 +130,7 @@ class NotificationViewModel @Inject @JvmOverloads constructor(
 
             viewTypeLive.value = it
         }
+
         viewTypeLive.value = viewType.get()
     }
 
