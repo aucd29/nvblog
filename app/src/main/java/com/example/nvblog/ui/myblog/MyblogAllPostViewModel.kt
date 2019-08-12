@@ -46,7 +46,7 @@ class MyblogAllPostViewModel @Inject @JvmOverloads constructor(
     init {
         initAdapter(viewType())
         initData()
-
+        initItemDecoration()
         initViewTypeListener()
     }
 
@@ -59,13 +59,10 @@ class MyblogAllPostViewModel @Inject @JvmOverloads constructor(
 
     fun convertDate(date: Long) = date.toDateString(SimpleDateFormat("yyyy. M. d.", Locale.getDefault()))
 
-    private fun initItemDecoration(type: Int) {
+    private fun initItemDecoration(type: Int = 2) {
         itemDecoration.set(when (type) {
             0 -> arrayOf(GridItemDecoration(10.dpToPx(app), 3))
-            else -> arrayOf(SpaceItemDecoration(Rect().apply {
-                left  = 20.dpToPx(app)
-                right = left
-            }), DividerItemDecoration(app, DividerItemDecoration.HORIZONTAL).apply {
+            else -> arrayOf(DividerItemDecoration(app, DividerItemDecoration.VERTICAL).apply {
                 setDrawable(ContextCompat.getDrawable(app, R.drawable.shape_divider_gray)!!)
             })
         })

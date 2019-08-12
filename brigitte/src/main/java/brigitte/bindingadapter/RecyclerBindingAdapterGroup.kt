@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.*
 import brigitte.IRecyclerDiff
 import brigitte.InfiniteScrollListener
 import brigitte.RecyclerAdapter
+import brigitte.removeItemDecorationAll
 import org.slf4j.LoggerFactory
 
 /**
@@ -95,9 +96,7 @@ object RecyclerBindingAdapter {
             mLog.debug("BIND DECORATION: hor($horDrawable), ver($verDrawable)")
         }
 
-        val count = recycler.itemDecorationCount - 1
-        (0..count).forEach(recycler::removeItemDecorationAt)
-
+        recycler.removeItemDecorationAll()
         recycler.apply {
             horDrawable?.let { decorator(it) }
             verDrawable?.let { decorator(it, DividerItemDecoration.VERTICAL) }
@@ -111,9 +110,7 @@ object RecyclerBindingAdapter {
             mLog.debug("BIND ITEM DECORATION")
         }
 
-        val count = recycler.itemDecorationCount - 1
-        (0..count).forEach(recycler::removeItemDecorationAt)
-
+        recycler.removeItemDecorationAll()
         decoration?.let { recycler.addItemDecoration(it) }
     }
 
@@ -124,9 +121,7 @@ object RecyclerBindingAdapter {
             mLog.debug("BIND ITEM DECORATION")
         }
 
-        val count = recycler.itemDecorationCount - 1
-        (0..count).forEach(recycler::removeItemDecorationAt)
-
+        recycler.removeItemDecorationAll()
         decorations?.let { it.forEach { recycler.addItemDecoration(it) } }
     }
 

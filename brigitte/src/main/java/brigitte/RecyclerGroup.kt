@@ -1,3 +1,4 @@
+@file:Suppress("NOTHING_TO_INLINE", "unused")
 package brigitte
 
 import android.app.Application
@@ -555,4 +556,14 @@ inline fun StaggeredGridLayoutManager.findLastVisibleItemPosition(): Int {
     }
 
     return position
+}
+
+inline fun RecyclerView.removeItemDecorationAll() {
+    val count = itemDecorationCount - 1
+    val list = arrayListOf<RecyclerView.ItemDecoration>()
+    (0..count).forEach {
+        list.add(getItemDecorationAt(it))
+    }
+
+    list.forEach(::removeItemDecoration)
 }
