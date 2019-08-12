@@ -17,14 +17,21 @@
     <string name="noti_posted">이전글</string>
     <string name="noti_not_read">안읽음</string>
     <string name="noti_hide_notice">X</string>
-
     <string name="noti_empathy">공감</string>
     <string name="noti_reply">댓글</string>
     <string name="noti_lorem">"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s"</string>
+    <string name="noti_num_of_applied_for_friend">서로 이웃을 신청한 블로거</string>
+    <string name="noti_people">%d명</string>
+    <string name="noti_no_new_posts">새로운 내 소식이 없습니다.</string>
+    <string name="noti_no_new_posts2">이웃 새글에서 더 많은 글을 만나보세요.</string>
     
     <!--myblog-->
     <string name="myblog_edit_home">홈편집</string>
     <string name="myblog_visiter_count">"오늘 %d * 전체 %s"</string>
     <string name="myblog_friend_count">"%d명의 이웃"</string>
+    <string name="myblog_popular_article">인기글</string>
+    <string name="myblog_popular_article_description">주간 조회수가 높은 글입니다.</string>
+    <string name="myblog_all_article">전체글</string>
+    <string name="myblog_not_allowed_search">검색비허용</string>
     
 </resources>

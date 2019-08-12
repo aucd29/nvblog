@@ -24,75 +24,205 @@
                 app:titlebarModel="@{titlebarModel}"
         />
 
-        <RadioGroup
-                android:id="@+id/noti_radio_group"
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/noti_swipe_refresh"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/titlebar"
-                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:bindSwipeRefreshListener="@{model.swipeRefreshListener}"
+                app:bindSwipeIsRefreshing="@{model.swipeIsRefresh}"
         >
 
-            <androidx.appcompat.widget.AppCompatCheckedTextView
-                    android:id="@+id/noti_news"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/noti_news"
-            />
+            <androidx.core.widget.NestedScrollView
+                    android:id="@+id/noti_scroll"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+            >
 
-            <androidx.appcompat.widget.AppCompatCheckedTextView
-                    android:id="@+id/noti_posted"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/noti_posted"
-            />
-        </RadioGroup>
+                <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/noti_scroll_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
-        <TextView
-                android:id="@+id/noti_not_read"
+                    <RadioGroup
+                            android:id="@+id/noti_radio_group"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:orientation="horizontal"
+                            app:bindCheckId="@{model.viewType}"
+                            app:bindCheckedChangeListener="@{model.viewTypeCheckedListener}"
+                    >
+
+                        <androidx.appcompat.widget.AppCompatRadioButton
+                                android:id="@+id/noti_news"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/noti_news"
+                                android:button="@null"
+                                android:textColor="@drawable/selector_checked_black_gray"
+                                android:layout_marginStart="@dimen/dp10"
+                                android:padding="@dimen/dp12"
+                                android:layout_marginEnd="@dimen/dp10"
+                        />
+
+                        <androidx.appcompat.widget.AppCompatRadioButton
+                                android:id="@+id/noti_posted"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/noti_posted"
+                                android:button="@null"
+                                android:padding="@dimen/dp12"
+                                android:textColor="@drawable/selector_checked_black_gray"
+                        />
+                    </RadioGroup>
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/noti_not_read"
+                            android:layout_width="wrap_content" android:layout_height="0dp"
+                            android:text="@string/noti_not_read"
+                            app:layout_constraintTop_toTopOf="@+id/noti_radio_group"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintBottom_toBottomOf="@+id/noti_radio_group"
+                            android:layout_marginEnd="@dimen/dp10"
+                            android:paddingStart="@dimen/dp15"
+                            android:paddingTop="@dimen/dp4"
+                            android:paddingEnd="@dimen/dp15"
+                            android:paddingBottom="@dimen/dp4"
+                            android:background="@drawable/shape_rect_stroke_graycc"
+                            android:textSize="@dimen/sp12"
+                            android:layout_marginTop="@dimen/dp7"
+                            android:layout_marginBottom="@dimen/dp7"
+                            android:visibility="@{model.viewNotRead}"
+                            android:onClick="@{() -> model.command(model.IN_NOT_READ)}"
+                    />
+
+                    <!-- NOTICE -->
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/noti_notice_container"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/noti_radio_group"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:background="@color/gray_300"
+                            android:visibility="@{model.viewNotice}"
+                    >
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/noti_notice"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintEnd_toStartOf="@+id/noti_notice_close"
+                                android:paddingTop="@dimen/dp15"
+                                android:paddingStart="@dimen/dp15"
+                                android:paddingBottom="@dimen/dp15"
+                                android:text="@{model.convertNotification(model.noticeData)}"
+                        />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/noti_notice_close"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                android:padding="@dimen/dp15"
+                                android:text="X"
+                                android:onClick="@{() -> model.command(model.IN_HIDE_NOTICE)}"
+                        />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/noti_recycler"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/noti_notice_container"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:descendantFocusability="blocksDescendants"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            app:bindAdapter="@{model.adapter}"
+                            app:bindItems="@{model.items}"
+                    />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/noti_no_data_container"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/noti_notice_container"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:layout_marginTop="@dimen/dp20"
+                            android:visibility="@{model.items.get().size() == 0 ? View.VISIBLE : View.GONE}"
+                    >
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/noti_num_of_applied_for_friend"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                android:layout_marginStart="@dimen/dp20"
+                                android:layout_marginEnd="@dimen/dp20"
+                                android:padding="@dimen/dp15"
+                                android:gravity="center"
+                                android:background="@drawable/shape_rect_stroke_graycc_bg_grayec"
+                                android:text="@{model.convertNumOfAppliedForFriend(model.numberOfAppliedForFriend)}"
+                        />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/noti_no_news_posts"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/noti_num_of_applied_for_friend"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                android:layout_marginTop="@dimen/dp140"
+                                android:gravity="center"
+                                android:textSize="@dimen/sp15"
+                                android:textColor="@color/colorPrimary"
+                                android:text="@string/noti_no_new_posts"
+                        />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/noti_no_news_posts2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/noti_no_news_posts"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                android:gravity="center"
+                                android:textSize="@dimen/sp15"
+                                android:text="@string/noti_no_new_posts2"
+                        />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.core.widget.NestedScrollView>
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
+        <ProgressBar
+                android:id="@+id/noti_progress"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="@string/noti_not_read"
-                app:layout_constraintTop_toBottomOf="@+id/titlebar"
-                app:layout_constraintEnd_toEndOf="parent"
-        />
-
-        <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/noti_notice"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/noti_radio_group"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:paddingBottom="@dimen/dp20"
-                android:text="@{model.convertNotification(model.noticeData)}"
-                android:visibility="@{model.viewNotice}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginTop="@dimen/dp120"
+                android:visibility="@{model.viewProgress}"
         />
-
-        <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/noti_hide_notice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="@+id/noti_notice"
-                app:layout_constraintEnd_toEndOf="@+id/noti_notice"
-                android:layout_marginTop="@dimen/dp10"
-                android:layout_marginEnd="@dimen/dp10"
-                android:padding="@dimen/dp20"
-                android:text="@string/noti_hide_notice"
-                android:visibility="@{model.viewNotice == View.GONE ? View.VISIBLE : View.GONE}"
-                android:onClick="@{() -> model.command(model.IN_HIDE_NOTICE)}"
-        />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/noti_recycler"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/noti_notice"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:bindAdapter="@{model.adapter}"
-            app:bindItems="@{model.items}"
-            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

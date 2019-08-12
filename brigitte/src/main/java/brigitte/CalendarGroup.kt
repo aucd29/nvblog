@@ -92,9 +92,9 @@ inline fun Calendar.lastTimeToday(): Calendar {
 inline fun Calendar.isLow(time: Long) = timeInMillis <= time
 inline fun Calendar.isHigh(time: Long) = timeInMillis > time
 
-inline fun Long.toDateString(): String = Calendar.getInstance().run {
+inline fun Long.toDateString(format: SimpleDateFormat? = null): String = Calendar.getInstance().run {
     timeInMillis = this@toDateString
-    defaultDateFormat.format(time)
+    format?.let { it.format(time) } ?: defaultDateFormat.format(time)
 }
 
 //https://stackoverflow.com/questions/20238280/date-in-to-utc-format-java

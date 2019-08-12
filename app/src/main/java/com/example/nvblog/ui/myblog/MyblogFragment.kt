@@ -15,29 +15,43 @@ import javax.inject.Inject
 class MyblogFragment @Inject constructor(
 ): BaseDaggerFragment<MyblogFragmentBinding, MyblogViewModel>() {
     private lateinit var mTitlebarModel: TitlebarViewModel
+    private lateinit var mMyblogPopularPostViewModel: MyblogPopularPostViewModel
+    private lateinit var mMyblogAllPostViewModel: MyblogAllPostViewModel
+
 
     override fun bindViewModel() {
         super.bindViewModel()
 
-        mTitlebarModel = inject(requireActivity())
+        mTitlebarModel              = inject(requireActivity())
+        mMyblogPopularPostViewModel = inject()
+        mMyblogAllPostViewModel     = inject()
 
         mBinding.apply {
-            titlebarModel = mTitlebarModel
+            titlebarModel    = mTitlebarModel
+            popularPostModel = mMyblogPopularPostViewModel
+            allPostModel     = mMyblogAllPostViewModel
+        }
+
+        mDisposable.let {
+            mViewModel.disposable = it
+            mMyblogPopularPostViewModel.disposable = it
+            mMyblogAllPostViewModel.disposable = it
         }
     }
 
     override fun initViewBinding() {
-//        mBinding.myblogSwipeRefresh.setOnRefreshListener {
-//            mDisposable.add(interval(2000)
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe {
-//                    // 로드 했다고 가정 하에
-//                    mBinding.myblogSwipeRefresh.isRefreshing = false
-//                })
-//        }
+        mMyblogAllPostViewModel.initLayoutManager()
     }
 
     override fun initViewModelEvents() {
+        observe(mViewModel.swipeRefreshLive) {
+            mDisposable.add(interval(300)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    // 데이터를 로드 했다고 가정 하에
+                    mViewModel.swipeIsRefresh.set(false)
+                })
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

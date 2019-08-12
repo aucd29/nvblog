@@ -65,11 +65,15 @@ object GlideBindingAdapter {
         "bindImageWidth", "bindImageHeight",
         "bindRoundedCorners", "bindCircleCrop",
         requireAll = false)
-    fun glideImage(view: ImageView, path: String, thumbnail: String?,
+    fun glideImage(view: ImageView, path: String?, thumbnail: String?,
                    x: Int?, y: Int?,
                    roundedCorners: Int?, circleCrop: Boolean?) {
         if (mLog.isDebugEnabled) {
             mLog.debug("BIND IMAGE : $path THUMBNAIL : $thumbnail")
+        }
+
+        if (path == null) {
+            return
         }
 
         view.glide(path, thumbnail, x, y, roundedCorners, circleCrop)

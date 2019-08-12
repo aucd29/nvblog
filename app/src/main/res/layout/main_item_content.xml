@@ -87,9 +87,13 @@
                 app:layout_constraintEnd_toEndOf="@+id/main_item_content_image"
                 android:layout_marginEnd="@dimen/dp7"
                 android:layout_marginTop="@dimen/dp7"
-                android:padding="@dimen/dp7"
+                android:paddingStart="@dimen/dp7"
+                android:paddingTop="@dimen/dp3"
+                android:paddingEnd="@dimen/dp7"
+                android:paddingBottom="@dimen/dp3"
                 android:textColor="@android:color/white"
-                android:background="@drawable/shape_dot_gray"
+                android:background="@drawable/shape_round_rect_alpha_black_background"
+                android:textSize="@dimen/sp12"
                 android:text="@{item.badge}"
         />
 

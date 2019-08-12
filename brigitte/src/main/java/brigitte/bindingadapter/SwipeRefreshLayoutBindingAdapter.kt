@@ -13,7 +13,7 @@ object SwipeRefreshLayoutBindingAdapter {
 
     @JvmStatic
     @BindingAdapter("bindSwipeRefreshListener")
-    fun bindSwipeRefreshListener(view: SwipeRefreshLayout, callback: () -> Unit) {
+    fun bindSwipeRefreshListener(view: SwipeRefreshLayout, callback: (() -> Unit)?) {
         if (mLog.isDebugEnabled) {
             mLog.debug("bindSwipeRefreshListener")
         }
@@ -22,24 +22,24 @@ object SwipeRefreshLayoutBindingAdapter {
     }
 
     @JvmStatic
-    @BindingAdapter("bindSwipeRefreshingFalse")
-    fun bindSwipeRefreshingFalse(view: SwipeRefreshLayout, dumy: Boolean) {
+    @BindingAdapter("bindSwipeIsRefreshing")
+    fun bindSwipeRefreshingFalse(view: SwipeRefreshLayout, result: Boolean) {
         if (mLog.isDebugEnabled) {
             mLog.debug("bindSwipeRefreshingFalse")
         }
 
-        view.isRefreshing = false
+        view.isRefreshing = result
     }
 
-    @JvmStatic
-    @BindingAdapter("bindSwipeIsRefreshing")
-    fun bindSwipeIsRefreshing(view: SwipeRefreshLayout, callback: ((Boolean) -> Unit)?) {
-        callback?.apply {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("bindSwipeIsRefreshing")
-            }
-
-            invoke(view.isRefreshing)
-        }
-    }
+//    @JvmStatic
+//    @BindingAdapter("bindSwipeIsRefreshing")
+//    fun bindSwipeIsRefreshing(view: SwipeRefreshLayout, callback: ((Boolean) -> Unit)?) {
+//        callback?.apply {
+//            if (mLog.isDebugEnabled) {
+//                mLog.debug("bindSwipeIsRefreshing")
+//            }
+//
+//            invoke(view.isRefreshing)
+//        }
+//    }
 }

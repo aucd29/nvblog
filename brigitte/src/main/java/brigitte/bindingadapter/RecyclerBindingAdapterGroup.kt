@@ -34,6 +34,15 @@ object RecyclerBindingAdapter {
                 recycler.adapter = myadapter
             } else {
                 myadapter = recycler.adapter as RecyclerAdapter<T>
+
+                if (myadapter !== it) {
+                    if (mLog.isDebugEnabled) {
+                        mLog.debug("CHANGED ADAPTER")
+                    }
+
+                    myadapter = it
+                    recycler.adapter = it
+                }
             }
         }
 

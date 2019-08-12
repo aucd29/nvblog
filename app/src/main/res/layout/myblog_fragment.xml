@@ -5,7 +5,10 @@
 
     <data>
         <variable name="model" type="com.example.nvblog.ui.myblog.MyblogViewModel"/>
+
         <variable name="titlebarModel" type="com.example.nvblog.ui.titlebar.TitlebarViewModel"/>
+        <variable name="popularPostModel" type="com.example.nvblog.ui.myblog.MyblogPopularPostViewModel"/>
+        <variable name="allPostModel" type="com.example.nvblog.ui.myblog.MyblogAllPostViewModel"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -22,10 +25,11 @@
         >
             <com.google.android.material.appbar.AppBarLayout
                     android:id="@+id/myblog_app_bar"
-                    android:layout_height="wrap_content"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:theme="@style/AppTheme.AppBarOverlay"
                     android:background="@color/colorPrimary"
+                    app:bindOffsetChangedListener="@{model.appbarChangedListener}"
             >
 
                 <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -49,6 +53,7 @@
                                 app:layout_constraintTop_toTopOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:bindImage="@{model.blogItem.background}"
+                                android:translationY="@{model.viewTransY}"
                         />
 
                         <androidx.constraintlayout.widget.ConstraintLayout
@@ -134,7 +139,6 @@
                                     android:src="@drawable/ic_settings_white_24dp"
                             />
 
-
                             <!-- BUTTON LINE -->
 
                             <androidx.appcompat.widget.AppCompatButton
@@ -148,7 +152,8 @@
                                     android:layout_marginStart="@dimen/dp20"
                                     android:text="@string/myblog_edit_home"
                                     android:background="@drawable/shape_rectangle_gray_stroke"
-                                    android:drawablePadding="@dimen/dp8"
+                                    android:paddingStart="@dimen/dp25"
+                                    android:drawablePadding="-28dp"
                                     android:drawableStart="@drawable/ic_settings_white_24dp"
                                     android:textColor="@android:color/white"
                                     android:textAlignment="gravity"
@@ -163,7 +168,7 @@
                                     android:padding="@dimen/dp8"
                                     android:layout_marginEnd="@dimen/dp8"
                                     android:background="@drawable/shape_rectangle_gray_stroke"
-                                    android:src="@drawable/ic_settings_white_24dp"
+                                    android:src="@drawable/ic_list_white_24dp"
                             />
 
                             <androidx.appcompat.widget.AppCompatImageView
@@ -174,7 +179,7 @@
                                     android:padding="@dimen/dp8"
                                     android:layout_marginEnd="@dimen/dp8"
                                     android:background="@drawable/shape_rectangle_gray_stroke"
-                                    android:src="@drawable/ic_settings_white_24dp"
+                                    android:src="@drawable/ic_reply_white_24dp"
                             />
 
                             <androidx.appcompat.widget.AppCompatImageView
@@ -185,7 +190,7 @@
                                     android:padding="@dimen/dp8"
                                     android:layout_marginEnd="@dimen/dp8"
                                     android:background="@drawable/shape_rectangle_gray_stroke"
-                                    android:src="@drawable/ic_settings_white_24dp"
+                                    android:src="@drawable/ic_group_white_24dp"
                             />
 
                             <androidx.appcompat.widget.AppCompatImageView
@@ -197,7 +202,7 @@
                                     android:layout_marginEnd="@dimen/dp20"
                                     android:layout_marginBottom="@dimen/dp20"
                                     android:background="@drawable/shape_rectangle_gray_stroke"
-                                    android:src="@drawable/ic_settings_white_24dp"
+                                    android:src="@drawable/ic_graphic_eq_white_24dp"
                             />
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -206,51 +211,194 @@
                 </com.google.android.material.appbar.CollapsingToolbarLayout>
             </com.google.android.material.appbar.AppBarLayout>
 
-            <!--<brigitte.widget.VerticalSwipeRefreshLayout-->
-                    <!--android:id="@+id/myblog_swipe_refresh"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--app:layout_constraintStart_toStartOf="parent"-->
-                    <!--app:layout_constraintEnd_toEndOf="parent"-->
-                    <!--app:layout_constraintBottom_toBottomOf="parent"-->
-            <!--&gt;-->
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                    android:id="@+id/myblog_swipe_refresh"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+
+                    app:bindSwipeRefreshListener="@{model.swipeRefreshListener}"
+                    app:bindSwipeIsRefreshing="@{model.swipeIsRefresh}"
+            >
 
                 <androidx.core.widget.NestedScrollView
                         android:id="@+id/myblog_scroll"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:nestedScrollingEnabled="false"
                 >
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/myblog_scroll_container"
                             android:layout_width="match_parent"
-                            android:layout_height="500dp"
-                            android:clickable="true"
-                            android:background="#7F252525"
+                            android:layout_height="wrap_content"
                     >
+                        <View
+                                android:id="@+id/myblog_dummy_popular"
+                                android:layout_width="match_parent" android:layout_height="@dimen/dp10"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                android:background="@color/colorLightGray"
+                        />
 
+                        <!-- POPULAR LIST -->
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                                android:id="@+id/myblog_popular_post_view_type_container"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/myblog_dummy_popular"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                android:padding="@dimen/dp15"
+                        >
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                    android:id="@+id/myblog_popular_post_title"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    android:text="@string/myblog_popular_article"
+                                    android:textColor="@android:color/black"
+                                    android:textStyle="bold"
+                                    android:textSize="@dimen/sp16"
+                            />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                    android:id="@+id/myblog_popular_post_description"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    android:textColor="#838383"
+                                    android:textSize="@dimen/sp13"
+                                    android:text="@string/myblog_popular_article_description"
+                            />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/myblog_popular_posts_recycler"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/myblog_popular_post_view_type_container"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                android:descendantFocusability="blocksDescendants"
+                                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                                android:orientation="horizontal"
+                                android:paddingEnd="@dimen/dp15"
+                                app:bindAdapter="@{popularPostModel.adapter}"
+                                app:bindItems="@{popularPostModel.items}"
+                                app:bindItemDecoration="@{popularPostModel.itemDecoration}"
+                        />
+
+                        <!-- ALL LIST -->
+
+                        <View
+                                android:id="@+id/myblog_dummy_all"
+                                android:layout_width="match_parent" android:layout_height="@dimen/dp10"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/myblog_popular_posts_recycler"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                android:background="@color/colorLightGray"
+                                android:layout_marginTop="@dimen/dp15"
+                        />
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                                android:id="@+id/myblog_all_post_view_type_container"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/myblog_dummy_all"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                android:padding="@dimen/dp15"
+                        >
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                    android:id="@+id/myblog_all_post_title"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    android:text="@string/myblog_all_article"
+                                    android:textColor="@android:color/black"
+                                    android:textStyle="bold"
+                                    android:textSize="@dimen/sp16"
+                            />
+
+                            <RadioGroup
+                                    android:id="@+id/myblog_view_type_group"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    android:orientation="horizontal"
+                                    app:bindCheckedChangeListener="@{allPostModel.viewTypeCheckedListener}"
+                            >
+                                <androidx.appcompat.widget.AppCompatRadioButton
+                                        android:id="@+id/myblog_view_type_grid_image"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:background="@drawable/selector_checked_apps"
+                                        android:layout_marginEnd="@dimen/dp15"
+                                        android:button="@null"
+                                />
+
+                                <androidx.appcompat.widget.AppCompatRadioButton
+                                        android:id="@+id/myblog_view_type_list"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:background="@drawable/selector_checked_view_list"
+                                        android:layout_marginEnd="@dimen/dp15"
+                                        android:button="@null"
+                                />
+
+                                <androidx.appcompat.widget.AppCompatRadioButton
+                                        android:id="@+id/myblog_view_type_list_large_image"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:background="@drawable/selector_checked_view_agenda"
+                                        android:layout_marginEnd="@dimen/dp15"
+                                        android:checked="true"
+                                        android:button="@null"
+                                />
+
+                                <androidx.appcompat.widget.AppCompatRadioButton
+                                        android:id="@+id/myblog_view_type_video"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:background="@drawable/selector_checked_videocam"
+                                        android:layout_marginEnd="@dimen/dp15"
+                                        android:button="@null"
+                                />
+
+                            </RadioGroup>
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/myblog_all_posts_recycler"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/myblog_all_post_view_type_container"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                android:descendantFocusability="blocksDescendants"
+                                app:bindLayoutManager="@{allPostModel.layoutManager}"
+                                app:bindAdapter="@{allPostModel.adapter}"
+                                app:bindItems="@{allPostModel.items}"
+                        />
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.core.widget.NestedScrollView>
-            <!--</brigitte.widget.VerticalSwipeRefreshLayout>-->
 
-            <!--<androidx.recyclerview.widget.RecyclerView-->
-            <!--android:id="@+id/detail_recycler"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"-->
-            <!--app:bindAdapter="@{model.adapter}"-->
-            <!--app:bindItems="@{model.items}"-->
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-            <!--app:layout_constraintStart_toStartOf="parent"-->
-            <!--app:layout_constraintEnd_toEndOf="parent"-->
-            <!--app:layout_constraintBottom_toBottomOf="parent"-->
-            <!--/>-->
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
 
         <include
                 android:id="@+id/titlebar"
@@ -261,7 +409,6 @@
                 app:titlebarModel="@{titlebarModel}"
                 android:visibility="gone"
         />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -1,0 +1,70 @@
+<layout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View"/>
+
+        <variable name="model" type="com.example.nvblog.ui.myblog.MyblogPopularPostViewModel"/>
+        <variable name="item" type="com.example.nvblog.model.remote.entity.BlogData"/>
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/myblog_popular_post_container"
+            android:layout_width="@dimen/dp150"
+            android:layout_height="@dimen/dp180">
+
+        <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/myblog_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginBottom="@dimen/dp10"
+                android:visibility="@{item.blogImage == null ? View.GONE : View.VISIBLE}"
+                app:bindImage="@{item.blogImage}"
+        />
+
+        <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/myblog_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/myblog_image"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:textSize="@dimen/sp13"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:text="@{item.blogTitle}"
+        />
+
+        <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/myblog_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/myblog_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:maxLines="6"
+                android:ellipsize="end"
+                android:textSize="@dimen/sp12"
+                android:visibility="@{item.blogImage == null ? View.VISIBLE : View.GONE}"
+                android:text="@{item.blogContent}"
+        />
+
+        <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/myblog_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:textSize="@dimen/sp10"
+                android:textColor="@color/gray_13"
+                android:text="@{item.tag}"
+        />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

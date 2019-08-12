@@ -7,6 +7,8 @@ import com.example.nvblog.ui.titlebar.TitlebarViewModel
 import com.example.nvblog.ui.browser.BrowserViewModel
 import com.example.nvblog.ui.main.MainViewModel
 import com.example.nvblog.ui.main.search.SearchViewModel
+import com.example.nvblog.ui.myblog.MyblogAllPostViewModel
+import com.example.nvblog.ui.myblog.MyblogPopularPostViewModel
 import com.example.nvblog.ui.myblog.MyblogViewModel
 import com.example.nvblog.ui.navigation.NavigationViewModel
 import com.example.nvblog.ui.notification.NotificationViewModel
@@ -68,6 +70,16 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(MyblogViewModel::class)
     abstract fun bindMyblogViewModel(vm: MyblogViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(MyblogAllPostViewModel::class)
+    abstract fun bindMyblogAllPostViewModel(vm: MyblogAllPostViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(MyblogPopularPostViewModel::class)
+    abstract fun bindMyblogPopularPostViewModel(vm: MyblogPopularPostViewModel): ViewModel
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
