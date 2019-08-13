@@ -28,8 +28,9 @@ import kotlin.math.abs
  * https://stackoverflow.com/questions/34136178/swiperefreshlayout-blocking-horizontally-scrolled-recyclerview
  */
 
-open class VerticalNavigationView(context: Context
-                             , attrs: AttributeSet
+open class VerticalNavigationView(
+    context: Context,
+    attrs: AttributeSet
 ) : NavigationView(context, attrs) {
     companion object {
         private val mLog = LoggerFactory.getLogger(VerticalNavigationView::class.java)
@@ -41,7 +42,7 @@ open class VerticalNavigationView(context: Context
 
     init {
         this.initLayout()
-        touchSlop = ViewConfiguration.get(context).scaledTouchSlop * 4
+        touchSlop = ViewConfiguration.get(context).scaledTouchSlop * 40
     }
 
     open fun initLayout() {
