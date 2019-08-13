@@ -34,7 +34,7 @@ class ViewController @Inject constructor(private val manager: FragmentManager) {
             fragment = mWrite.get(), anim = FragmentAnim.UP))
     }
 
-    fun browserFragment(url: String?) {
+    fun browserFragment(url: Any?) {
         if (mLog.isInfoEnabled) {
             mLog.info("BROWSER FRAGMENT $url")
         }
@@ -48,7 +48,7 @@ class ViewController @Inject constructor(private val manager: FragmentManager) {
         manager.showBy(FragmentParams(CONTAINER,
             fragment = mBrowserFragment.get(), anim = FragmentAnim.RIGHT_ALPHA,
             bundle = Bundle().apply {
-                putString(BrowserFragment.K_URL, url)
+                putString(BrowserFragment.K_URL, url.toString())
             }))
     }
 }

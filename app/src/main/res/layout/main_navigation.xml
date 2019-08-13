@@ -145,27 +145,39 @@
 
             <View
                     android:id="@+id/navi_dummy_below_icon_button"
-                    android:layout_width="match_parent" android:layout_height="@dimen/dp3"
+                    android:layout_width="match_parent" android:layout_height="@dimen/dp5"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/navi_icon_button_container"
+                    android:background="@drawable/shape_divider_gray"
             />
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/navi_graph"
+                    android:id="@+id/navi_graph_container"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp180"
+                    android:layout_height="wrap_content"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/navi_dummy_below_icon_button"
                     app:layout_constraintEnd_toEndOf="parent"
             >
 
+                <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/navi_graph_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:bindImageRes="@{naviModel.dummyGraph}"
+                />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <View
                     android:id="@+id/navi_dummy_below_navi_graph"
-                    android:layout_width="match_parent" android:layout_height="@dimen/dp3"
+                    android:layout_width="match_parent" android:layout_height="@dimen/dp5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/navi_graph"
+                    app:layout_constraintTop_toBottomOf="@+id/navi_graph_container"
+                    android:background="@drawable/shape_divider_gray"
             />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -176,35 +188,39 @@
                     app:layout_constraintTop_toBottomOf="@+id/navi_dummy_below_navi_graph"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    android:descendantFocusability="blocksDescendants"
+                    android:overScrollMode="never"
                     app:bindAdapter="@{naviModel.adapter}"
                     app:bindItems="@{naviModel.items}"
+                    app:bindItemDecoration="@{naviModel.itemDecoration}"
             />
 
             <View
                     android:id="@+id/navi_dummy_below_menu_recycler"
-                    android:layout_width="match_parent" android:layout_height="@dimen/dp3"
+                    android:layout_width="match_parent" android:layout_height="@dimen/dp5"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/navi_menu_recycler"
+                    android:background="@drawable/shape_divider_gray"
             />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/navi_banner_area_container"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp100"
+                    android:layout_height="wrap_content"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/navi_dummy_below_menu_recycler"
                     app:layout_constraintEnd_toEndOf="parent"
             >
 
-                <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/navi_banner_area_text"
+                <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/navi_banner_image"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        android:text="BANNER AREA"
+                        app:bindImageRes="@{naviModel.dummyBanner}"
                 />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

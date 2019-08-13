@@ -119,3 +119,42 @@ class OffsetDividerItemDecoration(
         }
     }
 }
+
+class PositionDividerItemDecoration(
+    private val mDivider: Drawable, val positionList: List<Int>
+): RecyclerView.ItemDecoration() {
+    constructor(context: Context, @DrawableRes resid: Int, positionList: List<Int>)
+            : this(ContextCompat.getDrawable(context, resid)!!, positionList)
+
+    override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+        super.getItemOffsets(outRect, view, parent, state)
+
+        if (positionList.contains(parent.getChildAdapterPosition(view))) {
+            outRect.top = mDivider.intrinsicHeight
+        }
+    }
+
+    override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+        super.onDraw(c, parent, state)
+
+        val count = parent.childCount - 1
+        val it = parent.children.iterator()
+        var i = 0
+        it.forEach {
+            if (i == count) {
+                return@forEach
+            }
+
+            if (positionList.contains(i)) {
+                val lp = it.layoutParams as (RecyclerView.LayoutParams)
+                val dividerTop = it.bottom + lp.bottomMargin
+                val dividerBottom = dividerTop + mDivider.intrinsicHeight
+
+                mDivider.setBounds(0, dividerTop, parent.width, dividerBottom)
+                mDivider.draw(c)
+            }
+
+            ++i
+        }
+    }
+}

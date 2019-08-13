@@ -54,10 +54,10 @@
                         app:labelVisibilityMode="labeled"
                         app:menu="@menu/bottom_nav_menu"
                         app:bindNavigationItemSelectedListener="@{titlebarModel.naviItemSelectedListener}"
+                        app:bindSelectedItemId="@{titlebarModel.naviItemSelectId}"
                 />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-
 
             <View
                     android:id="@+id/splash"
@@ -76,7 +76,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-        <com.google.android.material.navigation.NavigationView
+        <brigitte.widget.VerticalNavigationView
                 android:id="@+id/main_nav_view"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -85,6 +85,6 @@
             <include layout="@layout/main_navigation"
                      app:naviModel="@{naviModel}"
             />
-        </com.google.android.material.navigation.NavigationView>
+        </brigitte.widget.VerticalNavigationView>
     </androidx.drawerlayout.widget.DrawerLayout>
 </layout>

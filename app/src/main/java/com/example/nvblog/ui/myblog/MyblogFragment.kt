@@ -4,6 +4,7 @@ import brigitte.BaseDaggerFragment
 import brigitte.interval
 import brigitte.singleTimer
 import com.example.nvblog.databinding.MyblogFragmentBinding
+import com.example.nvblog.ui.ViewController
 import com.example.nvblog.ui.titlebar.TitlebarViewModel
 import dagger.android.ContributesAndroidInjector
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -24,6 +25,8 @@ class MyblogFragment @Inject constructor(
     private lateinit var mMyblogPopularPostViewModel: MyblogPopularPostViewModel
     private lateinit var mMyblogAllPostViewModel: MyblogAllPostViewModel
 
+    @Inject lateinit var viewController: ViewController
+
     override fun bindViewModel() {
         super.bindViewModel()
 
@@ -42,6 +45,8 @@ class MyblogFragment @Inject constructor(
             mMyblogPopularPostViewModel.disposable = it
             mMyblogAllPostViewModel.disposable = it
         }
+
+        addCommandEventModels(mMyblogPopularPostViewModel, mMyblogAllPostViewModel)
     }
 
     override fun initViewBinding() {
@@ -70,6 +75,20 @@ class MyblogFragment @Inject constructor(
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
+    // COMMAND
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    override fun onCommandEvent(cmd: String, data: Any) {
+        when (cmd) {
+            "open-brs" -> {
+                viewController.browserFragment(data)
+            }
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
     // Module
     //
     ////////////////////////////////////////////////////////////////////////////////////
@@ -78,15 +97,5 @@ class MyblogFragment @Inject constructor(
     abstract class Module {
         @ContributesAndroidInjector
         abstract fun contributeMyblogFragmentInjector(): MyblogFragment
-
-        // @dagger.Module
-        // companion object {
-        //     @JvmStatic
-        //     @Provides
-        //     @Named("child_fragment_manager")
-        //     fun provide(fragment: MainFragment): FragmentManager {
-        //         return fragment.childFragmentManager
-        //     }
-        // }
     }
 }

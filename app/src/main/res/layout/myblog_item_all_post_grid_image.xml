@@ -12,6 +12,7 @@
             android:id="@+id/myblog_all_post_grid_image_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="@{() -> model.command(model.CMD_OPEN_BRS, item.blogLink)}"
     >
 
         <androidx.appcompat.widget.AppCompatImageView

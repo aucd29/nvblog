@@ -2,6 +2,7 @@ package com.example.nvblog.ui.write
 
 import brigitte.BaseDaggerFragment
 import com.example.nvblog.databinding.WriteFragmentBinding
+import com.example.nvblog.ui.titlebar.TitlebarViewModel
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import javax.inject.Inject
@@ -11,10 +12,20 @@ import javax.inject.Inject
  */
 class WriteFragment @Inject constructor(
 ): BaseDaggerFragment<WriteFragmentBinding, WriteViewModel>() {
+
+    private lateinit var mTitlebarModel: TitlebarViewModel
+
+    override fun bindViewModel() {
+        super.bindViewModel()
+
+        mTitlebarModel = inject(requireActivity())
+    }
+
     override fun initViewBinding() {
     }
 
     override fun initViewModelEvents() {
+        mTitlebarModel.moveToHistory()
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

@@ -13,7 +13,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/myblog_popular_post_container"
             android:layout_width="@dimen/dp150"
-            android:layout_height="@dimen/dp180">
+            android:layout_height="@dimen/dp180"
+            android:onClick="@{() -> model.command(model.CMD_OPEN_BRS, item.blogLink)}"
+    >
 
         <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/myblog_image"

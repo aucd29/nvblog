@@ -9,7 +9,7 @@ import brigitte.app
 import brigitte.arch.SingleLiveEvent
 import brigitte.numberFormat
 import com.example.nvblog.R
-import com.example.nvblog.model.remote.entity.MyBlogData
+import com.example.nvblog.common.PreloadConfig
 import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -20,8 +20,8 @@ import kotlin.math.abs
  */
 
 class MyblogViewModel @Inject @JvmOverloads constructor(
-    application: Application
-
+    application: Application,
+    private val mPreConfig: PreloadConfig
 ) : CommandEventViewModel(application) {
 
     companion object {
@@ -30,7 +30,7 @@ class MyblogViewModel @Inject @JvmOverloads constructor(
 
     lateinit var disposable: CompositeDisposable
 
-    val blogItem   = ObservableField<MyBlogData>()
+    val blogItem   = mPreConfig.blogInfoItem
     val circleCrop = ObservableBoolean(true)
 
     // appbar
@@ -44,7 +44,6 @@ class MyblogViewModel @Inject @JvmOverloads constructor(
     val swipeIsEnabled       = ObservableBoolean(true)
 
     init {
-        initData()
         initOffsetListener()
         initSwipeRefreshListener()
     }
@@ -94,19 +93,5 @@ class MyblogViewModel @Inject @JvmOverloads constructor(
                 swipeIsEnabled.set(false)
             }
         }
-    }
-
-    private fun initData() {
-        val item = MyBlogData(1
-            ,"aucd29"
-            , "https://blogpfthumb-phinf.pstatic.net/MjAxOTA3MTZfMTEz/MDAxNTYzMjY0OTIwMTM2.2P1LtlHcYC879Dt_ll3hAcDUKPKg-0k_eTMmIzXYr68g.XnN-_iGOBdKMuB344NfvKKPQoMfxe8LhLgj7KlzYU8Eg.JPEG.leenara0830/profileImage.jpg?type=s1"
-            , "Pandora's box"
-            , 5
-            , 20
-            , 5
-            , "https://mblogthumb-phinf.pstatic.net/MjAxOTA4MDdfMTY1/MDAxNTY1MTQ0OTkzMzU1.iisJeQYs_SgMxXMlU5xi-l0v9E5XpByQBNaTs56NGLIg.7__58q0LsCgKabDABfmhmxj7aFjgx0ZacZbjeptAWiog.JPEG.leenara0830/1565144694118.jpg?type=w800"
-        )
-
-        blogItem.set(item)
     }
 }

@@ -32,10 +32,16 @@ class TitlebarViewModel @Inject @JvmOverloads constructor(
     val viewpagerSmooth = ObservableBoolean(false)
 
     val naviItemSelectedListener = ObservableField<(Int)-> Boolean>()
+    val naviItemSelectId = ObservableInt(R.id.nav_new_article)
+    var naviHistory = R.id.nav_new_article
 
     init {
         naviItemSelectedListener.set {
             var result = true
+
+            if (it != R.id.nav_write) {
+                naviHistory = it
+            }
 
             when (it) {
                 R.id.nav_new_article -> {
@@ -64,11 +70,25 @@ class TitlebarViewModel @Inject @JvmOverloads constructor(
         }
     }
 
+    fun moveToHistory() {
+        naviItemSelectId.set(naviHistory)
+    }
+
     override fun command(cmd: String, data: Any) {
         when (cmd) {
-            CMD_MOVE_FIRST_TAB -> viewpagerPos.set(0)
+            CMD_MOVE_FIRST_TAB -> moveToFirst()
         }
 
         super.command(cmd, data)
+    }
+
+    private fun moveToFirst() {
+        naviItemSelectId.apply {
+            if (get() == R.id.nav_new_article) {
+                notifyChange()
+            } else {
+                set(R.id.nav_new_article)
+            }
+        }
     }
 }

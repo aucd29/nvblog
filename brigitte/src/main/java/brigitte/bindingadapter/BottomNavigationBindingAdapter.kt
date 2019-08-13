@@ -19,6 +19,12 @@ object BottomNavigationBindingAdapter {
         }
     }
 
+    @JvmStatic
+    @BindingAdapter("bindSelectedItemId")
+    fun bindSelectedItemId(view: BottomNavigationView, id: Int) {
+        view.selectedItemId = id
+    }
+
 //    @JvmStatic
 //    @BindingAdapter("bindNavigationItemSelectedLive")
 //    fun bindNavigationItemSelectedListener(view: BottomNavigationView, live: MutableLiveData<Int>?) {
