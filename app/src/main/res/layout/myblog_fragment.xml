@@ -80,6 +80,7 @@
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintBottom_toBottomOf="@+id/myblog_detail_image"
                                     android:alpha="@{model.viewAlpha}"
+                                    android:translationY="@{model.viewTransY}"
                             >
                                 <androidx.appcompat.widget.AppCompatTextView
                                         android:id="@+id/myblog_visiter_count"
