@@ -2,12 +2,14 @@ package com.example.nvblog.ui.notification
 
 import android.app.Application
 import android.view.View
+import androidx.annotation.VisibleForTesting
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import brigitte.*
+import brigitte.widget.viewpager.OffsetDividerItemDecoration
 import com.example.nvblog.R
 import com.example.nvblog.model.remote.entity.NotificationData
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -48,6 +50,7 @@ class NotificationViewModel @Inject @JvmOverloads constructor(
     val viewProgress = ObservableInt(View.GONE)
 
     val itemAnimator = ObservableField<RecyclerView.ItemAnimator?>()
+    val itemDecoration = ObservableField(OffsetDividerItemDecoration(app, R.drawable.shape_divider_gray, 40, 0))
     val numberOfAppliedForFriend = ObservableInt(2)
 
     val swipeRefreshListener = ObservableField<() -> Unit>()
@@ -167,6 +170,10 @@ class NotificationViewModel @Inject @JvmOverloads constructor(
         items.set(mNewList)
     }
 
+    @VisibleForTesting
+    fun postedDummyData() =
+        mPostedList
+
     ////////////////////////////////////////////////////////////////////////////////////
     //
     // COMMAND
@@ -176,7 +183,7 @@ class NotificationViewModel @Inject @JvmOverloads constructor(
     override fun command(cmd: String, data: Any) {
         when (cmd) {
             IN_HIDE_NOTICE -> hideNotice()
-            IN_DELETE_ITEM -> removeItem(data as Int)
+            IN_DELETE_ITEM -> deleteItem(data as Int)
             IN_NOT_READ    -> notRead()
             else -> super.command(cmd, data)
         }
@@ -187,7 +194,7 @@ class NotificationViewModel @Inject @JvmOverloads constructor(
         prefs().edit { putInt(PREF_NOTI_VISIBILITY, View.GONE) }
     }
 
-    private fun removeItem(id: Int) {
+    private fun deleteItem(id: Int) {
         val newList = items.get()?.toMutableList()
         val foundItem = newList?.find { it.id == id }
         foundItem?.let {

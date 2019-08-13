@@ -8,113 +8,232 @@
         <variable name="naviModel" type="com.example.nvblog.ui.navigation.NavigationViewModel"/>
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/navigation_container"
+    <androidx.core.widget.NestedScrollView
+            android:id="@+id/navi_scroll"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:ignore="ContentDescription"
-    >
-
-        <!--<TextView-->
-                <!--android:id="@+id/logo"-->
-                <!--android:layout_width="wrap_content" android:layout_height="wrap_content"-->
-                <!--app:layout_constraintStart_toStartOf="parent"-->
-                <!--app:layout_constraintTop_toTopOf="parent"-->
-                <!--android:text="@{model.kakaoText}"-->
-                <!--android:textSize="@dimen/sp14"-->
-                <!--android:textColor="@android:color/black"-->
-                <!--android:padding="@dimen/dp15"-->
-        <!--/>-->
-
-        <!--<View-->
-                <!--android:layout_width="match_parent" android:layout_height="1dp"-->
-                <!--android:background="@color/colorLightGray"-->
-                <!--app:layout_constraintStart_toStartOf="parent"-->
-                <!--app:layout_constraintTop_toBottomOf="@+id/logo"-->
-        <!--/>-->
-
-        <!--<androidx.core.widget.NestedScrollView-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="0dp"-->
-                <!--app:layout_constraintStart_toStartOf="parent"-->
-                <!--app:layout_constraintTop_toBottomOf="@+id/logo"-->
-                <!--app:layout_constraintEnd_toEndOf="parent"-->
-                <!--app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--&gt;-->
-
-            <!--<androidx.constraintlayout.widget.ConstraintLayout-->
-                    <!--android:id="@+id/navigation_menu"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content">-->
-
-                <!--<ImageView-->
-                        <!--android:id="@+id/user_icon"-->
-                        <!--android:layout_width="wrap_content" android:layout_height="wrap_content"-->
-                        <!--app:layout_constraintStart_toStartOf="parent"-->
-                        <!--app:layout_constraintTop_toTopOf="parent"-->
-                        <!--android:padding="@dimen/dp25"-->
-                        <!--android:contentDescription="@string/cd_navigation_user_icon"-->
-                        <!--android:src="@drawable/ic_android_black_24dp"-->
-                <!--/>-->
-
-                <!--<TextView-->
-                        <!--android:id="@+id/user_name"-->
-                        <!--android:layout_width="wrap_content" android:layout_height="wrap_content"-->
-                        <!--app:layout_constraintStart_toEndOf="@+id/user_icon"-->
-                        <!--app:layout_constraintTop_toTopOf="parent"-->
-                        <!--android:layout_marginTop="@dimen/dp20"-->
-                        <!--android:text="@{model.userInfo.name}"-->
-                        <!--android:textColor="@android:color/black"-->
-                        <!--android:textStyle="bold"-->
-                <!--/>-->
-
-                <!--<TextView-->
-                        <!--android:id="@+id/last_access_time"-->
-                        <!--android:layout_width="wrap_content" android:layout_height="wrap_content"-->
-                        <!--app:layout_constraintStart_toEndOf="@+id/user_icon"-->
-                        <!--app:layout_constraintBottom_toBottomOf="@+id/dummy_1"-->
-                        <!--android:text="@{model.userInfo.lastAccessTime}"-->
-                        <!--android:layout_marginBottom="@dimen/dp20"-->
-                        <!--android:textSize="@dimen/sp10"-->
-                        <!--android:textColor="#A7A7A7"-->
-                <!--/>-->
-
-                <!--<View-->
-                        <!--android:id="@+id/dummy_1"-->
-                        <!--android:layout_width="match_parent" android:layout_height="1dp"-->
-                        <!--android:background="@color/colorLightGray"-->
-                        <!--app:layout_constraintStart_toStartOf="parent"-->
-                        <!--app:layout_constraintTop_toBottomOf="@+id/user_icon"-->
-                <!--/>-->
-
-                <!--<androidx.recyclerview.widget.RecyclerView-->
-                        <!--android:id="@+id/navigation_grid_recycler"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--app:layout_constraintStart_toStartOf="parent"-->
-                        <!--app:layout_constraintTop_toBottomOf="@+id/dummy_1"-->
-                        <!--app:layout_constraintEnd_toEndOf="parent"-->
-                        <!--app:bindAdapter="@{navGridModel.adapter}"-->
-                        <!--app:bindItems="@{navGridModel.items}"-->
-                        <!--app:bindLockedGridLayoutManager="@{navGridModel.gridCount}"-->
-                <!--/>-->
-
-                <!--<androidx.recyclerview.widget.RecyclerView-->
-                        <!--android:id="@+id/navigation_menu_recycler"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--app:layout_constraintStart_toStartOf="parent"-->
-                        <!--app:layout_constraintTop_toBottomOf="@+id/navigation_grid_recycler"-->
-                        <!--app:layout_constraintEnd_toEndOf="parent"-->
-                        <!--app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"-->
-                        <!--app:bindAdapter="@{navMenuModel.adapter}"-->
-                        <!--app:bindItems="@{navMenuModel.items}"-->
-                <!--/>-->
+            android:layout_height="match_parent">
 
 
-            <!--</androidx.constraintlayout.widget.ConstraintLayout>-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/navigation_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+        >
 
-        <!--</androidx.core.widget.NestedScrollView>-->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/navigation_bloginfo_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:padding="@dimen/dp20"
+                    android:background="@color/colorPrimary"
+            >
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/navi_user_image"
+                        android:layout_width="@dimen/dp45"
+                        android:layout_height="@dimen/dp45"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:bindImage="@{naviModel.blogItem.userImage}"
+                        app:bindCircleCrop="@{naviModel.circleCrop}"
+                />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/navi_userid"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toEndOf="@+id/navi_user_image"
+                        app:layout_constraintTop_toTopOf="@+id/navi_user_image"
+                        android:layout_marginStart="@dimen/dp10"
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/sp16"
+                        android:text="@{naviModel.blogItem.userId}"
+                />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/navi_blog_today_and_total"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="@+id/navi_userid"
+                        app:layout_constraintTop_toBottomOf="@+id/navi_userid"
+                        android:textSize="@dimen/sp11"
+                        android:textColor="#B5FFFFFF"
+                        android:layout_marginTop="@dimen/dp8"
+                        android:text="@{naviModel.convertVisiteCount(naviModel.blogItem.todayCount, naviModel.blogItem.totalCount)}"
+                />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/navi_close"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:src="@drawable/ic_close_white_24dp"
+                        android:onClick="@{() -> naviModel.command(naviModel.CMD_HIDE_NAVI)}"
+                />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                    android:id="@+id/navi_icon_button_container"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/navigation_bloginfo_container"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:orientation="horizontal"
+                    android:weightSum="4"
+                    android:background="@color/colorPrimary"
+            >
+
+                <androidx.appcompat.widget.AppCompatButton
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:drawableTop="@drawable/ic_add_alert_white_24dp"
+                        android:text="@string/navi_news"
+                        android:background="@color/colorPrimaryDark"
+                        android:layout_marginStart="@dimen/dp1"
+                        android:paddingTop="@dimen/dp15"
+                        android:paddingBottom="@dimen/dp15"
+                        android:textColor="#B5FFFFFF"
+                />
+
+                <androidx.appcompat.widget.AppCompatButton
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:drawableTop="@drawable/ic_group_white_24dp"
+                        android:text="@string/navi_friends_list"
+                        android:textColor="#B5FFFFFF"
+                        android:background="@color/colorPrimaryDark"
+                        android:layout_marginStart="@dimen/dp1"
+                        android:paddingTop="@dimen/dp15"
+                        android:paddingBottom="@dimen/dp15"
+                />
+
+                <androidx.appcompat.widget.AppCompatButton
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:drawableTop="@drawable/ic_graphic_eq_white_24dp"
+                        android:text="@string/navi_statistics"
+                        android:textColor="#B5FFFFFF"
+                        android:background="@color/colorPrimaryDark"
+                        android:layout_marginStart="@dimen/dp1"
+                        android:paddingTop="@dimen/dp15"
+                        android:paddingBottom="@dimen/dp15"
+                />
+
+                <androidx.appcompat.widget.AppCompatButton
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:drawableTop="@drawable/ic_edit_white_24dp"
+                        android:text="@string/navi_write"
+                        android:textColor="#B5FFFFFF"
+                        android:background="@color/colorPrimaryDark"
+                        android:layout_marginStart="@dimen/dp1"
+                        android:paddingTop="@dimen/dp15"
+                        android:paddingBottom="@dimen/dp15"
+                />
+
+            </LinearLayout>
+
+            <View
+                    android:id="@+id/navi_dummy_below_icon_button"
+                    android:layout_width="match_parent" android:layout_height="@dimen/dp3"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/navi_icon_button_container"
+            />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/navi_graph"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp180"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/navi_dummy_below_icon_button"
+                    app:layout_constraintEnd_toEndOf="parent"
+            >
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                    android:id="@+id/navi_dummy_below_navi_graph"
+                    android:layout_width="match_parent" android:layout_height="@dimen/dp3"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/navi_graph"
+            />
+
+            <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/navi_menu_recycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/navi_dummy_below_navi_graph"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:bindAdapter="@{naviModel.adapter}"
+                    app:bindItems="@{naviModel.items}"
+            />
+
+            <View
+                    android:id="@+id/navi_dummy_below_menu_recycler"
+                    android:layout_width="match_parent" android:layout_height="@dimen/dp3"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/navi_menu_recycler"
+            />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/navi_banner_area_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp100"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/navi_dummy_below_menu_recycler"
+                    app:layout_constraintEnd_toEndOf="parent"
+            >
+
+                <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/navi_banner_area_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:text="BANNER AREA"
+                />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/navi_naver_corp_area_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/navi_banner_area_container"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:background="#ececec"
+            >
+
+                <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/navi_naver_corp_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:layout_margin="@dimen/dp10"
+                        android:paddingStart="@dimen/dp5"
+                        android:text="NAVER Corp."
+                />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
 </layout>

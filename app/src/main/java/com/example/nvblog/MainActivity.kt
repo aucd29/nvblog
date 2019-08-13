@@ -109,6 +109,12 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() 
                 CMD_SHOW_NAVI       -> showNavigation()
             }
         }
+
+        NavigationViewModel.apply {
+            when (cmd) {
+                CMD_HIDE_NAVI -> hideNavigation()
+            }
+        }
     }
 
     private fun showWriteFragment() {
@@ -118,6 +124,10 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() 
     private fun showNavigation() {
         hideKeyboard(mBinding.root)
         mBinding.drawerLayout.openDrawer(NAVI_GRAVITY)
+    }
+
+    private fun hideNavigation() {
+        mBinding.drawerLayout.closeDrawer(NAVI_GRAVITY)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

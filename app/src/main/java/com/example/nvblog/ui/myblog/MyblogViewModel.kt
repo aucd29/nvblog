@@ -4,15 +4,12 @@ import android.app.Application
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableFloat
-import androidx.lifecycle.MutableLiveData
 import brigitte.CommandEventViewModel
 import brigitte.app
 import brigitte.arch.SingleLiveEvent
-import brigitte.interval
 import brigitte.numberFormat
 import com.example.nvblog.R
 import com.example.nvblog.model.remote.entity.MyBlogData
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -48,9 +45,8 @@ class MyblogViewModel @Inject @JvmOverloads constructor(
 
     init {
         initData()
-
-        offsetListener()
-        swipeRefreshListener()
+        initOffsetListener()
+        initSwipeRefreshListener()
     }
 
     fun convertVisiteCount(today: Int, total: Int) =
@@ -59,14 +55,29 @@ class MyblogViewModel @Inject @JvmOverloads constructor(
     fun convertFriendCount(count: Int) =
         app.getString(R.string.myblog_friend_count, count)
 
-    private fun swipeRefreshListener() {
+    private fun initSwipeRefreshListener() {
         swipeRefreshListener.set {
-            swipeIsRefresh.set(true)
+            if (mLog.isDebugEnabled) {
+                mLog.debug("START SWIPE REFRESH")
+            }
+
             swipeRefreshLive.call()
         }
     }
 
-    private fun offsetListener() {
+    fun stopSwipeRefresh() {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("END SWIPE REFRESH")
+        }
+
+        if (swipeIsRefresh.get() == false) {
+            swipeIsRefresh.notifyChange()
+        } else {
+            swipeIsRefresh.set(false)
+        }
+    }
+
+    private fun initOffsetListener() {
         appbarChangedListener.set { maxScroll, offset ->
             val percentage = 1f - abs(offset).toFloat() / maxScroll.toFloat()
 
@@ -78,11 +89,9 @@ class MyblogViewModel @Inject @JvmOverloads constructor(
             viewTransY.set(offset / 2f * -1f)
 
             if (offset == 0) {
-//                swipeIsRefresh.set(false)
                 swipeIsEnabled.set(true)
             } else {
                 swipeIsEnabled.set(false)
-//                swipeIsRefresh.set(false)
             }
         }
     }

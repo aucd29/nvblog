@@ -32,6 +32,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:fillViewport="true"
+                app:bindSwipeRefreshListener="@{model.swipeRefreshListener}"
+                app:refreshing="@{model.swipeIsRefresh}"
         >
             <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/main_content_recycler"
@@ -44,8 +46,7 @@
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:bindAdapter="@{model.adapter}"
                     app:bindItems="@{model.items}"
-                    app:bindHorDecoration="@{model.horDecoration}"
-                    app:bindVerDecoration="@{model.verDecoration}"
+                    app:bindItemDecoration="@{model.itemDecoration}"
                     android:background="@android:color/white"
             />
         </brigitte.widget.VerticalSwipeRefreshLayout>

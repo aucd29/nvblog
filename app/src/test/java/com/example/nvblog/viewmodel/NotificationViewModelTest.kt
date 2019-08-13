@@ -43,8 +43,10 @@ import briggite.shield.*
 import brigitte.app
 import brigitte.html
 import brigitte.prefs
+import brigitte.string
 import com.example.nvblog.R
 import com.example.nvblog.ui.notification.NotificationViewModel
+import io.reactivex.disposables.CompositeDisposable
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-08-12 <p/>
@@ -60,45 +62,45 @@ class NotificationViewModelTest: BaseRoboViewModelTest<NotificationViewModel>() 
     }
 
     @Test
-    fun defaultValueTest() {
-        viewmodel.apply {
-            viewType.get()
-            noticeData.get()
-            viewNotice.get()
-            viewNotRead.get()
-            viewProgress.get()
-        }
+    fun defaultValueTest() = viewmodel.run {
+        viewType.get().assertEquals(R.id.noti_news)
+        noticeData.get().assertEquals(string(R.string.noti_lorem))
+        viewNotice.get().assertEquals(prefs().getInt(NotificationViewModel.PREF_NOTI_VISIBILITY, View.VISIBLE))
+        viewNotRead.get().assertEquals(View.VISIBLE)
+        viewProgress.get().assertEquals(View.GONE)
     }
 
     @Test
-    fun convertNotificationTest() {
-        viewmodel.apply {
-            val str = "hello world"
-            val result = convertNotification(str)?.toHtml()
-            val comparision = """$str<br><font color="#00AC09"><b>from.블로그 씨</b></font> """.html()?.toHtml()
-        }
+    fun convertNotificationTest() = viewmodel.run {
+        val str = "hello world"
+        val result = convertNotification(str)?.toHtml()
+        val comparision = """$str<br><font color="#00AC09"><b>from.블로그 씨</b></font> """.html()?.toHtml()
+
+        result.assertEquals(comparision)
     }
 
     @Test
-    fun iconTypeTest() {
-        viewmodel.apply {
-            var result = iconType(0)
+    fun iconTypeTest() = viewmodel.run {
+        var result = iconType(0)
+        result.assertEquals(R.drawable.ic_android_black_24dp)
 
-            result = iconType(1)
+        result = iconType(1)
+        result.assertEquals(R.drawable.ic_favorite_black_24dp)
 
-            result = iconType(999)
-        }
+        result = iconType(999)
+        result.assertEquals(R.drawable.ic_favorite_black_24dp)
     }
 
     @Test
-    fun textTypeTest() {
-        viewmodel.apply {
-            var result = textType(0)
+    fun textTypeTest() = viewmodel.run {
+        var result = textType(0)
+        result.assertEquals(R.string.noti_reply)
 
-            result = textType(1)
+        result = textType(1)
+        result.assertEquals(R.string.noti_empathy)
 
-            result = textType(999)
-        }
+        result = textType(999)
+        result.assertEquals(R.string.noti_empathy)
     }
 
     @Test
@@ -110,79 +112,60 @@ class NotificationViewModelTest: BaseRoboViewModelTest<NotificationViewModel>() 
     }
 
     @Test
-    fun convertNumOfAppliedForFriendTest() {
-        viewmodel.apply {
-            val value = 9
-            val result = convertNumOfAppliedForFriend(value)
-        }
+    fun convertNumOfAppliedForFriendTest() = viewmodel.run {
+        val value = 9
+        val result = convertNumOfAppliedForFriend(value)?.toHtml()
+        val comparision = ("<font color='black'>${string(R.string.noti_num_of_applied_for_friend)}</font>" +
+                " <font color='#00AC09'>${app.getString(R.string.noti_people, value)}</font>").html()?.toHtml()
+
+        result.assertEquals(comparision)
     }
 
     @Test
-    fun convertNoNewsPostsTest() {
-        viewmodel.apply {
-            val value = 9
-            val result = convertNumOfAppliedForFriend(value)
-        }
+    fun convertNoNewsPostsTest() = viewmodel.run {
+        val result = convertNoNewsPosts()?.toHtml()
+        val comparision = ("<font color='#00AC09'>${string(R.string.noti_no_new_posts)}</font>" +
+                "<br/>${string(R.string.noti_no_new_posts2)}").html()?.toHtml()
+
+        result.assertEquals(comparision)
     }
 
     @Test
-    fun viewTypeCheckedListenerTest() {
-        viewmodel.apply {
+    fun viewTypeCheckedListenerTest() = viewmodel.run {
+        disposable = CompositeDisposable()
+
+        mockObserver<Int>(viewTypeLive).apply {
             viewTypeCheckedListener.get()?.invoke(R.id.noti_news)
-            viewNotRead.get()
-            items.get()
-
-//            mockObserver(viewTypeLive) {
-//                verifyChanged(R.id.noti_news)
-//            }
+            viewNotRead.assertEquals(View.VISIBLE)
+            verifyChanged(R.id.noti_news)
 
             viewTypeCheckedListener.get()?.invoke(R.id.noti_posted)
-            viewNotRead.get()
-            items.get()
-//            mockObserver(viewTypeLive) {
-//                verifyChanged(R.id.noti_posted)
-//            }
+            viewNotRead.assertEquals(View.GONE)
+            viewProgress.assertEquals(View.VISIBLE)
+            verifyChanged(R.id.noti_posted)
         }
+
+        disposable.dispose()
+
+        Unit
     }
 
     @Test
-    fun commandHideNoticeTest() {
-        viewmodel.apply {
-            command(NotificationViewModel.IN_HIDE_NOTICE)
-            viewNotice.get()
-            app.prefs().getInt(NotificationViewModel.PREF_NOTI_VISIBILITY, View.GONE)
-        }
+    fun commandHideNoticeTest() = viewmodel.run {
+        command(NotificationViewModel.IN_HIDE_NOTICE)
+        viewNotice.assertEquals(View.GONE)
+        app.prefs().getInt(NotificationViewModel.PREF_NOTI_VISIBILITY, View.GONE).assertEquals(View.GONE)
     }
 
     @Test
-    fun commandDeleteItemTest() {
-        viewmodel.apply {
-            val before = items.get()?.size
-            command(NotificationViewModel.IN_HIDE_NOTICE, 0)
-            val after = items.get()?.size
-        }
+    fun commandDeleteItemTest() = viewmodel.run {
+        val list = postedDummyData()
+        items.set(list)
+
+        val before = items.get()?.size
+        command(NotificationViewModel.IN_DELETE_ITEM, list[0].id)
+        val after = items.get()?.size
+
+        assert(before != after)
     }
-
-    @Test
-    fun commandNotReadTest() {
-        viewmodel.apply {
-        }
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////
-    //
-    // MOCK
-    //
-    ////////////////////////////////////////////////////////////////////////////////////
-
-    companion object {
-        private val mLog = LoggerFactory.getLogger(NotificationViewModelTest::class.java)
-    }
-
-    //override fun initMock() {
-    //    super.initMock()
-    //
-    //    initShadow()
-    //    shadowApp?.grantPermissions(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION)
-    //}
 }

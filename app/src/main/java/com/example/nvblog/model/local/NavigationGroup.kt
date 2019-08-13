@@ -1,5 +1,6 @@
 package com.example.nvblog.model.local
 
+import androidx.annotation.DrawableRes
 import brigitte.IRecyclerDiff
 
 /**
@@ -7,8 +8,8 @@ import brigitte.IRecyclerDiff
  */
 
 data class NavigationData(val id: Int
-                          , val title: String
-                          , val date: Long
+    , @DrawableRes val icon: Int
+    , val title: String
 ) : IRecyclerDiff {
     override fun itemSame(item: IRecyclerDiff): Boolean {
         val newItem = item as NavigationData
@@ -17,6 +18,6 @@ data class NavigationData(val id: Int
 
     override fun contentsSame(item: IRecyclerDiff): Boolean {
         val newItem = item as NavigationData
-        return title == newItem.title && date == newItem.date
+        return icon == newItem.icon && title == newItem.title
     }
 }

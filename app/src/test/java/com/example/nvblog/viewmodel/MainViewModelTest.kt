@@ -7,6 +7,7 @@ import androidx.test.core.app.ApplicationProvider
 import brigitte.html
 import com.example.nvblog.ui.main.MainViewModel
 import briggite.shield.*
+import brigitte.dpToPx
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
 import org.junit.Before
@@ -36,37 +37,22 @@ class MainViewModelTest: BaseRoboViewModelTest<MainViewModel>() {
     }
 
     @Test
-    fun defaultValueTest() {
-
+    fun defaultValueTest() = viewmodel.run {
+        circleCrop.get().assertTrue()
+        roundedCorners.get().assertEquals(10.dpToPx(app))
     }
 
     @Test
-    fun searchGroupTest() {
-//        viewmodel.searchGroup.get()?.assertEquals("all")
+    fun searchGroupTest() = viewmodel.run {
+        searchGroup.get().assertEquals("all")
     }
 
     @Test
     fun convertNotificationTest() {
         val str = "hello"
-        val conveted = viewmodel.convertNotification(str)?.toHtml()
-        val data = """<font color="#00AC09"><b>알림!</b></font> $str""".html()?.toHtml()
+        val result = viewmodel.convertNotification(str)?.toHtml()
+        val comparision = """<font color="#00AC09"><b>알림!</b></font> $str""".html()?.toHtml()
 
+        result.assertEquals(comparision)
     }
-
-    ////////////////////////////////////////////////////////////////////////////////////
-    //
-    // MOCK
-    //
-    ////////////////////////////////////////////////////////////////////////////////////
-
-    companion object {
-        private val mLog = LoggerFactory.getLogger(MainViewModelTest::class.java)
-    }
-
-    //override fun initMock() {
-    //    super.initMock()
-    //
-    //    initShadow()
-    //    shadowApp?.grantPermissions(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION)
-    //}
 }

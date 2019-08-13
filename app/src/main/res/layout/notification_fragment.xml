@@ -33,7 +33,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:bindSwipeRefreshListener="@{model.swipeRefreshListener}"
-                app:bindSwipeIsRefreshing="@{model.swipeIsRefresh}"
+                app:refreshing="@{model.swipeIsRefresh}"
         >
 
             <androidx.core.widget.NestedScrollView
@@ -152,6 +152,7 @@
                             app:bindAdapter="@{model.adapter}"
                             app:bindItems="@{model.items}"
                             app:bindItemAnimator="@{model.itemAnimator}"
+                            app:bindItemDecoration="@{model.itemDecoration}"
                     />
 
                     <androidx.constraintlayout.widget.ConstraintLayout

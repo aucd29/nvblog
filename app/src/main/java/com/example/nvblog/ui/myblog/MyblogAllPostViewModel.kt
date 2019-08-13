@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import brigitte.*
 import brigitte.widget.viewpager.GridItemDecoration
+import brigitte.widget.viewpager.OffsetDividerItemDecoration
 import brigitte.widget.viewpager.SpaceItemDecoration
 import com.example.nvblog.R
 import com.example.nvblog.model.remote.entity.BlogData
@@ -40,7 +41,7 @@ class MyblogAllPostViewModel @Inject @JvmOverloads constructor(
 
     val viewTypeCheckedListener = ObservableField<(Int) -> Unit>()
     val layoutManager  = ObservableField<RecyclerView.LayoutManager>()
-    val itemDecoration = ObservableField<Array<out RecyclerView.ItemDecoration>>()
+    val itemDecoration = ObservableField<RecyclerView.ItemDecoration>()
     val roundedCorners = ObservableInt(7.dpToPx(app))
 
     init {
@@ -61,10 +62,8 @@ class MyblogAllPostViewModel @Inject @JvmOverloads constructor(
 
     private fun initItemDecoration(type: Int = 2) {
         itemDecoration.set(when (type) {
-            0 -> arrayOf(GridItemDecoration(10.dpToPx(app), 3))
-            else -> arrayOf(DividerItemDecoration(app, DividerItemDecoration.VERTICAL).apply {
-                setDrawable(ContextCompat.getDrawable(app, R.drawable.shape_divider_gray)!!)
-            })
+            0    -> GridItemDecoration(10.dpToPx(app), 3)
+            else -> OffsetDividerItemDecoration(app, R.drawable.shape_divider_gray, 15)
         })
     }
 

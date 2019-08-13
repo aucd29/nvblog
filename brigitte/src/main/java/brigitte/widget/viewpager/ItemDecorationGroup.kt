@@ -1,8 +1,15 @@
 package brigitte.widget.viewpager
 
+import android.content.Context
+import android.graphics.Canvas
 import android.graphics.Rect
+import android.graphics.drawable.Drawable
 import android.view.View
+import androidx.annotation.DrawableRes
+import androidx.core.content.ContextCompat
+import androidx.core.view.children
 import androidx.recyclerview.widget.RecyclerView
+import brigitte.dpToPx
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-07-25 <p/>
@@ -64,5 +71,51 @@ class GridItemDecoration(private val mSizeGridSpacingPx: Int, private val mGridS
             outRect.right = mSizeGridSpacingPx / 2
         }
         outRect.bottom = 0
+    }
+}
+
+// https://github.com/DhruvamSharma/Recycler-View-Series/blob/master/app/src/main/java/com/dhruvam/recyclerviewseries/data/DividerItemDecoration.java
+class OffsetDividerItemDecoration(
+    private val mDivider: Drawable, val mOffsetStartDp: Int, val mOffsetEndDp: Int
+): RecyclerView.ItemDecoration() {
+    constructor(context: Context, @DrawableRes resid: Int, offsetDp: Int)
+        : this(ContextCompat.getDrawable(context, resid)!!, offsetDp, offsetDp)
+
+    constructor(context: Context, @DrawableRes resid: Int, offsetStartDp: Int, offsetEndDp: Int)
+            : this(ContextCompat.getDrawable(context, resid)!!, offsetStartDp, offsetEndDp)
+
+    override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+        super.getItemOffsets(outRect, view, parent, state)
+
+        if (parent.getChildAdapterPosition(view) == 0) {
+            return
+        }
+
+        outRect.top = mDivider.intrinsicHeight
+    }
+
+    override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+        super.onDraw(c, parent, state)
+
+        val dividerStart = mOffsetStartDp.dpToPx(parent.context)
+        val dividerEnd = parent.width - mOffsetEndDp.dpToPx(parent.context)
+
+        val count = parent.childCount - 1
+        val it = parent.children.iterator()
+        var i = 0
+        it.forEach {
+            if (i == count) {
+                return@forEach
+            }
+
+            val lp = it.layoutParams as (RecyclerView.LayoutParams)
+            val dividerTop = it.bottom + lp.bottomMargin
+            val dividerBottom = dividerTop + mDivider.intrinsicHeight
+
+            mDivider.setBounds(dividerStart, dividerTop, dividerEnd, dividerBottom)
+            mDivider.draw(c)
+
+            ++i
+        }
     }
 }

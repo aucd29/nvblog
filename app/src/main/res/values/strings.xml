@@ -1,6 +1,14 @@
 <resources>
     <string name="app_name">nvblog</string>
 
+    <!--main-->
+
+    <!--navi-->
+    <string name="navi_news">@string/noti_news</string>
+    <string name="navi_friends_list">이웃목록</string>
+    <string name="navi_statistics">통계</string>
+    <string name="navi_write">글쓰기</string>
+
     <!--bottom nav-->
     <string name="nav_new_article">이웃새글</string>
     <string name="nav_recommended">추천</string>

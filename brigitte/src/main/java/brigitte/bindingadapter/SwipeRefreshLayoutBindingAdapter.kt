@@ -21,15 +21,15 @@ object SwipeRefreshLayoutBindingAdapter {
         view.setOnRefreshListener(callback)
     }
 
-    @JvmStatic
-    @BindingAdapter("bindSwipeIsRefreshing")
-    fun bindSwipeRefreshingFalse(view: SwipeRefreshLayout, result: Boolean) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("bindSwipeRefreshingFalse $result")
-        }
-
-        view.isRefreshing = result
-    }
+//    @JvmStatic
+//    @BindingAdapter("bindSwipeIsRefreshing")
+//    fun bindSwipeRefreshingFalse(view: SwipeRefreshLayout, result: Boolean) {
+//        if (mLog.isDebugEnabled) {
+//            mLog.debug("bindSwipeRefreshingFalse $result")
+//        }
+//
+//        view.isRefreshing = result
+//    }
 
     @JvmStatic
     @BindingAdapter("bindSwipeIsEnabled")

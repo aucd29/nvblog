@@ -2,10 +2,12 @@ package com.example.nvblog.ui.myblog
 
 import brigitte.BaseDaggerFragment
 import brigitte.interval
+import brigitte.singleTimer
 import com.example.nvblog.databinding.MyblogFragmentBinding
 import com.example.nvblog.ui.titlebar.TitlebarViewModel
 import dagger.android.ContributesAndroidInjector
 import io.reactivex.android.schedulers.AndroidSchedulers
+import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
 /**
@@ -14,6 +16,10 @@ import javax.inject.Inject
 
 class MyblogFragment @Inject constructor(
 ): BaseDaggerFragment<MyblogFragmentBinding, MyblogViewModel>() {
+    companion object {
+        private val mLog = LoggerFactory.getLogger(MyblogFragment::class.java)
+    }
+
     private lateinit var mTitlebarModel: TitlebarViewModel
     private lateinit var mMyblogPopularPostViewModel: MyblogPopularPostViewModel
     private lateinit var mMyblogAllPostViewModel: MyblogAllPostViewModel
@@ -45,13 +51,21 @@ class MyblogFragment @Inject constructor(
 
     override fun initViewModelEvents() {
         observe(mViewModel.swipeRefreshLive) {
-            mDisposable.add(interval(600)
+            mDisposable.add(singleTimer(600)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
+                .subscribe({
                     // 여러 데이터를 로드 했다고 가정 하에
-                    mViewModel.swipeIsRefresh.set(false)
-                })
+                    mViewModel.stopSwipeRefresh()
+                }, ::errorLog))
         }
+    }
+
+    private fun errorLog(e: Throwable) {
+        if (mLog.isDebugEnabled) {
+            e.printStackTrace()
+        }
+
+        mLog.error("ERROR: ${e.message}")
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

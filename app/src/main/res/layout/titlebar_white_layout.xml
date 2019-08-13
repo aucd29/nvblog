@@ -4,6 +4,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <variable name="model" type="com.example.nvblog.ui.myblog.MyblogViewModel"/>
         <variable name="titlebarModel" type="com.example.nvblog.ui.titlebar.TitlebarViewModel"/>
     </data>
 
@@ -14,7 +15,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:background="@color/colorPrimary"
+            android:background="@android:color/white"
+            android:alpha="@{1f - model.viewAlpha}"
     >
         <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/titlebar_logo"
@@ -22,7 +24,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:src="@drawable/ic_android_white_24dp"
+                android:src="@drawable/ic_android_black_24dp"
                 android:padding="@dimen/dp10"
                 android:onClick="@{() -> titlebarModel.command(titlebarModel.CMD_MOVE_FIRST_TAB)}"
         />
@@ -36,8 +38,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:padding="@dimen/dp10"
-                android:text="@{titlebarModel.titleId}"
-                android:textColor="@android:color/white"
+                android:text="@{model.blogItem.blogTitle}"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/sp18"
                 android:textStyle="bold"
                 android:onClick="@{() -> titlebarModel.command(titlebarModel.CMD_GROUP_DIALOG)}"
@@ -49,7 +51,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/titlebar_my"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:src="@drawable/ic_search_white_24dp"
+                android:src="@drawable/ic_search_black_24dp"
                 android:layout_marginEnd="@dimen/dp10"
                 android:onClick="@{() -> titlebarModel.command(titlebarModel.CMD_SEARCH_FRAGMENT)}"
         />
@@ -63,9 +65,16 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:padding="@dimen/dp10"
                 android:text="@string/titlebar_my"
-                android:textColor="@android:color/white"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/sp20"
                 android:onClick="@{() -> titlebarModel.command(titlebarModel.CMD_SHOW_NAVI)}"
+        />
+
+        <View
+                android:layout_width="match_parent" android:layout_height="1dp"
+                android:background="@drawable/shape_divider_gray"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
         />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

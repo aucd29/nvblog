@@ -3,6 +3,7 @@ package briggite.shield
 
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
+import androidx.databinding.ObservableFloat
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -54,12 +55,29 @@ inline fun <T> ObservableField<T>.assertNotNull() {
     TestCase.assertNotNull(get())
 }
 
+
+inline fun <T> ObservableField<T>.assertEquals(value: T) {
+    TestCase.assertEquals(get(), value)
+}
+
 inline fun ObservableInt.assertEquals(value: Int) {
-    TestCase.assertNotNull(value)
+    TestCase.assertEquals(get(), value)
+}
+
+inline fun ObservableFloat.assertEquals(value: Float) {
+    TestCase.assertEquals(get(), value)
 }
 
 inline fun ObservableBoolean.assertEquals(value: Boolean) {
-    TestCase.assertNotNull(value)
+    TestCase.assertEquals(get(), value)
+}
+
+inline fun ObservableBoolean.assertTrue() {
+    TestCase.assertTrue(get())
+}
+
+inline fun ObservableBoolean.assertFalse() {
+    TestCase.assertFalse(get())
 }
 
 // 이건 너무 튄다.

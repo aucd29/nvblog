@@ -104,7 +104,7 @@ class RecyclerHolder @JvmOverloads constructor (itemView: View) : RecyclerView.V
  * 한다.
  */
 class RecyclerAdapter<T: IRecyclerDiff> @JvmOverloads constructor (
-    private val mLayouts: Array<Int>
+    val mLayouts: Array<Int>
 ) : RecyclerView.Adapter<RecyclerHolder>() {
     companion object {
         private val mLog = LoggerFactory.getLogger(RecyclerAdapter::class.java)

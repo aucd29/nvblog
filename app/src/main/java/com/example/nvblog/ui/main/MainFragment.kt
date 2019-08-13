@@ -3,6 +3,7 @@ package com.example.nvblog.ui.main
 import androidx.fragment.app.FragmentManager
 import brigitte.BaseDaggerFragment
 import brigitte.interval
+import brigitte.singleTimer
 import com.example.nvblog.ui.titlebar.TitlebarViewModel
 import com.example.nvblog.databinding.MainFragmentBinding
 import com.example.nvblog.ui.ViewController
@@ -32,6 +33,8 @@ class MainFragment @Inject constructor(
     override fun bindViewModel() {
         super.bindViewModel()
 
+        mViewModel.disposable = disposable()
+
         mTitlebarModel = inject(requireActivity())
         mNaviViewModel = inject(requireActivity())
 
@@ -42,14 +45,6 @@ class MainFragment @Inject constructor(
     }
 
     override fun initViewBinding() {
-        mBinding.mainSwipeRefresh.setOnRefreshListener {
-            mDisposable.add(interval(3000)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    // 로드 했다고 가정 하에
-                    mBinding.mainSwipeRefresh.isRefreshing = false
-                })
-        }
     }
 
     override fun initViewModelEvents() {

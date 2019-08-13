@@ -55,40 +55,41 @@ class TitlebarViewModelTest: BaseRoboViewModelTest<TitlebarViewModel>() {
     }
 
     @Test
-    fun defaultValueTest() {
-        viewmodel.apply {
-            titleId.get()
-            viewpagerPos.get()
-        }
+    fun defaultValueTest() = viewmodel.run {
+        titleId.assertEquals(R.string.titlebar_title)
+        viewpagerPos.assertEquals(0)
+        viewpagerSmooth.assertEquals(false)
     }
 
     @Test
-    fun naviItemSelectedListenerTest() {
-        viewmodel.apply {
-            var returnValue: Boolean = false
+    fun naviItemSelectedListenerTest() = viewmodel.run {
+        var returnValue: Boolean = false
 
-            returnValue = naviItemSelectedListener.get()!!.invoke(R.id.nav_new_article)
-            titleId.get()
-            viewpagerPos.get()
+        returnValue = naviItemSelectedListener.get()!!.invoke(R.id.nav_new_article)
+        titleId.assertEquals(R.string.titlebar_title)
+        viewpagerPos.assertEquals(0)
+        returnValue.assertTrue()
 
-            returnValue = naviItemSelectedListener.get()!!.invoke(R.id.nav_recommended)
-            titleId.get()
-            viewpagerPos.get()
+        returnValue = naviItemSelectedListener.get()!!.invoke(R.id.nav_recommended)
+        titleId.assertEquals(R.string.nav_recommended)
+        viewpagerPos.assertEquals(1)
+        returnValue.assertTrue()
 
-            returnValue = naviItemSelectedListener.get()!!.invoke(R.id.nav_write)
-            titleId.get()
-            viewpagerPos.get()
+        returnValue = naviItemSelectedListener.get()!!.invoke(R.id.nav_write)
+        returnValue.assertTrue()
 
-            returnValue = naviItemSelectedListener.get()!!.invoke(R.id.nav_mynotification)
-            titleId.get()
-            viewpagerPos.get()
+        returnValue = naviItemSelectedListener.get()!!.invoke(R.id.nav_mynotification)
+        titleId.assertEquals(R.string.nav_mynotification)
+        viewpagerPos.assertEquals(2)
+        returnValue.assertTrue()
 
-            returnValue = naviItemSelectedListener.get()!!.invoke(R.id.nav_myblog)
-            titleId.get()
-            viewpagerPos.get()
+        returnValue = naviItemSelectedListener.get()!!.invoke(R.id.nav_myblog)
+        titleId.assertEquals(R.string.nav_myblog)
+        viewpagerPos.assertEquals(3)
+        returnValue.assertTrue()
 
-            returnValue = naviItemSelectedListener.get()!!.invoke(R.id.nav_myblog)
-        }
+        returnValue = naviItemSelectedListener.get()!!.invoke(983483)
+        returnValue.assertFalse()
     }
 
     @Test
@@ -96,7 +97,7 @@ class TitlebarViewModelTest: BaseRoboViewModelTest<TitlebarViewModel>() {
         viewmodel.apply {
             command(TitlebarViewModel.CMD_MOVE_FIRST_TAB)
 
-            viewpagerPos.get()
+            viewpagerPos.assertEquals(0)
         }
     }
 
@@ -109,11 +110,4 @@ class TitlebarViewModelTest: BaseRoboViewModelTest<TitlebarViewModel>() {
     companion object {
         private val mLog = LoggerFactory.getLogger(TitlebarViewModelTest::class.java)
     }
-
-    //override fun initMock() {
-    //    super.initMock()
-    //
-    //    initShadow()
-    //    shadowApp?.grantPermissions(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION)
-    //}
 }

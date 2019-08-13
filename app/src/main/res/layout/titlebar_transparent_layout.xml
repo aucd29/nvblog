@@ -4,6 +4,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <variable name="model" type="com.example.nvblog.ui.myblog.MyblogViewModel"/>
         <variable name="titlebarModel" type="com.example.nvblog.ui.titlebar.TitlebarViewModel"/>
     </data>
 
@@ -14,8 +15,9 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:background="@color/colorPrimary"
+            android:alpha="@{model.viewAlpha}"
     >
+
         <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/titlebar_logo"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -25,22 +27,6 @@
                 android:src="@drawable/ic_android_white_24dp"
                 android:padding="@dimen/dp10"
                 android:onClick="@{() -> titlebarModel.command(titlebarModel.CMD_MOVE_FIRST_TAB)}"
-        />
-
-        <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/titlebar_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:padding="@dimen/dp10"
-                android:text="@{titlebarModel.titleId}"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/sp18"
-                android:textStyle="bold"
-                android:onClick="@{() -> titlebarModel.command(titlebarModel.CMD_GROUP_DIALOG)}"
         />
 
         <androidx.appcompat.widget.AppCompatImageView
