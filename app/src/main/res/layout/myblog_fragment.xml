@@ -14,216 +14,226 @@
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/myblog_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+    >
 
-        <androidx.coordinatorlayout.widget.CoordinatorLayout
+        <!-- 이건 좀 골때리네 ? -->
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/myblog_swipe_refresh"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@android:color/white"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:bindSwipeRefreshListener="@{model.swipeRefreshListener}"
+                app:bindSwipeIsRefreshing="@{model.swipeIsRefresh}"
+                app:bindSwipeIsEnabled="@{model.swipeIsEnabled}"
         >
-            <com.google.android.material.appbar.AppBarLayout
-                    android:id="@+id/myblog_app_bar"
+
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:theme="@style/AppTheme.AppBarOverlay"
-                    android:background="@color/colorPrimary"
-                    app:bindOffsetChangedListener="@{model.appbarChangedListener}"
+                    android:background="@android:color/white"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
             >
 
-                <com.google.android.material.appbar.CollapsingToolbarLayout
-                        android:id="@+id/myblog_toolbar_layout"
+                <!-- APPBAR -->
+                <com.google.android.material.appbar.AppBarLayout
+                        android:id="@+id/myblog_app_bar"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:layout_scrollFlags="scroll|exitUntilCollapsed"
-                        app:contentScrim="@color/gray_13"
+                        android:background="@color/colorPrimary"
+                        android:fitsSystemWindows="true"
+                        app:bindOffsetChangedListener="@{model.appbarChangedListener}"
                 >
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/myblog_toolbar_container"
+                    <com.google.android.material.appbar.CollapsingToolbarLayout
+                            android:id="@+id/myblog_toolbar_layout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                            app:contentScrim="@color/gray_13"
                     >
 
-                        <androidx.appcompat.widget.AppCompatImageView
-                                android:id="@+id/myblog_detail_image"
-                                android:layout_width="match_parent" android:layout_height="400dp"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:bindImage="@{model.blogItem.background}"
-                                android:translationY="@{model.viewTransY}"
-                        />
-
                         <androidx.constraintlayout.widget.ConstraintLayout
-                                android:id="@+id/myblog_blog_info"
+                                android:id="@+id/myblog_toolbar_container"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintBottom_toBottomOf="@+id/myblog_detail_image"
-                                android:alpha="@{model.viewAlpha}"
                         >
-                            <androidx.appcompat.widget.AppCompatTextView
-                                    android:id="@+id/myblog_visiter_count"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    app:layout_constraintStart_toStartOf="@+id/myblog_blog_name"
-                                    app:layout_constraintBottom_toTopOf="@+id/myblog_blog_name"
-                                    android:layout_marginBottom="@dimen/dp10"
-                                    android:textSize="@dimen/sp11"
-                                    android:textColor="@android:color/white"
-                                    android:text="@{model.convertVisiteCount(model.blogItem.todayCount, model.blogItem.totalCount)}"
-                            />
-
-                            <!--BLOG NAME-->
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                    android:id="@+id/myblog_blog_name"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    app:layout_constraintStart_toStartOf="@+id/myblog_user_image"
-                                    app:layout_constraintBottom_toTopOf="@+id/myblog_user_image"
-                                    android:layout_marginBottom="@dimen/dp30"
-                                    android:textSize="@dimen/sp27"
-                                    android:textStyle="bold"
-                                    android:textColor="@android:color/white"
-                                    android:text="@{model.blogItem.blogTitle}"
-                            />
-
-                            <!-- USER ID-->
 
                             <androidx.appcompat.widget.AppCompatImageView
-                                    android:id="@+id/myblog_user_image"
-                                    android:layout_width="@dimen/dp35" android:layout_height="@dimen/dp35"
-                                    app:layout_constraintStart_toStartOf="@+id/myblog_edit_home"
-                                    app:layout_constraintBottom_toTopOf="@+id/myblog_edit_home"
-                                    android:layout_marginBottom="@dimen/dp20"
-                                    app:bindImage="@{model.blogItem.userImage}"
-                                    app:bindCircleCrop="@{model.circleCrop}"
-                            />
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                    android:id="@+id/myblog_user_id"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    app:layout_constraintStart_toEndOf="@+id/myblog_user_image"
-                                    app:layout_constraintTop_toTopOf="@+id/myblog_user_image"
-                                    android:layout_marginTop="@dimen/dp2"
-                                    android:layout_marginStart="@dimen/dp8"
-                                    android:textSize="@dimen/sp14"
-                                    android:textStyle="bold"
-                                    android:textColor="@android:color/white"
-                                    android:text="@{model.blogItem.userId}"
-                            />
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                    android:id="@+id/myblog_friend_count"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    app:layout_constraintStart_toStartOf="@+id/myblog_user_id"
-                                    app:layout_constraintTop_toBottomOf="@+id/myblog_user_id"
-                                    android:layout_marginTop="@dimen/dp2"
-                                    android:textSize="@dimen/sp10"
-                                    android:textColor="@android:color/white"
-                                    android:text="@{model.convertFriendCount(model.blogItem.friendCount)}"
-                            />
-
-                            <androidx.appcompat.widget.AppCompatImageView
-                                    android:id="@+id/myblog_share"
-                                    android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                    app:layout_constraintTop_toTopOf="@+id/myblog_user_image"
-                                    app:layout_constraintEnd_toEndOf="@+id/myblog_statistics"
-                                    app:layout_constraintBottom_toBottomOf="@+id/myblog_user_image"
-                                    android:src="@drawable/ic_settings_white_24dp"
-                            />
-
-                            <!-- BUTTON LINE -->
-
-                            <androidx.appcompat.widget.AppCompatButton
-                                    android:id="@+id/myblog_edit_home"
-                                    android:layout_width="0dp" android:layout_height="0dp"
+                                    android:id="@+id/myblog_detail_image"
+                                    android:layout_width="match_parent" android:layout_height="@dimen/dp400"
                                     app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toTopOf="@+id/myblog_category"
-                                    app:layout_constraintEnd_toStartOf="@+id/myblog_category"
-                                    app:layout_constraintBottom_toBottomOf="@+id/myblog_category"
-                                    android:layout_marginEnd="@dimen/dp8"
-                                    android:layout_marginStart="@dimen/dp20"
-                                    android:text="@string/myblog_edit_home"
-                                    android:background="@drawable/shape_rectangle_gray_stroke"
-                                    android:paddingStart="@dimen/dp25"
-                                    android:drawablePadding="-28dp"
-                                    android:drawableStart="@drawable/ic_settings_white_24dp"
-                                    android:textColor="@android:color/white"
-                                    android:textAlignment="gravity"
-                                    android:gravity="center"
-                            />
-
-                            <androidx.appcompat.widget.AppCompatImageView
-                                    android:id="@+id/myblog_category"
-                                    android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                    app:layout_constraintEnd_toStartOf="@+id/myblog_neighborhood"
-                                    app:layout_constraintBottom_toBottomOf="@+id/myblog_neighborhood"
-                                    android:padding="@dimen/dp8"
-                                    android:layout_marginEnd="@dimen/dp8"
-                                    android:background="@drawable/shape_rectangle_gray_stroke"
-                                    android:src="@drawable/ic_list_white_24dp"
-                            />
-
-                            <androidx.appcompat.widget.AppCompatImageView
-                                    android:id="@+id/myblog_neighborhood"
-                                    android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                    app:layout_constraintEnd_toStartOf="@+id/myblog_guestbook"
-                                    app:layout_constraintBottom_toBottomOf="@+id/myblog_guestbook"
-                                    android:padding="@dimen/dp8"
-                                    android:layout_marginEnd="@dimen/dp8"
-                                    android:background="@drawable/shape_rectangle_gray_stroke"
-                                    android:src="@drawable/ic_reply_white_24dp"
-                            />
-
-                            <androidx.appcompat.widget.AppCompatImageView
-                                    android:id="@+id/myblog_guestbook"
-                                    android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                    app:layout_constraintEnd_toStartOf="@+id/myblog_statistics"
-                                    app:layout_constraintBottom_toBottomOf="@+id/myblog_statistics"
-                                    android:padding="@dimen/dp8"
-                                    android:layout_marginEnd="@dimen/dp8"
-                                    android:background="@drawable/shape_rectangle_gray_stroke"
-                                    android:src="@drawable/ic_group_white_24dp"
-                            />
-
-                            <androidx.appcompat.widget.AppCompatImageView
-                                    android:id="@+id/myblog_statistics"
-                                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                    app:layout_constraintTop_toTopOf="parent"
                                     app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintBottom_toBottomOf="parent"
-                                    android:padding="@dimen/dp8"
-                                    android:layout_marginEnd="@dimen/dp20"
-                                    android:layout_marginBottom="@dimen/dp20"
-                                    android:background="@drawable/shape_rectangle_gray_stroke"
-                                    android:src="@drawable/ic_graphic_eq_white_24dp"
+                                    app:bindImage="@{model.blogItem.background}"
+                                    android:translationY="@{model.viewTransY}"
                             />
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                    android:id="@+id/myblog_blog_info"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintBottom_toBottomOf="@+id/myblog_detail_image"
+                                    android:alpha="@{model.viewAlpha}"
+                            >
+                                <androidx.appcompat.widget.AppCompatTextView
+                                        android:id="@+id/myblog_visiter_count"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        app:layout_constraintStart_toStartOf="@+id/myblog_blog_name"
+                                        app:layout_constraintBottom_toTopOf="@+id/myblog_blog_name"
+                                        android:layout_marginBottom="@dimen/dp10"
+                                        android:textSize="@dimen/sp11"
+                                        android:textColor="@android:color/white"
+                                        android:text="@{model.convertVisiteCount(model.blogItem.todayCount, model.blogItem.totalCount)}"
+                                />
+
+                                <!--BLOG NAME-->
+
+                                <androidx.appcompat.widget.AppCompatTextView
+                                        android:id="@+id/myblog_blog_name"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        app:layout_constraintStart_toStartOf="@+id/myblog_user_image"
+                                        app:layout_constraintBottom_toTopOf="@+id/myblog_user_image"
+                                        android:layout_marginBottom="@dimen/dp30"
+                                        android:textSize="@dimen/sp27"
+                                        android:textStyle="bold"
+                                        android:textColor="@android:color/white"
+                                        android:text="@{model.blogItem.blogTitle}"
+                                />
+
+                                <!-- USER ID-->
+
+                                <androidx.appcompat.widget.AppCompatImageView
+                                        android:id="@+id/myblog_user_image"
+                                        android:layout_width="@dimen/dp35" android:layout_height="@dimen/dp35"
+                                        app:layout_constraintStart_toStartOf="@+id/myblog_edit_home"
+                                        app:layout_constraintBottom_toTopOf="@+id/myblog_edit_home"
+                                        android:layout_marginBottom="@dimen/dp20"
+                                        app:bindImage="@{model.blogItem.userImage}"
+                                        app:bindCircleCrop="@{model.circleCrop}"
+                                />
+
+                                <androidx.appcompat.widget.AppCompatTextView
+                                        android:id="@+id/myblog_user_id"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        app:layout_constraintStart_toEndOf="@+id/myblog_user_image"
+                                        app:layout_constraintTop_toTopOf="@+id/myblog_user_image"
+                                        android:layout_marginTop="@dimen/dp2"
+                                        android:layout_marginStart="@dimen/dp8"
+                                        android:textSize="@dimen/sp14"
+                                        android:textStyle="bold"
+                                        android:textColor="@android:color/white"
+                                        android:text="@{model.blogItem.userId}"
+                                />
+
+                                <androidx.appcompat.widget.AppCompatTextView
+                                        android:id="@+id/myblog_friend_count"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        app:layout_constraintStart_toStartOf="@+id/myblog_user_id"
+                                        app:layout_constraintTop_toBottomOf="@+id/myblog_user_id"
+                                        android:layout_marginTop="@dimen/dp2"
+                                        android:textSize="@dimen/sp10"
+                                        android:textColor="@android:color/white"
+                                        android:text="@{model.convertFriendCount(model.blogItem.friendCount)}"
+                                />
+
+                                <androidx.appcompat.widget.AppCompatImageView
+                                        android:id="@+id/myblog_share"
+                                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                        app:layout_constraintTop_toTopOf="@+id/myblog_user_image"
+                                        app:layout_constraintEnd_toEndOf="@+id/myblog_statistics"
+                                        app:layout_constraintBottom_toBottomOf="@+id/myblog_user_image"
+                                        android:src="@drawable/ic_settings_white_24dp"
+                                />
+
+                                <!-- BUTTON LINE -->
+
+                                <androidx.appcompat.widget.AppCompatButton
+                                        android:id="@+id/myblog_edit_home"
+                                        android:layout_width="0dp" android:layout_height="0dp"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="@+id/myblog_category"
+                                        app:layout_constraintEnd_toStartOf="@+id/myblog_category"
+                                        app:layout_constraintBottom_toBottomOf="@+id/myblog_category"
+                                        android:layout_marginEnd="@dimen/dp8"
+                                        android:layout_marginStart="@dimen/dp20"
+                                        android:text="@string/myblog_edit_home"
+                                        android:background="@drawable/shape_rectangle_gray_stroke"
+                                        android:paddingStart="@dimen/dp25"
+                                        android:drawablePadding="-28dp"
+                                        android:drawableStart="@drawable/ic_settings_white_24dp"
+                                        android:textColor="@android:color/white"
+                                        android:textAlignment="gravity"
+                                        android:gravity="center"
+                                />
+
+                                <androidx.appcompat.widget.AppCompatImageView
+                                        android:id="@+id/myblog_category"
+                                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                        app:layout_constraintEnd_toStartOf="@+id/myblog_neighborhood"
+                                        app:layout_constraintBottom_toBottomOf="@+id/myblog_neighborhood"
+                                        android:padding="@dimen/dp8"
+                                        android:layout_marginEnd="@dimen/dp8"
+                                        android:background="@drawable/shape_rectangle_gray_stroke"
+                                        android:src="@drawable/ic_list_white_24dp"
+                                />
+
+                                <androidx.appcompat.widget.AppCompatImageView
+                                        android:id="@+id/myblog_neighborhood"
+                                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                        app:layout_constraintEnd_toStartOf="@+id/myblog_guestbook"
+                                        app:layout_constraintBottom_toBottomOf="@+id/myblog_guestbook"
+                                        android:padding="@dimen/dp8"
+                                        android:layout_marginEnd="@dimen/dp8"
+                                        android:background="@drawable/shape_rectangle_gray_stroke"
+                                        android:src="@drawable/ic_reply_white_24dp"
+                                />
+
+                                <androidx.appcompat.widget.AppCompatImageView
+                                        android:id="@+id/myblog_guestbook"
+                                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                        app:layout_constraintEnd_toStartOf="@+id/myblog_statistics"
+                                        app:layout_constraintBottom_toBottomOf="@+id/myblog_statistics"
+                                        android:padding="@dimen/dp8"
+                                        android:layout_marginEnd="@dimen/dp8"
+                                        android:background="@drawable/shape_rectangle_gray_stroke"
+                                        android:src="@drawable/ic_group_white_24dp"
+                                />
+
+                                <androidx.appcompat.widget.AppCompatImageView
+                                        android:id="@+id/myblog_statistics"
+                                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        android:padding="@dimen/dp8"
+                                        android:layout_marginEnd="@dimen/dp20"
+                                        android:layout_marginBottom="@dimen/dp20"
+                                        android:background="@drawable/shape_rectangle_gray_stroke"
+                                        android:src="@drawable/ic_graphic_eq_white_24dp"
+                                />
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                    </com.google.android.material.appbar.CollapsingToolbarLayout>
+                </com.google.android.material.appbar.AppBarLayout>
 
-                </com.google.android.material.appbar.CollapsingToolbarLayout>
-            </com.google.android.material.appbar.AppBarLayout>
-
-            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-                    android:id="@+id/myblog_swipe_refresh"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                    app:bindSwipeRefreshListener="@{model.swipeRefreshListener}"
-                    app:bindSwipeIsRefreshing="@{model.swipeIsRefresh}"
-            >
+                <!--NESTED SCROLLVIEW -->
 
                 <androidx.core.widget.NestedScrollView
                         android:id="@+id/myblog_scroll"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:fillViewport="true"
+                        app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 >
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -292,6 +302,7 @@
                                 app:bindAdapter="@{popularPostModel.adapter}"
                                 app:bindItems="@{popularPostModel.items}"
                                 app:bindItemDecoration="@{popularPostModel.itemDecoration}"
+                                android:nestedScrollingEnabled="false"
                         />
 
                         <!-- ALL LIST -->
@@ -394,9 +405,8 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.core.widget.NestedScrollView>
 
-            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <include
                 android:id="@+id/titlebar"

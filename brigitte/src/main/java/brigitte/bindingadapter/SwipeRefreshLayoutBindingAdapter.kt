@@ -25,10 +25,20 @@ object SwipeRefreshLayoutBindingAdapter {
     @BindingAdapter("bindSwipeIsRefreshing")
     fun bindSwipeRefreshingFalse(view: SwipeRefreshLayout, result: Boolean) {
         if (mLog.isDebugEnabled) {
-            mLog.debug("bindSwipeRefreshingFalse")
+            mLog.debug("bindSwipeRefreshingFalse $result")
         }
 
         view.isRefreshing = result
+    }
+
+    @JvmStatic
+    @BindingAdapter("bindSwipeIsEnabled")
+    fun bindSwipeIsEnabled(view: SwipeRefreshLayout, result: Boolean) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("bindSwipeIsEnabled $result")
+        }
+
+        view.isEnabled = result
     }
 
 //    @JvmStatic

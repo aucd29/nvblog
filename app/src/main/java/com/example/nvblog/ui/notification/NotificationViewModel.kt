@@ -6,6 +6,7 @@ import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.MutableLiveData
+import androidx.recyclerview.widget.RecyclerView
 import brigitte.*
 import com.example.nvblog.R
 import com.example.nvblog.model.remote.entity.NotificationData
@@ -34,6 +35,9 @@ class NotificationViewModel @Inject @JvmOverloads constructor(
 
     lateinit var disposable: CompositeDisposable
 
+    private lateinit var mNewList: ArrayList<NotificationData>
+    private lateinit var mPostedList: ArrayList<NotificationData>
+
     val viewType = ObservableInt(R.id.noti_news)
     val viewTypeCheckedListener = ObservableField<(Int) -> Unit>()
     val viewTypeLive = MutableLiveData<Int>()
@@ -43,9 +47,7 @@ class NotificationViewModel @Inject @JvmOverloads constructor(
     val viewNotRead  = ObservableInt(View.VISIBLE)
     val viewProgress = ObservableInt(View.GONE)
 
-    private lateinit var mNewList: ArrayList<NotificationData>
-    private lateinit var mPostedList: ArrayList<NotificationData>
-
+    val itemAnimator = ObservableField<RecyclerView.ItemAnimator?>()
     val numberOfAppliedForFriend = ObservableInt(2)
 
     val swipeRefreshListener = ObservableField<() -> Unit>()
@@ -77,6 +79,9 @@ class NotificationViewModel @Inject @JvmOverloads constructor(
             }, ::errorLog))
     }
 
+    fun testTitleWithId(item: NotificationData) =
+        """${item.title} (${item.id})"""
+
     fun convertNotification(str: String) =
         """$str<br><font color="#00AC09"><b>from.블로그 씨</b></font> """.html()
 
@@ -97,12 +102,11 @@ class NotificationViewModel @Inject @JvmOverloads constructor(
 
     fun convertNumOfAppliedForFriend(num : Int) =
         ("<font color='black'>${string(R.string.noti_num_of_applied_for_friend)}</font>" +
-                " <font color='#00AC09'>${app.getString(R.string.noti_people, num)}</font>")
-            .html()
+                " <font color='#00AC09'>${app.getString(R.string.noti_people, num)}</font>").html()
 
     fun convertNoNewsPosts() =
-        "<font color='#00AC09'>${string(R.string.noti_no_new_posts)}</font><br/>${string(R.string.noti_no_new_posts2)}"
-            .html()
+        ("<font color='#00AC09'>${string(R.string.noti_no_new_posts)}</font>" +
+                "<br/>${string(R.string.noti_no_new_posts2)}").html()
 
     private fun swipeRefreshListener() {
         swipeRefreshListener.set {
@@ -141,24 +145,27 @@ class NotificationViewModel @Inject @JvmOverloads constructor(
             NotificationData(idx++, 1, "하노이 여행::호안끼엠 금은방에서 환전하기", System.currentTimeMillis()),
             NotificationData(idx++, 1, "SM5 TCE 제로백 시승기", System.currentTimeMillis() - 8400000),
             NotificationData(idx++, 0, "신형 바다이야기", System.currentTimeMillis() - 8400000),
-            NotificationData(idx++, 1, "삭제된 글입니다.", System.currentTimeMillis() - 8400000),NotificationData(1, 0, "건강이 최고 가족도 최고", System.currentTimeMillis() - 86400000),
+            NotificationData(idx++, 1, "삭제된 글입니다.", System.currentTimeMillis() - 8400000),
+
             NotificationData(idx++, 1, "하노이 여행::호안끼엠 금은방에서 환전하기", System.currentTimeMillis() - 8400000),
             NotificationData(idx++, 1, "SM5 TCE 제로백 시승기", System.currentTimeMillis() - 8400000),
             NotificationData(idx++, 0, "신형 바다이야기", System.currentTimeMillis() - 6400000),
-            NotificationData(idx++, 1, "삭제된 글입니다.", System.currentTimeMillis() - 86400000),NotificationData(1, 0, "건강이 최고 가족도 최고", System.currentTimeMillis() - 86400000),
+            NotificationData(idx++, 1, "삭제된 글입니다.", System.currentTimeMillis() - 86400000),
             NotificationData(idx++, 1, "하노이 여행::호안끼엠 금은방에서 환전하기", System.currentTimeMillis() - 86400000),
+
             NotificationData(idx++, 1, "SM5 TCE 제로백 시승기", System.currentTimeMillis() - 6400000),
             NotificationData(idx++, 0, "신형 바다이야기", System.currentTimeMillis() - 86400000),
-            NotificationData(idx++, 1, "삭제된 글입니다.", System.currentTimeMillis() - 8400000),NotificationData(1, 0, "건강이 최고 가족도 최고", System.currentTimeMillis() - 86400000),
+            NotificationData(idx++, 1, "삭제된 글입니다.", System.currentTimeMillis() - 8400000),
             NotificationData(idx++, 1, "하노이 여행::호안끼엠 금은방에서 환전하기", System.currentTimeMillis() - 8600000),
             NotificationData(idx++, 1, "SM5 TCE 제로백 시승기", System.currentTimeMillis() - 86400000),
+
             NotificationData(idx++, 0, "신형 바다이야기", System.currentTimeMillis() - 86400000),
             NotificationData(idx++, 1, "삭제된 글입니다.", System.currentTimeMillis() - 86400000)
         )
         mNewList = arrayListOf<NotificationData>()
+
         items.set(mNewList)
     }
-
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
@@ -183,7 +190,13 @@ class NotificationViewModel @Inject @JvmOverloads constructor(
     private fun removeItem(id: Int) {
         val newList = items.get()?.toMutableList()
         val foundItem = newList?.find { it.id == id }
-        foundItem?.let { newList.remove(it) }
+        foundItem?.let {
+            if (mLog.isDebugEnabled) {
+                mLog.debug("REMOVE ID : ${it.id}")
+            }
+
+            newList.remove(it)
+        }
 
         items.set(newList)
     }

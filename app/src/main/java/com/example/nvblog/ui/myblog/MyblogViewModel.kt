@@ -44,6 +44,7 @@ class MyblogViewModel @Inject @JvmOverloads constructor(
     val swipeRefreshListener = ObservableField<() -> Unit>()
     val swipeRefreshLive     = SingleLiveEvent<Void>()
     val swipeIsRefresh       = ObservableBoolean(false)
+    val swipeIsEnabled       = ObservableBoolean(true)
 
     init {
         initData()
@@ -75,6 +76,14 @@ class MyblogViewModel @Inject @JvmOverloads constructor(
 
             viewAlpha.set(percentage)
             viewTransY.set(offset / 2f * -1f)
+
+            if (offset == 0) {
+//                swipeIsRefresh.set(false)
+                swipeIsEnabled.set(true)
+            } else {
+                swipeIsEnabled.set(false)
+//                swipeIsRefresh.set(false)
+            }
         }
     }
 

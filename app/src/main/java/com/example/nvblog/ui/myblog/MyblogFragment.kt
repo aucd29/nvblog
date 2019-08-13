@@ -18,7 +18,6 @@ class MyblogFragment @Inject constructor(
     private lateinit var mMyblogPopularPostViewModel: MyblogPopularPostViewModel
     private lateinit var mMyblogAllPostViewModel: MyblogAllPostViewModel
 
-
     override fun bindViewModel() {
         super.bindViewModel()
 
@@ -41,11 +40,12 @@ class MyblogFragment @Inject constructor(
 
     override fun initViewBinding() {
         mMyblogAllPostViewModel.initLayoutManager()
+        mBinding.myblogSwipeRefresh.isEnabled = false
     }
 
     override fun initViewModelEvents() {
         observe(mViewModel.swipeRefreshLive) {
-            mDisposable.add(interval(300)
+            mDisposable.add(interval(600)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     // 여러 데이터를 로드 했다고 가정 하에

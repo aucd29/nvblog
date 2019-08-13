@@ -40,6 +40,7 @@
                     android:id="@+id/noti_scroll"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:fillViewport="true"
             >
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -150,6 +151,7 @@
                             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                             app:bindAdapter="@{model.adapter}"
                             app:bindItems="@{model.items}"
+                            app:bindItemAnimator="@{model.itemAnimator}"
                     />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
