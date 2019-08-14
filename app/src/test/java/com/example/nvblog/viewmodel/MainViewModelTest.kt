@@ -8,6 +8,9 @@ import brigitte.html
 import com.example.nvblog.ui.main.MainViewModel
 import briggite.shield.*
 import brigitte.dpToPx
+import brigitte.widget.viewpager.OffsetDividerItemDecoration
+import com.example.nvblog.common.PreloadConfig
+import io.reactivex.disposables.CompositeDisposable
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
 import org.junit.Before
@@ -33,13 +36,17 @@ class MainViewModelTest: BaseRoboViewModelTest<MainViewModel>() {
     fun setup() {
         initMock()
 
-        viewmodel = MainViewModel(app)
+        viewmodel = MainViewModel(app, PreloadConfig(app), CompositeDisposable())
     }
 
     @Test
     fun defaultValueTest() = viewmodel.run {
-        circleCrop.get().assertTrue()
-        roundedCorners.get().assertEquals(10.dpToPx(app))
+        circleCrop.assertTrue()
+        roundedCorners.assertEquals(10.dpToPx(app))
+        assert(itemDecoration.get() is OffsetDividerItemDecoration)
+
+        itemDecoration.get()?.mOffsetStartDp.assertEquals(15.dpToPx(app))
+        itemDecoration.get()?.mOffsetEndDp.assertEquals(15.dpToPx(app))
     }
 
     @Test

@@ -16,6 +16,7 @@ import brigitte.html
 import brigitte.prefs
 import brigitte.string
 import com.example.nvblog.R
+import com.example.nvblog.common.PreloadConfig
 import com.example.nvblog.ui.notification.NotificationViewModel
 import io.reactivex.disposables.CompositeDisposable
 
@@ -29,16 +30,16 @@ class NotificationViewModelTest: BaseRoboViewModelTest<NotificationViewModel>() 
     fun setup() {
         initMock()
 
-        viewmodel = NotificationViewModel(app)
+        viewmodel = NotificationViewModel(app, PreloadConfig(app), CompositeDisposable())
     }
 
     @Test
     fun defaultValueTest() = viewmodel.run {
-        viewType.get().assertEquals(R.id.noti_news)
-        noticeData.get().assertEquals(string(R.string.noti_lorem))
-        viewNotice.get().assertEquals(prefs().getInt(NotificationViewModel.PREF_NOTI_VISIBILITY, View.VISIBLE))
-        viewNotRead.get().assertEquals(View.VISIBLE)
-        viewProgress.get().assertEquals(View.GONE)
+        viewType.assertEquals(R.id.noti_news)
+        noticeData.assertEquals(string(R.string.noti_lorem))
+        viewNotice.assertEquals(prefs().getInt(NotificationViewModel.PREF_NOTI_VISIBILITY, View.VISIBLE))
+        viewNotRead.assertEquals(View.VISIBLE)
+        viewProgress.assertEquals(View.GONE)
     }
 
     @Test
@@ -103,8 +104,6 @@ class NotificationViewModelTest: BaseRoboViewModelTest<NotificationViewModel>() 
 
     @Test
     fun viewTypeCheckedListenerTest() = viewmodel.run {
-        disposable = CompositeDisposable()
-
         mockObserver<Int>(viewTypeLive).apply {
             viewTypeCheckedListener.get()?.invoke(R.id.noti_news)
             viewNotRead.assertEquals(View.VISIBLE)
@@ -115,8 +114,6 @@ class NotificationViewModelTest: BaseRoboViewModelTest<NotificationViewModel>() 
             viewProgress.assertEquals(View.VISIBLE)
             verifyChanged(R.id.noti_posted)
         }
-
-        disposable.dispose()
 
         Unit
     }

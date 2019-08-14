@@ -31,6 +31,7 @@ import brigitte.toDateString
 import brigitte.widget.viewpager.GridItemDecoration
 import brigitte.widget.viewpager.OffsetDividerItemDecoration
 import com.example.nvblog.R
+import com.example.nvblog.common.PreloadConfig
 import com.example.nvblog.ui.myblog.MyblogAllPostViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -46,7 +47,7 @@ class MyblogAllPostViewModelTest: BaseRoboViewModelTest<MyblogAllPostViewModel>(
     fun setup() {
         initMock()
 
-        viewmodel = MyblogAllPostViewModel(app)
+        viewmodel = MyblogAllPostViewModel(app, PreloadConfig(app))
     }
 
     @Test

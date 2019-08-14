@@ -55,13 +55,13 @@ class MyblogFragment @Inject constructor(
     }
 
     override fun initViewModelEvents() {
-        observe(mViewModel.swipeRefreshLive) {
+        observe(mViewModel.swipeRefresh.refreshLive) {
             mDisposable.clear()
-            mDisposable.add(singleTimer(600)
+            mDisposable.add(singleTimer(500)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     // 여러 데이터를 로드 했다고 가정 하에
-                    mViewModel.stopSwipeRefresh()
+                    mViewModel.swipeRefresh.stopSwipeRefresh()
                 }, ::errorLog))
         }
     }

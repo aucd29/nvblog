@@ -24,9 +24,9 @@
                 android:layout_height="match_parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:bindSwipeRefreshListener="@{model.swipeRefreshListener}"
+                app:bindSwipeRefreshListener="@{model.swipeRefresh.listener}"
+                app:refreshing="@{model.swipeRefresh.isRefresh}"
                 app:bindSwipeIsEnabled="@{model.swipeIsEnabled}"
-                app:refreshing="@{model.swipeIsRefresh}"
         >
             <!--app:bindSwipeIsRefreshing="@{model.swipeIsRefresh}"-->
 
