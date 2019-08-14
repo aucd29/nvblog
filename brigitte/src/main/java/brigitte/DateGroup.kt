@@ -28,12 +28,12 @@ fun Long.toTimeAgoString(): String {
 
     val diff = now - this
     return when {
-        diff < MINUTE_MILLIS -> "moments ago"
-        diff < 2 * MINUTE_MILLIS -> "a minute ago"
+        diff < MINUTE_MILLIS      -> "moments ago"
+        diff < 2 * MINUTE_MILLIS  -> "a minute ago"
         diff < 60 * MINUTE_MILLIS -> "${diff / MINUTE_MILLIS} minutes ago"
-        diff < 2 * HOUR_MILLIS -> "an hour ago"
-        diff < 24 * HOUR_MILLIS -> "${diff / HOUR_MILLIS} hours ago"
-        diff < 48 * HOUR_MILLIS -> "yesterday"
+        diff < 2 * HOUR_MILLIS    -> "an hour ago"
+        diff < 24 * HOUR_MILLIS   -> "${diff / HOUR_MILLIS} hours ago"
+        diff < 48 * HOUR_MILLIS   -> "yesterday"
 //        else -> "${diff / DAY_MILLIS} days ago"
         else -> toDateString()
     }
