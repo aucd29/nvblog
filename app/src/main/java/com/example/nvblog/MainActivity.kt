@@ -4,14 +4,17 @@ import android.content.Context
 import android.os.Bundle
 import androidx.annotation.VisibleForTesting
 import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import brigitte.*
 import brigitte.viewmodel.SplashViewModel
+import brigitte.widget.VerticalDrawerLayout
 import com.example.nvblog.common.Config
 import com.example.nvblog.databinding.MainActivityBinding
 import com.example.nvblog.ui.ViewController
 import com.example.nvblog.ui.navigation.NavigationViewModel
 import com.example.nvblog.ui.titlebar.TitlebarViewModel
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
+import io.reactivex.android.schedulers.AndroidSchedulers
 import okhttp3.OkHttpClient
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -71,6 +74,8 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() 
     }
 
     override fun initViewBinding() = mBinding.run {
+        drawerLayout.touchSlopDirection = VerticalDrawerLayout.END
+
         rootViewpager.adapter = adapter
         rootViewpager.offscreenPageLimit = adapter.count
 
@@ -102,7 +107,6 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() 
     override fun onCommandEvent(cmd: String, data: Any) {
         TitlebarViewModel.apply {
             when (cmd) {
-                CMD_MOVE_FIRST_TAB  -> {}
                 CMD_GROUP_DIALOG    -> {}
                 CMD_SEARCH_FRAGMENT -> {}
                 CMD_WRITE_FRAGMENT  -> showWriteFragment()
@@ -119,6 +123,10 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() 
 
     private fun showWriteFragment() {
         viewController.writeFragment()
+
+        disposable().add(singleTimer(200)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { _ -> mTitlebarModel.moveToHistory() })
     }
 
     private fun showNavigation() {

@@ -32,8 +32,8 @@
                 app:layout_constraintTop_toBottomOf="@+id/titlebar"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:bindSwipeRefreshListener="@{model.swipeRefreshListener}"
-                app:refreshing="@{model.swipeIsRefresh}"
+                app:bindSwipeRefreshListener="@{model.swipeRefresh.listener}"
+                app:refreshing="@{model.swipeRefresh.isRefresh}"
         >
 
             <androidx.core.widget.NestedScrollView
@@ -98,7 +98,7 @@
                             android:layout_marginTop="@dimen/dp7"
                             android:layout_marginBottom="@dimen/dp7"
                             android:visibility="@{model.viewNotRead}"
-                            android:onClick="@{() -> model.command(model.IN_NOT_READ)}"
+                            android:onClick="@{() -> model.command(model.ITN_NOT_READ)}"
                     />
 
                     <!-- NOTICE -->
@@ -135,7 +135,7 @@
                                 app:layout_constraintEnd_toEndOf="parent"
                                 android:padding="@dimen/dp15"
                                 android:text="X"
-                                android:onClick="@{() -> model.command(model.IN_HIDE_NOTICE)}"
+                                android:onClick="@{() -> model.command(model.ITN_HIDE_NOTICE)}"
                         />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -149,6 +149,7 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             android:descendantFocusability="blocksDescendants"
                             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            android:overScrollMode="never"
                             app:bindAdapter="@{model.adapter}"
                             app:bindItems="@{model.items}"
                             app:bindItemAnimator="@{model.itemAnimator}"
@@ -163,7 +164,7 @@
                             app:layout_constraintTop_toBottomOf="@+id/noti_notice_container"
                             app:layout_constraintEnd_toEndOf="parent"
                             android:layout_marginTop="@dimen/dp20"
-                            android:visibility="@{model.items.get().size() == 0 ? View.VISIBLE : View.GONE}"
+                            android:visibility="@{model.viewProgress.get() == View.VISIBLE ? View.GONE : model.items.get().size() == 0 ? View.VISIBLE : View.GONE}"
                     >
 
                         <androidx.appcompat.widget.AppCompatTextView
@@ -179,6 +180,7 @@
                                 android:gravity="center"
                                 android:background="@drawable/shape_rect_stroke_graycc_bg_grayec"
                                 android:text="@{model.convertNumOfAppliedForFriend(model.numberOfAppliedForFriend)}"
+                                android:visibility="@{model.viewNumOfAppliedForFriend}"
                         />
 
                         <androidx.appcompat.widget.AppCompatTextView
@@ -188,11 +190,11 @@
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@+id/noti_num_of_applied_for_friend"
                                 app:layout_constraintEnd_toEndOf="parent"
-                                android:layout_marginTop="@dimen/dp140"
+                                android:layout_marginTop="@dimen/dp120"
                                 android:gravity="center"
                                 android:textSize="@dimen/sp15"
                                 android:textColor="@color/colorPrimary"
-                                android:text="@string/noti_no_new_posts"
+                                android:text="@{model.viewNoNewsPostId}"
                         />
 
                         <androidx.appcompat.widget.AppCompatTextView
@@ -204,7 +206,7 @@
                                 app:layout_constraintEnd_toEndOf="parent"
                                 android:gravity="center"
                                 android:textSize="@dimen/sp15"
-                                android:text="@string/noti_no_new_posts2"
+                                android:text="@{model.viewNoNewsPost2Id}"
                         />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -28,7 +28,7 @@ inline val Calendar.s
     get() = get(Calendar.SECOND)
 
 inline val Calendar.defaultDateFormat
-    get() = SimpleDateFormat("yyyy-M-d H:m:s", Locale.getDefault())
+    get() = SimpleDateFormat("yyyy.MM.dd H:m:s", Locale.getDefault())
 
 inline fun Calendar.cloneAdd(field: Int, value: Int): Calendar {
     val cal = this.clone() as Calendar

@@ -124,7 +124,7 @@ dependencies {
     implementation "io.reactivex.rxjava2:rxandroid:$rxandroid"
     implementation "io.reactivex.rxjava2:rxkotlin:$rxkotlin"
 
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-1'
+//    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-1'
 
     // chip layout
     implementation 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar'
@@ -139,7 +139,10 @@ dependencies {
     // https://github.com/airbnb/lottie-android
     implementation 'com.airbnb.android:lottie:2.8.0'
 
+    // font (https://github.com/InflationX/Calligraphy)
+    implementation "io.github.inflationx:calligraphy3:$calligraphy"
+    implementation "io.github.inflationx:viewpump:$viewpump"
+
     // local lib
     implementation project(path: ':brigitte')
-    implementation project(path: ':dingbat')
 }

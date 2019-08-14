@@ -109,7 +109,6 @@ class RecommendedFragment @Inject constructor(
             }
         ))
 
-        swipeRefresh.setProgressViewOffset(false, 0, 130.dpToPx(requireContext()))
         swipeRefresh.setOnRefreshListener {
             if (mLog.isDebugEnabled) {
                 mLog.debug("SWIPE RELOAD URL : ${webview.url}")

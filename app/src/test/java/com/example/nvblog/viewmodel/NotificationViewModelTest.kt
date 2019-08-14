@@ -1,52 +1,22 @@
-/*
- * Copyright (C) Hanwha S&C Ltd., 2019. All rights reserved.
- *
- * This software is covered by the license agreement between
- * the end user and Hanwha S&C Ltd., and may be
- * used and copied only in accordance with the terms of the
- * said agreement.
- *
- * Hanwha S&C Ltd., assumes no responsibility or
- * liability for any errors or inaccuracies in this software,
- * or any consequential, incidental or indirect damage arising
- * out of the use of the software.
- */
-
 package com.example.nvblog.viewmodel
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019-08-12. <p/>
  */
 
-import android.app.Application
-import android.content.Context
-import android.content.res.Resources
 import android.view.View
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.core.text.toHtml
-import androidx.test.core.app.ApplicationProvider
-import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertTrue
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.mock
-import org.mockito.MockitoAnnotations
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.Shadows
-import org.robolectric.annotation.Config
-import org.slf4j.LoggerFactory
 import briggite.shield.*
-import brigitte.app
-import brigitte.html
-import brigitte.prefs
-import brigitte.string
+import brigitte.*
 import com.example.nvblog.R
+import com.example.nvblog.common.PreloadConfig
 import com.example.nvblog.ui.notification.NotificationViewModel
 import io.reactivex.disposables.CompositeDisposable
+import org.slf4j.LoggerFactory
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-08-12 <p/>
@@ -58,16 +28,16 @@ class NotificationViewModelTest: BaseRoboViewModelTest<NotificationViewModel>() 
     fun setup() {
         initMock()
 
-        viewmodel = NotificationViewModel(app)
+        viewmodel = NotificationViewModel(app, PreloadConfig(app), CompositeDisposable())
     }
 
     @Test
     fun defaultValueTest() = viewmodel.run {
-        viewType.get().assertEquals(R.id.noti_news)
-        noticeData.get().assertEquals(string(R.string.noti_lorem))
-        viewNotice.get().assertEquals(prefs().getInt(NotificationViewModel.PREF_NOTI_VISIBILITY, View.VISIBLE))
-        viewNotRead.get().assertEquals(View.VISIBLE)
-        viewProgress.get().assertEquals(View.GONE)
+        viewType.assertEquals(R.id.noti_news)
+        noticeData.assertEquals(string(R.string.noti_lorem))
+        viewNotice.assertEquals(prefs().getInt(NotificationViewModel.PREF_NOTI_VISIBILITY, View.VISIBLE))
+        viewNotRead.assertEquals(View.VISIBLE)
+        viewProgress.assertEquals(View.GONE)
     }
 
     @Test
@@ -104,11 +74,55 @@ class NotificationViewModelTest: BaseRoboViewModelTest<NotificationViewModel>() 
     }
 
     @Test
-    fun convertDateTest() {
-        viewmodel.apply {
-            val value = System.currentTimeMillis()
-            val result = convertDate(value)
+    fun convertDateTest() = viewmodel.run {
+        var value = System.currentTimeMillis()
+        var result = convertDate(value)
+        if (mLog.isDebugEnabled) {
+            mLog.debug("RES = $result")
         }
+        result.assertEquals("moments ago")
+
+        val n1 = value - 60 * 1000 * 1
+        result = convertDate(n1)
+        if (mLog.isDebugEnabled) {
+            mLog.debug("RES = $result")
+        }
+        result.assertEquals("a minute ago")
+
+        val n2 = value - 60 * 1000 * 5
+        result = convertDate(n2)
+        if (mLog.isDebugEnabled) {
+            mLog.debug("RES = $result")
+        }
+        result.assertEquals("5 minutes ago")
+
+        val n3 = value - 60 * 60 * 1000 * 1
+        result = convertDate(n3)
+        if (mLog.isDebugEnabled) {
+            mLog.debug("RES = $result")
+        }
+        result.assertEquals("an hour ago")
+
+        val n4 = value - 60 * 60 * 1000 * 10
+        result = convertDate(n4)
+        if (mLog.isDebugEnabled) {
+            mLog.debug("RES = $result")
+        }
+        result.assertEquals("10 hours ago")
+
+        val n5 = value - 60 * 60 * 24 * 1000 * 1
+        result = convertDate(n5)
+        if (mLog.isDebugEnabled) {
+            mLog.debug("RES = $result")
+        }
+        result.assertEquals("yesterday")
+
+        val n6 = value - 60 * 60 * 24 * 1000 * 10
+        result = convertDate(n6)
+        if (mLog.isDebugEnabled) {
+            mLog.debug("RES = $result")
+        }
+        result.assertEquals(n6.toDateString())
     }
 
     @Test
@@ -132,8 +146,6 @@ class NotificationViewModelTest: BaseRoboViewModelTest<NotificationViewModel>() 
 
     @Test
     fun viewTypeCheckedListenerTest() = viewmodel.run {
-        disposable = CompositeDisposable()
-
         mockObserver<Int>(viewTypeLive).apply {
             viewTypeCheckedListener.get()?.invoke(R.id.noti_news)
             viewNotRead.assertEquals(View.VISIBLE)
@@ -145,14 +157,12 @@ class NotificationViewModelTest: BaseRoboViewModelTest<NotificationViewModel>() 
             verifyChanged(R.id.noti_posted)
         }
 
-        disposable.dispose()
-
         Unit
     }
 
     @Test
     fun commandHideNoticeTest() = viewmodel.run {
-        command(NotificationViewModel.IN_HIDE_NOTICE)
+        command(NotificationViewModel.ITN_HIDE_NOTICE)
         viewNotice.assertEquals(View.GONE)
         app.prefs().getInt(NotificationViewModel.PREF_NOTI_VISIBILITY, View.GONE).assertEquals(View.GONE)
     }
@@ -163,9 +173,13 @@ class NotificationViewModelTest: BaseRoboViewModelTest<NotificationViewModel>() 
         items.set(list)
 
         val before = items.get()?.size
-        command(NotificationViewModel.IN_DELETE_ITEM, list[0].id)
+        command(NotificationViewModel.ITN_DELETE_ITEM, list[0].id)
         val after = items.get()?.size
 
         assert(before != after)
+    }
+
+    companion object {
+        private val mLog = LoggerFactory.getLogger(NotificationViewModelTest::class.java)
     }
 }

@@ -32,6 +32,8 @@
     <string name="noti_people">%d명</string>
     <string name="noti_no_new_posts">새로운 내 소식이 없습니다.</string>
     <string name="noti_no_new_posts2">이웃 새글에서 더 많은 글을 만나보세요.</string>
+    <string name="noti_no_writed_post">내가 남긴 글 목록이 없습니다.</string>
+    <string name="noti_no_writed_post2">이웃의 블로그에 새로운 댓글이나\n안부글을 남겨보세요</string>
     
     <!--myblog-->
     <string name="myblog_edit_home">홈편집</string>

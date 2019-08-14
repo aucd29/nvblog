@@ -11,7 +11,7 @@
         <variable name="naviModel" type="com.example.nvblog.ui.navigation.NavigationViewModel"/>
     </data>
 
-    <androidx.drawerlayout.widget.DrawerLayout
+    <brigitte.widget.VerticalDrawerLayout
             android:id="@+id/drawer_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -30,6 +30,8 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
             >
 
                 <brigitte.widget.viewpager.NoSwipeViewPager
@@ -42,6 +44,8 @@
                         app:layout_constraintBottom_toTopOf="@+id/root_bottom_navigation"
                         app:bindCurrentItem="@{titlebarModel.viewpagerPos}"
                         app:bindSmoothScroll="@{titlebarModel.viewpagerSmooth}"
+                        android:clipChildren="false"
+                        android:clipToPadding="false"
                 />
 
                 <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -76,7 +80,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-        <brigitte.widget.VerticalNavigationView
+        <com.google.android.material.navigation.NavigationView
                 android:id="@+id/main_nav_view"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -85,6 +89,6 @@
             <include layout="@layout/main_navigation"
                      app:naviModel="@{naviModel}"
             />
-        </brigitte.widget.VerticalNavigationView>
-    </androidx.drawerlayout.widget.DrawerLayout>
+        </com.google.android.material.navigation.NavigationView>
+    </brigitte.widget.VerticalDrawerLayout>
 </layout>

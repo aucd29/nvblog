@@ -24,9 +24,9 @@
                 android:layout_height="match_parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:bindSwipeRefreshListener="@{model.swipeRefreshListener}"
+                app:bindSwipeRefreshListener="@{model.swipeRefresh.listener}"
+                app:refreshing="@{model.swipeRefresh.isRefresh}"
                 app:bindSwipeIsEnabled="@{model.swipeIsEnabled}"
-                app:refreshing="@{model.swipeIsRefresh}"
         >
             <!--app:bindSwipeIsRefreshing="@{model.swipeIsRefresh}"-->
 
@@ -80,6 +80,7 @@
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintBottom_toBottomOf="@+id/myblog_detail_image"
                                     android:alpha="@{model.viewAlpha}"
+                                    android:translationY="@{model.viewTransY}"
                             >
                                 <androidx.appcompat.widget.AppCompatTextView
                                         android:id="@+id/myblog_visiter_count"
@@ -234,6 +235,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:fillViewport="true"
+                        android:overScrollMode="never"
                         app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 >
 

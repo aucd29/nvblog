@@ -8,6 +8,7 @@ import brigitte.CommandEventViewModel
 import brigitte.app
 import brigitte.arch.SingleLiveEvent
 import brigitte.numberFormat
+import brigitte.widget.SwipeRefreshController
 import com.example.nvblog.R
 import com.example.nvblog.common.PreloadConfig
 import io.reactivex.disposables.CompositeDisposable
@@ -38,14 +39,16 @@ class MyblogViewModel @Inject @JvmOverloads constructor(
     val viewAlpha  = ObservableFloat(1f)
     val viewTransY = ObservableFloat(0f)
 
-    val swipeRefreshListener = ObservableField<() -> Unit>()
-    val swipeRefreshLive     = SingleLiveEvent<Void>()
-    val swipeIsRefresh       = ObservableBoolean(false)
-    val swipeIsEnabled       = ObservableBoolean(true)
+//    val swipeRefreshListener = ObservableField<() -> Unit>()
+//    val swipeRefreshLive     = SingleLiveEvent<Void>()
+//    val swipeIsRefresh       = ObservableBoolean(false)
+    val swipeRefresh    = SwipeRefreshController()
+    val swipeIsEnabled  = ObservableBoolean(true)
 
     init {
         initOffsetListener()
-        initSwipeRefreshListener()
+        swipeRefresh.initLive()
+//        initSwipeRefreshListener()
     }
 
     fun convertVisiteCount(today: Int, total: Int) =
@@ -54,27 +57,27 @@ class MyblogViewModel @Inject @JvmOverloads constructor(
     fun convertFriendCount(count: Int) =
         app.getString(R.string.myblog_friend_count, count)
 
-    private fun initSwipeRefreshListener() {
-        swipeRefreshListener.set {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("START SWIPE REFRESH")
-            }
+//    private fun initSwipeRefreshListener() {
+//        swipeRefreshListener.set {
+//            if (mLog.isDebugEnabled) {
+//                mLog.debug("START SWIPE REFRESH")
+//            }
+//
+//            swipeRefreshLive.call()
+//        }
+//    }
 
-            swipeRefreshLive.call()
-        }
-    }
-
-    fun stopSwipeRefresh() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("END SWIPE REFRESH")
-        }
-
-        if (swipeIsRefresh.get() == false) {
-            swipeIsRefresh.notifyChange()
-        } else {
-            swipeIsRefresh.set(false)
-        }
-    }
+//    fun stopSwipeRefresh() {
+//        if (mLog.isDebugEnabled) {
+//            mLog.debug("STOP SWIPE REFRESH")
+//        }
+//
+//        if (!swipeIsRefresh.get()) {
+//            swipeIsRefresh.notifyChange()
+//        } else {
+//            swipeIsRefresh.set(false)
+//        }
+//    }
 
     private fun initOffsetListener() {
         appbarChangedListener.set { maxScroll, offset ->

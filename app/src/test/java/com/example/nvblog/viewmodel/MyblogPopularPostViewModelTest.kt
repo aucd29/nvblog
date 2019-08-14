@@ -18,6 +18,7 @@ import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.slf4j.LoggerFactory
 import briggite.shield.*
+import com.example.nvblog.common.PreloadConfig
 import com.example.nvblog.ui.myblog.MyblogPopularPostViewModel
 
 
@@ -31,7 +32,7 @@ class MyblogPopularPostViewModelTest: BaseRoboViewModelTest<MyblogPopularPostVie
     fun setup() {
         initMock()
 
-        viewmodel = MyblogPopularPostViewModel(app)
+        viewmodel = MyblogPopularPostViewModel(app, PreloadConfig(app))
     }
 
     @Test

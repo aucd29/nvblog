@@ -13,6 +13,7 @@ import briggite.shield.*
 import brigitte.app
 import brigitte.numberFormat
 import com.example.nvblog.R
+import com.example.nvblog.common.PreloadConfig
 import com.example.nvblog.ui.myblog.MyblogViewModel
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
@@ -39,14 +40,14 @@ class MyblogViewModelTest: BaseRoboViewModelTest<MyblogViewModel>() {
     fun setup() {
         initMock()
 
-        viewmodel = MyblogViewModel(app)
+        viewmodel = MyblogViewModel(app, PreloadConfig(app))
     }
 
     @Test
     fun defaultValueTest() = viewmodel.run {
         viewAlpha.assertEquals(1f)
         viewTransY.assertEquals(0f)
-        swipeIsRefresh.assertEquals(false)
+        swipeRefresh.isRefresh.assertEquals(false)
         swipeIsEnabled.assertEquals(true)
     }
 
@@ -82,8 +83,8 @@ class MyblogViewModelTest: BaseRoboViewModelTest<MyblogViewModel>() {
 
     @Test
     fun swipeRefreshListenerTest() = viewmodel.run {
-        mockObserver(swipeRefreshLive).apply {
-            swipeRefreshListener.get()?.invoke()
+        mockObserver(swipeRefresh.refreshLive).apply {
+            swipeRefresh.listener.get()?.invoke()
             verify(this, atLeastOnce()).onChanged(null)
         }
 

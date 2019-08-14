@@ -5,6 +5,7 @@ import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import brigitte.CommandEventViewModel
+import brigitte.notify
 import com.example.nvblog.R
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -15,12 +16,13 @@ import javax.inject.Inject
 
 class TitlebarViewModel @Inject @JvmOverloads constructor(
     application: Application
-
 ) : CommandEventViewModel(application) {
     companion object {
         private val mLog = LoggerFactory.getLogger(TitlebarViewModel::class.java)
 
-        const val CMD_MOVE_FIRST_TAB    = "move-first-tab"
+        // 뷰모델 내부에서 처리되는 명령들은 ITN (INTERNAL) 로 지정
+        const val ITN_MOVE_FIRST_TAB    = "move-first-tab"
+
         const val CMD_GROUP_DIALOG      = "group-dialog"
         const val CMD_SEARCH_FRAGMENT   = "search-fragment"
         const val CMD_WRITE_FRAGMENT    = "write-fragment"
@@ -71,24 +73,28 @@ class TitlebarViewModel @Inject @JvmOverloads constructor(
     }
 
     fun moveToHistory() {
-        naviItemSelectId.set(naviHistory)
+        if (mLog.isDebugEnabled) {
+            mLog.debug("MOVE TO HISTORY $naviHistory")
+        }
+
+        naviItemSelectId.notify(naviHistory)
     }
 
     override fun command(cmd: String, data: Any) {
-        when (cmd) {
-            CMD_MOVE_FIRST_TAB -> moveToFirst()
+        if (mLog.isDebugEnabled) {
+            mLog.debug("COMMAND $cmd")
         }
-
-        super.command(cmd, data)
+        when (cmd) {
+            ITN_MOVE_FIRST_TAB -> moveToFirst()
+            else -> super.command(cmd, data)
+        }
     }
 
     private fun moveToFirst() {
-        naviItemSelectId.apply {
-            if (get() == R.id.nav_new_article) {
-                notifyChange()
-            } else {
-                set(R.id.nav_new_article)
-            }
+        if (mLog.isDebugEnabled) {
+            mLog.debug("MOVE TO FIRST")
         }
+
+        naviItemSelectId.notify(R.id.nav_new_article)
     }
 }

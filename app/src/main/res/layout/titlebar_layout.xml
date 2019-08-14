@@ -24,7 +24,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:src="@drawable/ic_android_white_24dp"
                 android:padding="@dimen/dp10"
-                android:onClick="@{() -> titlebarModel.command(titlebarModel.CMD_MOVE_FIRST_TAB)}"
+                android:onClick="@{() -> titlebarModel.command(titlebarModel.ITN_MOVE_FIRST_TAB)}"
         />
 
         <androidx.appcompat.widget.AppCompatTextView

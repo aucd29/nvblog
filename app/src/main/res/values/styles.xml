@@ -18,10 +18,6 @@
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
-    <style name="dingbat">
-        <item name="android:textAppearance">@style/solid</item>
-    </style>
-
     <style name="line1dp">
         <item name="android:background">#efefef</item>
         <item name="android:layout_width">match_parent</item>
