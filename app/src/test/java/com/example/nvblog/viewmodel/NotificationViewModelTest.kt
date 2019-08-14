@@ -11,14 +11,12 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import briggite.shield.*
-import brigitte.app
-import brigitte.html
-import brigitte.prefs
-import brigitte.string
+import brigitte.*
 import com.example.nvblog.R
 import com.example.nvblog.common.PreloadConfig
 import com.example.nvblog.ui.notification.NotificationViewModel
 import io.reactivex.disposables.CompositeDisposable
+import org.slf4j.LoggerFactory
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-08-12 <p/>
@@ -76,11 +74,55 @@ class NotificationViewModelTest: BaseRoboViewModelTest<NotificationViewModel>() 
     }
 
     @Test
-    fun convertDateTest() {
-        viewmodel.apply {
-            val value = System.currentTimeMillis()
-            val result = convertDate(value)
+    fun convertDateTest() = viewmodel.run {
+        var value = System.currentTimeMillis()
+        var result = convertDate(value)
+        if (mLog.isDebugEnabled) {
+            mLog.debug("RES = $result")
         }
+        result.assertEquals("moments ago")
+
+        val n1 = value - 60 * 1000 * 1
+        result = convertDate(n1)
+        if (mLog.isDebugEnabled) {
+            mLog.debug("RES = $result")
+        }
+        result.assertEquals("a minute ago")
+
+        val n2 = value - 60 * 1000 * 5
+        result = convertDate(n2)
+        if (mLog.isDebugEnabled) {
+            mLog.debug("RES = $result")
+        }
+        result.assertEquals("5 minutes ago")
+
+        val n3 = value - 60 * 60 * 1000 * 1
+        result = convertDate(n3)
+        if (mLog.isDebugEnabled) {
+            mLog.debug("RES = $result")
+        }
+        result.assertEquals("an hour ago")
+
+        val n4 = value - 60 * 60 * 1000 * 10
+        result = convertDate(n4)
+        if (mLog.isDebugEnabled) {
+            mLog.debug("RES = $result")
+        }
+        result.assertEquals("10 hours ago")
+
+        val n5 = value - 60 * 60 * 24 * 1000 * 1
+        result = convertDate(n5)
+        if (mLog.isDebugEnabled) {
+            mLog.debug("RES = $result")
+        }
+        result.assertEquals("yesterday")
+
+        val n6 = value - 60 * 60 * 24 * 1000 * 10
+        result = convertDate(n6)
+        if (mLog.isDebugEnabled) {
+            mLog.debug("RES = $result")
+        }
+        result.assertEquals(n6.toDateString())
     }
 
     @Test
@@ -135,5 +177,9 @@ class NotificationViewModelTest: BaseRoboViewModelTest<NotificationViewModel>() 
         val after = items.get()?.size
 
         assert(before != after)
+    }
+
+    companion object {
+        private val mLog = LoggerFactory.getLogger(NotificationViewModelTest::class.java)
     }
 }

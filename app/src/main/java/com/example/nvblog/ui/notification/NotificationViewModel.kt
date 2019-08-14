@@ -112,7 +112,7 @@ class NotificationViewModel @Inject @JvmOverloads constructor(
         }
 
     fun convertDate(date: Long) =
-        "조금전"
+        date.toTimeAgoString()
 
     fun convertNumOfAppliedForFriend(num : Int) =
         ("<font color='black'>${string(R.string.noti_num_of_applied_for_friend)}</font>" +
