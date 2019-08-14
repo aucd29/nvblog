@@ -139,7 +139,10 @@ dependencies {
     // https://github.com/airbnb/lottie-android
     implementation 'com.airbnb.android:lottie:2.8.0'
 
+    // font (https://github.com/InflationX/Calligraphy)
+    implementation "io.github.inflationx:calligraphy3:$calligraphy"
+    implementation "io.github.inflationx:viewpump:$viewpump"
+
     // local lib
     implementation project(path: ':brigitte')
-    implementation project(path: ':dingbat')
 }

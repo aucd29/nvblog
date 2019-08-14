@@ -4,8 +4,10 @@ import android.content.Context
 import android.os.Bundle
 import androidx.annotation.VisibleForTesting
 import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import brigitte.*
 import brigitte.viewmodel.SplashViewModel
+import brigitte.widget.VerticalDrawerLayout
 import com.example.nvblog.common.Config
 import com.example.nvblog.databinding.MainActivityBinding
 import com.example.nvblog.ui.ViewController
@@ -71,6 +73,8 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() 
     }
 
     override fun initViewBinding() = mBinding.run {
+        drawerLayout.touchSlopDirection = VerticalDrawerLayout.END
+
         rootViewpager.adapter = adapter
         rootViewpager.offscreenPageLimit = adapter.count
 
@@ -102,7 +106,6 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() 
     override fun onCommandEvent(cmd: String, data: Any) {
         TitlebarViewModel.apply {
             when (cmd) {
-                CMD_MOVE_FIRST_TAB  -> {}
                 CMD_GROUP_DIALOG    -> {}
                 CMD_SEARCH_FRAGMENT -> {}
                 CMD_WRITE_FRAGMENT  -> showWriteFragment()

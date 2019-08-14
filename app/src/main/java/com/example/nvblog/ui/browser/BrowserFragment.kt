@@ -106,8 +106,7 @@ class BrowserFragment @Inject constructor(
             webview.reload()
 
             mDisposable.clear()
-            mDisposable.add(
-                singleTimer(config.TIMEOUT_RELOAD_ICO)
+            mDisposable.add(singleTimer(config.TIMEOUT_RELOAD_ICO)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe { _ ->
                         if (mLog.isInfoEnabled) {

@@ -98,7 +98,7 @@
                             android:layout_marginTop="@dimen/dp7"
                             android:layout_marginBottom="@dimen/dp7"
                             android:visibility="@{model.viewNotRead}"
-                            android:onClick="@{() -> model.command(model.IN_NOT_READ)}"
+                            android:onClick="@{() -> model.command(model.ITN_NOT_READ)}"
                     />
 
                     <!-- NOTICE -->
@@ -135,7 +135,7 @@
                                 app:layout_constraintEnd_toEndOf="parent"
                                 android:padding="@dimen/dp15"
                                 android:text="X"
-                                android:onClick="@{() -> model.command(model.IN_HIDE_NOTICE)}"
+                                android:onClick="@{() -> model.command(model.ITN_HIDE_NOTICE)}"
                         />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>

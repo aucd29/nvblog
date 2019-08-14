@@ -1,24 +1,10 @@
-/*
- * Copyright (C) Hanwha S&C Ltd., 2019. All rights reserved.
- *
- * This software is covered by the license agreement between
- * the end user and Hanwha S&C Ltd., and may be
- * used and copied only in accordance with the terms of the
- * said agreement.
- *
- * Hanwha S&C Ltd., assumes no responsibility or
- * liability for any errors or inaccuracies in this software,
- * or any consequential, incidental or indirect damage arising
- * out of the use of the software.
- */
-
 package brigitte.widget
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.ViewConfiguration
-import com.google.android.material.navigation.NavigationView
+import androidx.drawerlayout.widget.DrawerLayout
 import org.slf4j.LoggerFactory
 import kotlin.math.abs
 
@@ -28,21 +14,26 @@ import kotlin.math.abs
  * https://stackoverflow.com/questions/34136178/swiperefreshlayout-blocking-horizontally-scrolled-recyclerview
  */
 
-open class VerticalNavigationView(
+open class VerticalDrawerLayout(
     context: Context,
     attrs: AttributeSet
-) : NavigationView(context, attrs) {
+) : DrawerLayout(context, attrs) {
     companion object {
-        private val mLog = LoggerFactory.getLogger(VerticalNavigationView::class.java)
+        private val mLog = LoggerFactory.getLogger(VerticalDrawerLayout::class.java)
+
+        const val START = 0
+        const val END   = 1
     }
 
     private var touchSlop: Int
     private var prevX: Float = 0f
     private var decliend: Boolean = false
 
+    var touchSlopDirection = START
+
     init {
         this.initLayout()
-        touchSlop = ViewConfiguration.get(context).scaledTouchSlop * 40
+        touchSlop = (ViewConfiguration.get(context).scaledTouchSlop * 1.3F).toInt()
     }
 
     open fun initLayout() {
@@ -58,15 +49,30 @@ open class VerticalNavigationView(
             MotionEvent.ACTION_MOVE -> {
                 val evX = ev.x
                 val xDiff = abs(evX - prevX)
+                val direction = evX - prevX
+                var ignoreTouchSlop = false
 
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("TOUCH SLOP : $touchSlop")
+                if (touchSlopDirection == START) {
+                    if (direction > 0) {
+                        ignoreTouchSlop = true
+                    }
+                } else if (touchSlopDirection == END) {
+                    if (direction < 0) {
+                        ignoreTouchSlop = true
+                    }
                 }
 
-                if (decliend || xDiff > touchSlop) {
-                    decliend = true
+                if (!ignoreTouchSlop) {
+                    if (decliend || xDiff > touchSlop) {
+                        decliend = true
 
-                    return false
+                        if (mLog.isWarnEnabled) {
+                            mLog.warn("INGORE TOUCH $touchSlop")
+                        }
+
+                        // 이벤트 무시
+                        return false
+                    }
                 }
             }
         }

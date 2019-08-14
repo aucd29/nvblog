@@ -1,44 +1,15 @@
-/*
- * Copyright (C) Hanwha S&C Ltd., 2019. All rights reserved.
- *
- * This software is covered by the license agreement between
- * the end user and Hanwha S&C Ltd., and may be
- * used and copied only in accordance with the terms of the
- * said agreement.
- *
- * Hanwha S&C Ltd., assumes no responsibility or
- * liability for any errors or inaccuracies in this software,
- * or any consequential, incidental or indirect damage arising
- * out of the use of the software.
- */
-
 package com.example.nvblog.viewmodel
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019-08-12. <p/>
  */
 
-import android.app.Application
-import android.content.Context
-import android.content.res.Resources
 import android.view.View
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.core.text.toHtml
-import androidx.test.core.app.ApplicationProvider
-import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertTrue
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.mock
-import org.mockito.MockitoAnnotations
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.Shadows
-import org.robolectric.annotation.Config
-import org.slf4j.LoggerFactory
 import briggite.shield.*
 import brigitte.app
 import brigitte.html
@@ -152,7 +123,7 @@ class NotificationViewModelTest: BaseRoboViewModelTest<NotificationViewModel>() 
 
     @Test
     fun commandHideNoticeTest() = viewmodel.run {
-        command(NotificationViewModel.IN_HIDE_NOTICE)
+        command(NotificationViewModel.ITN_HIDE_NOTICE)
         viewNotice.assertEquals(View.GONE)
         app.prefs().getInt(NotificationViewModel.PREF_NOTI_VISIBILITY, View.GONE).assertEquals(View.GONE)
     }
@@ -163,7 +134,7 @@ class NotificationViewModelTest: BaseRoboViewModelTest<NotificationViewModel>() 
         items.set(list)
 
         val before = items.get()?.size
-        command(NotificationViewModel.IN_DELETE_ITEM, list[0].id)
+        command(NotificationViewModel.ITN_DELETE_ITEM, list[0].id)
         val after = items.get()?.size
 
         assert(before != after)

@@ -15,12 +15,13 @@ import javax.inject.Inject
 
 class TitlebarViewModel @Inject @JvmOverloads constructor(
     application: Application
-
 ) : CommandEventViewModel(application) {
     companion object {
         private val mLog = LoggerFactory.getLogger(TitlebarViewModel::class.java)
 
-        const val CMD_MOVE_FIRST_TAB    = "move-first-tab"
+        // 뷰모델 내부에서 처리되는 명령들은 ITN (INTERNAL) 로 지정
+        const val ITN_MOVE_FIRST_TAB    = "move-first-tab"
+
         const val CMD_GROUP_DIALOG      = "group-dialog"
         const val CMD_SEARCH_FRAGMENT   = "search-fragment"
         const val CMD_WRITE_FRAGMENT    = "write-fragment"
@@ -76,10 +77,9 @@ class TitlebarViewModel @Inject @JvmOverloads constructor(
 
     override fun command(cmd: String, data: Any) {
         when (cmd) {
-            CMD_MOVE_FIRST_TAB -> moveToFirst()
+            ITN_MOVE_FIRST_TAB -> moveToFirst()
+            else -> super.command(cmd, data)
         }
-
-        super.command(cmd, data)
     }
 
     private fun moveToFirst() {

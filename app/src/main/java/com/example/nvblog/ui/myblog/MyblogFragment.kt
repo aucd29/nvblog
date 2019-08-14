@@ -56,6 +56,7 @@ class MyblogFragment @Inject constructor(
 
     override fun initViewModelEvents() {
         observe(mViewModel.swipeRefreshLive) {
+            mDisposable.clear()
             mDisposable.add(singleTimer(600)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({

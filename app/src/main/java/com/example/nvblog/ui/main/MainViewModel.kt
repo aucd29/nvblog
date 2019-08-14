@@ -62,17 +62,16 @@ class MainViewModel @Inject @JvmOverloads constructor(
                 mLog.debug("START SWIPE REFRESH")
             }
 
-            disposable.add(interval(600)
+            disposable.clear()
+            disposable.add(singleTimer(600)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    stopSwipeRefresh()
-                })
+                .subscribe { _ -> stopSwipeRefresh() })
         }
     }
 
     fun stopSwipeRefresh() {
         if (mLog.isDebugEnabled) {
-            mLog.debug("END SWIPE REFRESH")
+            mLog.debug("STOP SWIPE REFRESH")
         }
 
         if (swipeIsRefresh.get() == false) {

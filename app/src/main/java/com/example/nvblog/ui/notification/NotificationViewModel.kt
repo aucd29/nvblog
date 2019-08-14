@@ -30,9 +30,9 @@ class NotificationViewModel @Inject @JvmOverloads constructor(
 
         const val PREF_NOTI_VISIBILITY  = "noti-visibility"
 
-        const val IN_HIDE_NOTICE = "hide-notice"
-        const val IN_DELETE_ITEM = "delete-item"
-        const val IN_NOT_READ    = "not-read"
+        const val ITN_HIDE_NOTICE = "hide-notice"
+        const val ITN_DELETE_ITEM = "delete-item"
+        const val ITN_NOT_READ    = "not-read"
     }
 
     lateinit var disposable: CompositeDisposable
@@ -74,6 +74,7 @@ class NotificationViewModel @Inject @JvmOverloads constructor(
         viewNotRead.gone()
         viewProgress.visible()
 
+        disposable.clear()
         disposable.add(singleTimer(300)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
@@ -113,14 +114,22 @@ class NotificationViewModel @Inject @JvmOverloads constructor(
 
     private fun swipeRefreshListener() {
         swipeRefreshListener.set {
-            swipeIsRefresh.set(true)
-
-            disposable.add(interval(300)
+            disposable.clear()
+            disposable.add(singleTimer(300)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    // 로드 했다고 가정 하에
-                    swipeIsRefresh.set(false)
-                })
+                .subscribe { _ -> stopSwipeRefresh() })
+        }
+    }
+
+    fun stopSwipeRefresh() {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("STOP SWIPE REFRESH")
+        }
+
+        if (swipeIsRefresh.get() == false) {
+            swipeIsRefresh.notifyChange()
+        } else {
+            swipeIsRefresh.set(false)
         }
     }
 
@@ -182,9 +191,10 @@ class NotificationViewModel @Inject @JvmOverloads constructor(
 
     override fun command(cmd: String, data: Any) {
         when (cmd) {
-            IN_HIDE_NOTICE -> hideNotice()
-            IN_DELETE_ITEM -> deleteItem(data as Int)
-            IN_NOT_READ    -> notRead()
+            ITN_HIDE_NOTICE -> hideNotice()
+            ITN_DELETE_ITEM -> deleteItem(data as Int)
+            ITN_NOT_READ    -> notRead()
+
             else -> super.command(cmd, data)
         }
     }
