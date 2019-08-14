@@ -3,14 +3,15 @@ package com.example.nvblog.ui.notification
 import android.app.Application
 import android.view.View
 import androidx.annotation.VisibleForTesting
-import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import brigitte.*
+import brigitte.widget.SwipeRefreshController
 import brigitte.widget.viewpager.OffsetDividerItemDecoration
 import com.example.nvblog.R
+import com.example.nvblog.common.PreloadConfig
 import com.example.nvblog.model.remote.entity.NotificationData
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -22,7 +23,9 @@ import javax.inject.Inject
  */
 
 class NotificationViewModel @Inject @JvmOverloads constructor(
-    application: Application
+    application: Application,
+    private val mPreConfig: PreloadConfig,
+    private val mDisposable: CompositeDisposable
 ) : RecyclerViewModel<NotificationData>(application) {
 
     companion object {
@@ -34,8 +37,6 @@ class NotificationViewModel @Inject @JvmOverloads constructor(
         const val ITN_DELETE_ITEM = "delete-item"
         const val ITN_NOT_READ    = "not-read"
     }
-
-    lateinit var disposable: CompositeDisposable
 
     private lateinit var mNewList: ArrayList<NotificationData>
     private lateinit var mPostedList: ArrayList<NotificationData>
@@ -53,19 +54,25 @@ class NotificationViewModel @Inject @JvmOverloads constructor(
     val itemDecoration = ObservableField(OffsetDividerItemDecoration(app, R.drawable.shape_divider_gray, 40, 0))
     val numberOfAppliedForFriend = ObservableInt(2)
 
-    val swipeRefreshListener = ObservableField<() -> Unit>()
-    val swipeIsRefresh       = ObservableBoolean(false)
+    val swipeRefresh   = SwipeRefreshController()
+
+    val viewNumOfAppliedForFriend = ObservableInt(View.VISIBLE)
+    val viewNoNewsPostId  = ObservableInt(R.string.noti_no_new_posts)
+    val viewNoNewsPost2Id = ObservableInt(R.string.noti_no_new_posts2)
 
     init {
         initAdapter(R.layout.notification_item_content)
         initData()
 
-        swipeRefreshListener()
+        swipeRefresh.initTest(mDisposable)
         viewTypeListener()
     }
 
     private fun checkedNews() {
         viewNotRead.visible()
+        viewNumOfAppliedForFriend.visible()
+        viewNoNewsPostId.set(R.string.noti_no_new_posts)
+        viewNoNewsPost2Id.set(R.string.noti_no_new_posts2)
 
         items.set(mNewList)
     }
@@ -73,9 +80,12 @@ class NotificationViewModel @Inject @JvmOverloads constructor(
     private fun checkedPosted() {
         viewNotRead.gone()
         viewProgress.visible()
+        viewNumOfAppliedForFriend.gone()
+        viewNoNewsPostId.set(R.string.noti_no_writed_post)
+        viewNoNewsPost2Id.set(R.string.noti_no_writed_post2)
 
-        disposable.clear()
-        disposable.add(singleTimer(300)
+        mDisposable.clear()
+        mDisposable.add(singleTimer()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 viewProgress.gone()
@@ -112,27 +122,6 @@ class NotificationViewModel @Inject @JvmOverloads constructor(
         ("<font color='#00AC09'>${string(R.string.noti_no_new_posts)}</font>" +
                 "<br/>${string(R.string.noti_no_new_posts2)}").html()
 
-    private fun swipeRefreshListener() {
-        swipeRefreshListener.set {
-            disposable.clear()
-            disposable.add(singleTimer(300)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { _ -> stopSwipeRefresh() })
-        }
-    }
-
-    fun stopSwipeRefresh() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("STOP SWIPE REFRESH")
-        }
-
-        if (swipeIsRefresh.get() == false) {
-            swipeIsRefresh.notifyChange()
-        } else {
-            swipeIsRefresh.set(false)
-        }
-    }
-
     private fun viewTypeListener() {
         viewTypeCheckedListener.set {
             if (mLog.isDebugEnabled) {
@@ -151,30 +140,8 @@ class NotificationViewModel @Inject @JvmOverloads constructor(
     }
 
     private fun initData() {
-        var idx = 1
-        mPostedList = arrayListOf(
-            NotificationData(idx++, 0, "건강이 최고 가족도 최고", System.currentTimeMillis()),
-            NotificationData(idx++, 1, "하노이 여행::호안끼엠 금은방에서 환전하기", System.currentTimeMillis()),
-            NotificationData(idx++, 1, "SM5 TCE 제로백 시승기", System.currentTimeMillis() - 8400000),
-            NotificationData(idx++, 0, "신형 바다이야기", System.currentTimeMillis() - 8400000),
-            NotificationData(idx++, 1, "삭제된 글입니다.", System.currentTimeMillis() - 8400000),
-
-            NotificationData(idx++, 1, "하노이 여행::호안끼엠 금은방에서 환전하기", System.currentTimeMillis() - 8400000),
-            NotificationData(idx++, 1, "SM5 TCE 제로백 시승기", System.currentTimeMillis() - 8400000),
-            NotificationData(idx++, 0, "신형 바다이야기", System.currentTimeMillis() - 6400000),
-            NotificationData(idx++, 1, "삭제된 글입니다.", System.currentTimeMillis() - 86400000),
-            NotificationData(idx++, 1, "하노이 여행::호안끼엠 금은방에서 환전하기", System.currentTimeMillis() - 86400000),
-
-            NotificationData(idx++, 1, "SM5 TCE 제로백 시승기", System.currentTimeMillis() - 6400000),
-            NotificationData(idx++, 0, "신형 바다이야기", System.currentTimeMillis() - 86400000),
-            NotificationData(idx++, 1, "삭제된 글입니다.", System.currentTimeMillis() - 8400000),
-            NotificationData(idx++, 1, "하노이 여행::호안끼엠 금은방에서 환전하기", System.currentTimeMillis() - 8600000),
-            NotificationData(idx++, 1, "SM5 TCE 제로백 시승기", System.currentTimeMillis() - 86400000),
-
-            NotificationData(idx++, 0, "신형 바다이야기", System.currentTimeMillis() - 86400000),
-            NotificationData(idx++, 1, "삭제된 글입니다.", System.currentTimeMillis() - 86400000)
-        )
-        mNewList = arrayListOf<NotificationData>()
+        mPostedList = mPreConfig.postedNotificationDataItem
+        mNewList    = mPreConfig.newNotificationDataItem
 
         items.set(mNewList)
     }

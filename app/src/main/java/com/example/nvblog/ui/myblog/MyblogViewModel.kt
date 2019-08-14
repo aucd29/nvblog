@@ -69,7 +69,7 @@ class MyblogViewModel @Inject @JvmOverloads constructor(
             mLog.debug("STOP SWIPE REFRESH")
         }
 
-        if (swipeIsRefresh.get() == false) {
+        if (!swipeIsRefresh.get()) {
             swipeIsRefresh.notifyChange()
         } else {
             swipeIsRefresh.set(false)

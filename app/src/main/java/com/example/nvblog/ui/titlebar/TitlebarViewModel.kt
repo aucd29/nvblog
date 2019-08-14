@@ -5,6 +5,7 @@ import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import brigitte.CommandEventViewModel
+import brigitte.notify
 import com.example.nvblog.R
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -72,10 +73,17 @@ class TitlebarViewModel @Inject @JvmOverloads constructor(
     }
 
     fun moveToHistory() {
-        naviItemSelectId.set(naviHistory)
+        if (mLog.isDebugEnabled) {
+            mLog.debug("MOVE TO HISTORY $naviHistory")
+        }
+
+        naviItemSelectId.notify(naviHistory)
     }
 
     override fun command(cmd: String, data: Any) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("COMMAND $cmd")
+        }
         when (cmd) {
             ITN_MOVE_FIRST_TAB -> moveToFirst()
             else -> super.command(cmd, data)
@@ -83,12 +91,10 @@ class TitlebarViewModel @Inject @JvmOverloads constructor(
     }
 
     private fun moveToFirst() {
-        naviItemSelectId.apply {
-            if (get() == R.id.nav_new_article) {
-                notifyChange()
-            } else {
-                set(R.id.nav_new_article)
-            }
+        if (mLog.isDebugEnabled) {
+            mLog.debug("MOVE TO FIRST")
         }
+
+        naviItemSelectId.notify(R.id.nav_new_article)
     }
 }

@@ -25,15 +25,13 @@ class MainFragment @Inject constructor(
         private val mLog = LoggerFactory.getLogger(MainFragment::class.java)
     }
 
-    @Inject lateinit var viewController: ViewController
-
     private lateinit var mTitlebarModel: TitlebarViewModel
     private lateinit var mNaviViewModel: NavigationViewModel
 
+    @Inject lateinit var viewController: ViewController
+
     override fun bindViewModel() {
         super.bindViewModel()
-
-        mViewModel.disposable = disposable()
 
         mTitlebarModel = inject(requireActivity())
         mNaviViewModel = inject(requireActivity())
@@ -58,7 +56,11 @@ class MainFragment @Inject constructor(
 
     override fun onCommandEvent(cmd: String, data: Any) = MainViewModel.run {
         if (mLog.isDebugEnabled) {
-            mLog.debug("COMMAND : $cmd")
+            mLog.debug("COMAMND : $cmd")
+        }
+
+        when (cmd) {
+            CMD_OPEN_BRS -> viewController.browserFragment(data)
         }
     }
 

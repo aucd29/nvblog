@@ -30,15 +30,15 @@ class NavigationViewModel @Inject @JvmOverloads constructor(
         const val CMD_HIDE_NAVI = "hide-navi"
     }
 
-    var blogItem    = mPreConfig.blogInfoItem
-    val circleCrop  = ObservableBoolean(true)
+    var blogItem       = mPreConfig.blogInfoItem
+    val circleCrop     = ObservableBoolean(true)
     val itemDecoration = ObservableField<RecyclerView.ItemDecoration>()
 
     val dummyGraph  = ObservableInt(R.drawable.navi_dummy_graph)
     val dummyBanner = ObservableInt(R.drawable.navi_dummy_banner)
 
     init {
-        initNaviData()
+        initNavigationData()
         itemDecoration.set(
             PositionDividerItemDecoration(app,
             R.drawable.shape_divider_gray_height_5dp,
@@ -49,8 +49,8 @@ class NavigationViewModel @Inject @JvmOverloads constructor(
     fun convertVisiteCount(today: Int, total: Int) =
         app.getString(R.string.myblog_visiter_count, today, total.numberFormat())
 
-    private fun initNaviData() {
+    private fun initNavigationData() {
         initAdapter(R.layout.main_navigation_item)
-        items.set(mPreConfig.naviDataItem)
+        items.set(mPreConfig.navigationDataItem)
     }
 }

@@ -66,11 +66,11 @@ open class VerticalDrawerLayout(
                     if (decliend || xDiff > touchSlop) {
                         decliend = true
 
-                        if (mLog.isWarnEnabled) {
-                            mLog.warn("INGORE TOUCH $touchSlop")
+                        if (mLog.isTraceEnabled) {
+                            mLog.trace("INGORE TOUCH EVENT ${xDiff}")
                         }
 
-                        // 이벤트 무시
+                        // 터치 이벤트 무시
                         return false
                     }
                 }

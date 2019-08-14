@@ -25,7 +25,7 @@ class WriteFragment @Inject constructor(
     }
 
     override fun initViewModelEvents() {
-        mTitlebarModel.moveToHistory()
+
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

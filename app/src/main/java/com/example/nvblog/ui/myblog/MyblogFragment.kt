@@ -82,9 +82,7 @@ class MyblogFragment @Inject constructor(
 
     override fun onCommandEvent(cmd: String, data: Any) {
         when (cmd) {
-            "open-brs" -> {
-                viewController.browserFragment(data)
-            }
+            "open-brs" -> viewController.browserFragment(data)
         }
     }
 

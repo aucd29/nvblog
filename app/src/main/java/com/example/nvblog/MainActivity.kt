@@ -14,6 +14,7 @@ import com.example.nvblog.ui.ViewController
 import com.example.nvblog.ui.navigation.NavigationViewModel
 import com.example.nvblog.ui.titlebar.TitlebarViewModel
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
+import io.reactivex.android.schedulers.AndroidSchedulers
 import okhttp3.OkHttpClient
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -122,6 +123,10 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() 
 
     private fun showWriteFragment() {
         viewController.writeFragment()
+
+        disposable().add(singleTimer(200)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { _ -> mTitlebarModel.moveToHistory() })
     }
 
     private fun showNavigation() {

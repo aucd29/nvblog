@@ -12,6 +12,7 @@
             android:id="@+id/main_item_notification_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:onClick="@{() -> model.command(model.CMD_OPEN_BRS, item.link)}"
     >
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -22,7 +23,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:bindImageRes="@{item.pic}"
-                android:onClick="@{() -> model.command(model.CMD_OPEN_BLOG, item.link)}"
         />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

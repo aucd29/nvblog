@@ -57,9 +57,12 @@ class PreloadConfig @Inject constructor(
 ) {
     val blogInfoItem            = ObservableField<MyBlogData>()
     val mainDataItem            = arrayListOf<IMainData>()
-    var naviDataItem            = arrayListOf<NavigationData>()
+    var navigationDataItem      = arrayListOf<NavigationData>()
     val popupularBlogDataItem   = arrayListOf<BlogData>()
     val allBlogDataItem         = arrayListOf<BlogData>()
+
+    val newNotificationDataItem    = arrayListOf<NotificationData>()
+    var postedNotificationDataItem = arrayListOf<NotificationData>()
 
     companion object {
         private val mLog = LoggerFactory.getLogger(PreloadConfig::class.java)
@@ -71,6 +74,7 @@ class PreloadConfig @Inject constructor(
         initNavigationData()
         initPopupularBlogData()
         initAllBlogData()
+        initNotificationData()
     }
 
     private fun initMyBlogInfo() {
@@ -121,7 +125,7 @@ class PreloadConfig @Inject constructor(
 
     private fun initNavigationData() {
         var i = 1
-        naviDataItem = arrayListOf(
+        navigationDataItem = arrayListOf(
             NavigationData(i++, R.drawable.ic_drive_eta_black_24dp, "내 동영상"),
             NavigationData(i++, R.drawable.ic_drive_eta_black_24dp, "지난 오늘 글"),
             NavigationData(i++, R.drawable.ic_drive_eta_black_24dp, "블로그 홈"),
@@ -380,4 +384,29 @@ class PreloadConfig @Inject constructor(
         ))
     }
 
+    private fun initNotificationData() {
+        var idx = 1
+        postedNotificationDataItem = arrayListOf(
+            NotificationData(idx++, 0, "건강이 최고 가족도 최고", System.currentTimeMillis()),
+            NotificationData(idx++, 1, "하노이 여행::호안끼엠 금은방에서 환전하기", System.currentTimeMillis()),
+            NotificationData(idx++, 1, "SM5 TCE 제로백 시승기", System.currentTimeMillis() - 8400000),
+            NotificationData(idx++, 0, "신형 바다이야기", System.currentTimeMillis() - 8400000),
+            NotificationData(idx++, 1, "삭제된 글입니다.", System.currentTimeMillis() - 8400000),
+
+            NotificationData(idx++, 1, "하노이 여행::호안끼엠 금은방에서 환전하기", System.currentTimeMillis() - 8400000),
+            NotificationData(idx++, 1, "SM5 TCE 제로백 시승기", System.currentTimeMillis() - 8400000),
+            NotificationData(idx++, 0, "신형 바다이야기", System.currentTimeMillis() - 6400000),
+            NotificationData(idx++, 1, "삭제된 글입니다.", System.currentTimeMillis() - 86400000),
+            NotificationData(idx++, 1, "하노이 여행::호안끼엠 금은방에서 환전하기", System.currentTimeMillis() - 86400000),
+
+            NotificationData(idx++, 1, "SM5 TCE 제로백 시승기", System.currentTimeMillis() - 6400000),
+            NotificationData(idx++, 0, "신형 바다이야기", System.currentTimeMillis() - 86400000),
+            NotificationData(idx++, 1, "삭제된 글입니다.", System.currentTimeMillis() - 8400000),
+            NotificationData(idx++, 1, "하노이 여행::호안끼엠 금은방에서 환전하기", System.currentTimeMillis() - 8600000),
+            NotificationData(idx++, 1, "SM5 TCE 제로백 시승기", System.currentTimeMillis() - 86400000),
+
+            NotificationData(idx++, 0, "신형 바다이야기", System.currentTimeMillis() - 86400000),
+            NotificationData(idx++, 1, "삭제된 글입니다.", System.currentTimeMillis() - 86400000)
+        )
+    }
 }

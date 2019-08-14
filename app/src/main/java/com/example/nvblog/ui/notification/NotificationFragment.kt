@@ -4,8 +4,7 @@ import android.graphics.Typeface
 import android.widget.RadioButton
 import androidx.appcompat.widget.AppCompatRadioButton
 import androidx.core.view.children
-import brigitte.BaseDaggerFragment
-import brigitte.interval
+import brigitte.*
 import com.example.nvblog.databinding.NotificationFragmentBinding
 import com.example.nvblog.ui.titlebar.TitlebarViewModel
 import com.fasterxml.jackson.databind.type.TypeFactory
@@ -24,8 +23,6 @@ class NotificationFragment @Inject constructor(
     override fun bindViewModel() {
         super.bindViewModel()
 
-        mViewModel.disposable = mDisposable
-
         mTitlebarModel = inject(requireActivity())
 
         mBinding.apply {
@@ -40,11 +37,7 @@ class NotificationFragment @Inject constructor(
         observe(mViewModel.viewTypeLive) {
             mBinding.notiRadioGroup.children.iterator().forEach { v ->
                 if (v is AppCompatRadioButton) {
-                    v.setTypeface(v.typeface, if (v.id == it) {
-                        Typeface.BOLD
-                    } else {
-                        Typeface.NORMAL
-                    })
+                    v.boldById(it)
                 }
             }
         }
