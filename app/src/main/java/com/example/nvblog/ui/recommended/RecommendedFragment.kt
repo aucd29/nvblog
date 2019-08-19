@@ -17,7 +17,7 @@ import javax.inject.Inject
  */
 
 class RecommendedFragment @Inject constructor(
-): BaseDaggerFragment<RecommendedFragmentBinding, RecommendedViewModel>() {
+): BaseDaggerFragment<RecommendedFragmentBinding, RecommendedViewModel>(), OnBackPressedListener {
     companion object {
         private val mLog = LoggerFactory.getLogger(RecommendedFragment::class.java)
 
@@ -51,7 +51,6 @@ class RecommendedFragment @Inject constructor(
     }
 
     override fun onDestroyView() {
-        mDisposable.dispose()
         webview.free()
 
         super.onDestroyView()
@@ -130,6 +129,22 @@ class RecommendedFragment @Inject constructor(
     }
 
     override fun initViewModelEvents() {
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // OnBackPressedListener
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    override fun onBackPressed(): Boolean {
+        if (webview.canGoBack()) {
+            webview.goBack()
+
+            return true
+        }
+
+        return false
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

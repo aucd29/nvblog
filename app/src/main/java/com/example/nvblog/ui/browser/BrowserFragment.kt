@@ -18,7 +18,7 @@ import javax.inject.Inject
  */
 
 class BrowserFragment @Inject constructor(
-): BaseDaggerFragment<BrowserFragmentBinding, BrowserViewModel>() {
+): BaseDaggerFragment<BrowserFragmentBinding, BrowserViewModel>(), OnBackPressedListener {
     companion object {
         private val mLog = LoggerFactory.getLogger(BrowserFragment::class.java)
 
@@ -51,7 +51,6 @@ class BrowserFragment @Inject constructor(
     }
 
     override fun onDestroyView() {
-        mDisposable.dispose()
         webview.free()
 
         super.onDestroyView()
@@ -62,20 +61,6 @@ class BrowserFragment @Inject constructor(
         webview.loadUrl(loadUrl)
 
         webview.defaultSetting(WebViewSettingParams(
-//            urlLoading = { _, url ->
-//                url?.let {
-//                    if (!it.contains("m.daum.net")) {
-//                        if (mLog.isDebugEnabled) {
-//                            mLog.debug("OPEN BROWSER FRAGMENT : $url")
-//                        }
-//
-////                        viewController.browserFragment(it)
-//                    } else {
-//                        // uri 를 redirect 시키는 이유가 뭘까나?
-//                        webview.loadUrl(url)
-//                    }
-//                }
-//            },
             pageFinished = {
                 progress.visibility = View.GONE
 
@@ -119,6 +104,22 @@ class BrowserFragment @Inject constructor(
     }
 
     override fun initViewModelEvents() {
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // OnBackPressedListener
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    override fun onBackPressed(): Boolean {
+        if (webview.canGoBack()) {
+            webview.goBack()
+
+            return true
+        }
+
+        return false
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
