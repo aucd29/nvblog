@@ -1,5 +1,5 @@
 @file:Suppress("NOTHING_TO_INLINE", "unused")
-package briggite.shield
+package brigitte.shield
 
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
@@ -7,6 +7,7 @@ import android.app.Application
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.databinding.Observable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
@@ -99,6 +100,12 @@ inline fun <reified T> mockObserver(event: LiveData<T>): Observer<T> {
     return mockObserver
 }
 
+inline fun androidx.databinding.ObservableBoolean.verifyPropertyChanged(mode: VerificationMode = atLeastOnce()) {
+    val mock = mock(androidx.databinding.Observable.OnPropertyChangedCallback::class.java)
+    this.addOnPropertyChangedCallback(mock)
+    verify(mock, mode).onPropertyChanged(any(androidx.databinding.Observable::class.java), anyInt())
+}
+
 inline fun <VM: CommandEventViewModel> Observer<Pair<String, Any>>.verifyCommandChanged(viewmodel: VM, vararg cmds: Pair<String, Any>) {
     cmds.forEach {
         viewmodel.command(it.first, it.second)
@@ -146,3 +153,19 @@ inline fun <T> List<T>.mockReturn(value: List<T>) {
     `when`(this).thenReturn(value)
 }
 
+////////////////////////////////////////////////////////////////////////////////////
+//
+// Observable.OnPropertyChangedCallback
+//
+////////////////////////////////////////////////////////////////////////////////////
+
+inline fun androidx.databinding.Observable.mockCallback(): Observable.OnPropertyChangedCallback {
+    val mockCallback = mock(androidx.databinding.Observable.OnPropertyChangedCallback::class.java)
+    addOnPropertyChangedCallback(mockCallback)
+
+    return mockCallback
+}
+
+inline fun androidx.databinding.Observable.OnPropertyChangedCallback.verifyPropertyChanged(mode: VerificationMode = atLeastOnce()) {
+    verify(this, mode).onPropertyChanged(any(Observable::class.java), anyInt())
+}

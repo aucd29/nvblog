@@ -9,7 +9,7 @@ import android.content.Context
 import android.content.res.Resources
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
-import briggite.shield.*
+import brigitte.shield.*
 import brigitte.app
 import brigitte.numberFormat
 import com.example.nvblog.R
@@ -74,9 +74,10 @@ class MyblogViewModelTest: BaseRoboViewModelTest<MyblogViewModel>() {
 
     @Test
     fun blogItemTest() = viewmodel.run {
-        val item = blogItem.get()!!
-        item.userId.equals("aucd29")
-        item.blogTitle.equals("Pandora's box")
+        blogItem.get()?.run {
+            userId.assertEquals("aucd29")
+            blogTitle.assertEquals("Pandora's box")
+        } ?: assert(false)
 
         Unit
     }

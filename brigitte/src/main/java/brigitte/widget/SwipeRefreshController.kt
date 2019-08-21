@@ -36,7 +36,8 @@ class SwipeRefreshController {
         this.listener.set {
             dp.add(singleTimer(delay)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { _ -> stopSwipeRefresh() })
+                .subscribe ({ stopSwipeRefresh() },
+                    { it.printStackTrace() }))
         }
     }
 

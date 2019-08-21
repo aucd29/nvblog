@@ -17,7 +17,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.slf4j.LoggerFactory
-import briggite.shield.*
+import brigitte.shield.*
 import com.example.nvblog.common.PreloadConfig
 import com.example.nvblog.ui.myblog.MyblogPopularPostViewModel
 
@@ -49,11 +49,4 @@ class MyblogPopularPostViewModelTest: BaseRoboViewModelTest<MyblogPopularPostVie
     companion object {
         private val mLog = LoggerFactory.getLogger(MyblogPopularPostViewModelTest::class.java)
     }
-
-    //override fun initMock() {
-    //    super.initMock()
-    //
-    //    initShadow()
-    //    shadowApp?.grantPermissions(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION)
-    //}
 }

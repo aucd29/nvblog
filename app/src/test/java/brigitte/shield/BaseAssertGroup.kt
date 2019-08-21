@@ -1,5 +1,5 @@
 @file:Suppress("NOTHING_TO_INLINE", "unused")
-package briggite.shield
+package brigitte.shield
 
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField

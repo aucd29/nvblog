@@ -25,7 +25,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.slf4j.LoggerFactory
-import briggite.shield.*
+import brigitte.shield.*
 import brigitte.dpToPx
 import brigitte.toDateString
 import brigitte.widget.viewpager.GridItemDecoration
@@ -58,17 +58,17 @@ class MyblogAllPostViewModelTest: BaseRoboViewModelTest<MyblogAllPostViewModel>(
     @Test
     fun initLayoutManagerTest() = viewmodel.run {
         initLayoutManager(0)
-        assert(layoutManager.get() is GridLayoutManager)
+        assertTrue(layoutManager.get() is GridLayoutManager)
 
         initLayoutManager(1)
-        assert(layoutManager.get() is LinearLayoutManager)
+        assertTrue(layoutManager.get() is LinearLayoutManager)
     }
 
     @Test
     fun convertDateTest() = viewmodel.run {
         val date = System.currentTimeMillis()
         val result = convertDate(date)
-        val target = date.toDateString(SimpleDateFormat("yyyy. M. d.", Locale.getDefault()))
+        val target = date.toDateString(SimpleDateFormat(MyblogAllPostViewModel.DATE_FORMAT, Locale.getDefault()))
 
         result.assertEquals(target)
     }
@@ -76,22 +76,22 @@ class MyblogAllPostViewModelTest: BaseRoboViewModelTest<MyblogAllPostViewModel>(
     @Test
     fun viewTypeCheckedListenerTest() = viewmodel.run {
         viewTypeCheckedListener.get()?.invoke(R.id.myblog_view_type_grid_image)
-        assert(itemDecoration.get() is GridItemDecoration)
+        assertTrue(itemDecoration.get() is GridItemDecoration)
         adapter.get()?.mLayouts?.get(0).assertEquals(R.layout.myblog_item_all_post_grid_image)
         items.get()?.forEach {
             it.blogImage.assertNotNull()
         }
 
         viewTypeCheckedListener.get()?.invoke(R.id.myblog_view_type_list)
-        assert(itemDecoration.get() is OffsetDividerItemDecoration)
+        assertTrue(itemDecoration.get() is OffsetDividerItemDecoration)
         adapter.get()?.mLayouts?.get(0).assertEquals(R.layout.myblog_item_all_post_list)
 
         viewTypeCheckedListener.get()?.invoke(R.id.myblog_view_type_video)
-        assert(itemDecoration.get() is OffsetDividerItemDecoration)
+        assertTrue(itemDecoration.get() is OffsetDividerItemDecoration)
         adapter.get()?.mLayouts?.get(0).assertEquals(R.layout.myblog_item_all_post_video)
 
         viewTypeCheckedListener.get()?.invoke(R.id.myblog_view_type_blog)
-        assert(itemDecoration.get() is OffsetDividerItemDecoration)
+        assertTrue(itemDecoration.get() is OffsetDividerItemDecoration)
         adapter.get()?.mLayouts?.get(0).assertEquals(R.layout.myblog_item_all_post_blog)
     }
 

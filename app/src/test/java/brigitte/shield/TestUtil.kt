@@ -1,5 +1,5 @@
 @file:Suppress("NOTHING_TO_INLINE", "unused")
-package briggite.shield
+package brigitte.shield
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer

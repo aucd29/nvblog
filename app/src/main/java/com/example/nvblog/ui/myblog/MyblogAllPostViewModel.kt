@@ -38,6 +38,8 @@ class MyblogAllPostViewModel @Inject @JvmOverloads constructor(
 
         const val CMD_CONNECT_APP = "connect-app"
         const val CMD_OPEN_BRS    = "open-brs"
+
+        const val DATE_FORMAT = "yyyy. M. d."
     }
 
     lateinit var disposable: CompositeDisposable
@@ -61,7 +63,7 @@ class MyblogAllPostViewModel @Inject @JvmOverloads constructor(
         })
     }
 
-    fun convertDate(date: Long) = date.toDateString(SimpleDateFormat("yyyy. M. d.", Locale.getDefault()))
+    fun convertDate(date: Long) = date.toDateString(SimpleDateFormat(DATE_FORMAT, Locale.getDefault()))
 
     private fun initItemDecoration(type: Int = 2) {
         itemDecoration.set(when (type) {

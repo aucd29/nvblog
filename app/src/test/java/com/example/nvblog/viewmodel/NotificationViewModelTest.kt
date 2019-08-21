@@ -10,7 +10,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import briggite.shield.*
+import brigitte.shield.*
 import brigitte.*
 import com.example.nvblog.R
 import com.example.nvblog.common.PreloadConfig
