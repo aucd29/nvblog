@@ -4,6 +4,7 @@ package brigitte
 import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -18,6 +19,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import brigitte.arch.SingleLiveEvent
 import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.Logger
@@ -44,7 +46,20 @@ inline fun Fragment.color(@ColorRes resid: Int) =
 
 /** 현재 화면에 위치하는 Fragment 를 반환 */
 inline val FragmentManager.current: Fragment?
-    get() = fragments.last()
+    get() = lastBaseFragment()
+
+inline fun FragmentManager.lastBaseFragment(): Fragment? {
+    val it = fragments.listIterator(fragments.size)
+
+    while (it.hasPrevious()) {
+        val f = it.previous()
+        if (f is BaseFragment<*,*>) {
+            return f
+        }
+    }
+
+    return null
+}
 
 /** 현재 등록되어 있는 Fragment 개수를 반환 */
 inline val FragmentManager.count: Int
@@ -54,8 +69,9 @@ inline val FragmentManager.count: Int
 inline fun <reified T: Fragment> FragmentManager.find() =
     findFragmentByTag(T::class.java.name) as T?
 
+// FIXME 기존에 fragmentManager 가 depreacated 됨에 따라 이를 parentFragmentManager 로 변경 한다. [aucd29][2019-12-05]
 inline fun <reified F: Fragment> Fragment.find() =
-    fragmentManager?.find<F>()
+    parentFragmentManager.find<F>()
 
 /**
  * 다이얼로그를 띄우기 위한 옵저버 로 view model 에 선언되어 있는 single live event 의 값의 변화를 인지 하여 dialog 을 띄운다.
@@ -98,8 +114,8 @@ inline fun Fragment.errorLog(e: Throwable, logger: Logger) {
 /**
  * alert 형태의 다이얼로그를 띄운다.
  */
-inline fun Fragment.alert(messageId: Int, titleId: Int? = null
-    , noinline listener: ((Boolean, DialogInterface) -> Unit)? = null) {
+inline fun Fragment.alert(messageId: Int, titleId: Int? = null,
+                          noinline listener: ((Boolean, DialogInterface) -> Unit)? = null) {
     dialog(DialogParam(context = requireContext()
         , messageId = messageId
         , titleId   = titleId
@@ -109,8 +125,8 @@ inline fun Fragment.alert(messageId: Int, titleId: Int? = null
 /**
  * confirm 형태의 다이얼로그를 띄운다.
  */
-inline fun Fragment.confirm(messageId: Int, titleId: Int? = null
-    , noinline listener: ((Boolean, DialogInterface) -> Unit)? = null) {
+inline fun Fragment.confirm(messageId: Int, titleId: Int? = null,
+                            noinline listener: ((Boolean, DialogInterface) -> Unit)? = null) {
     dialog(DialogParam(context = requireContext()
         , messageId  = messageId
         , titleId    = titleId
@@ -128,15 +144,35 @@ inline fun Fragment.hideKeyboard(view: View) =
  * fragment 를 종료 시키낟.
  */
 inline fun Fragment.finish(animate: Boolean = true) {
-    if (animate) {
-        fragmentManager?.pop()
-    } else {
-        fragmentManager?.apply {
-            beginTransaction().setCustomAnimations(0, 0).commitNow()
-            pop()
+    // FIXME 기존에 fragmentManager 가 depreacated 됨에 따라 이를 parentFragmentManager 로 변경 한다. [aucd29][2019-12-05]
+    parentFragmentManager.run {
+        if (!animate) {
+            beginTransaction().setCustomAnimations(0, 0).commit()
         }
-    }
+
+        pop()
+    } ?: Log.e("[BK]", "Fragment.finish() fragment manager == null")
+
+    // fixme fragmentManager 가 deprecated 되서 == 을 반환 함  삭제 함 [aucd29][2019-11-11]
+//    if (animate) {
+//        fragmentManager?.pop()
+//    } else {
+//        fragmentManager?.apply {
+//            beginTransaction().setCustomAnimations(0, 0).commit()
+//            pop()
+//        }
+//    }
+
+//    if (!animate) {
+//        fragmentManager?.beginTransaction()?.setCustomAnimations(0, 0)?.commitNow()
+//    }
+//
+//    findNavController().popBackStack()
 }
+
+// FIXME 기존에 fragmentManager 가 depreacated 됨에 따라 이를 parentFragmentManager 로 변경 한다. [aucd29][2019-12-05]
+inline fun Fragment.finishInclusive() =
+    parentFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
 
 /**
  * 화면을 ON / OFF 시킨다.
@@ -202,15 +238,17 @@ inline fun FragmentManager.showBy(params: FragmentParams) {
     fragment?.let { internalShow(it, params) }
 }
 
-inline fun <reified T: Fragment> FragmentManager.show(params: FragmentParams) {
+inline fun <reified T: Fragment> FragmentManager.show(params: FragmentParams): Fragment? {
     val existFragment = findFragmentByTag(T::class.java.name)
     if (existFragment != null && existFragment.isVisible) {
         // manager 내에 해당 fragment 가 이미 존재하면 해당 fragment 를 반환 한다
-        return
+        return existFragment
     }
 
     val fragment =  T::class.java.newInstance() as Fragment
     internalShow(fragment, params)
+
+    return fragment
 }
 
 inline fun FragmentManager.internalShow(fragment: Fragment, params: FragmentParams) {
@@ -285,7 +323,6 @@ inline fun FragmentManager.pop() {
 inline fun FragmentManager.showDialog(frgmt: DialogFragment, name: String) {
     val transaction = beginTransaction()
     findFragmentByTag(name)?.let { transaction.remove(it) }
-
     frgmt.show(transaction, name)
 }
 

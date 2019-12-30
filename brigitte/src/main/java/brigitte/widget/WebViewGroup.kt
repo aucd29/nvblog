@@ -1,5 +1,5 @@
 @file:Suppress("NOTHING_TO_INLINE", "unused")
-package brigitte
+package brigitte.widget
 
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
@@ -8,7 +8,9 @@ import android.net.http.SslError
 import android.os.Build
 import android.webkit.*
 import androidx.databinding.ObservableField
-import brigitte.arch.SingleLiveEvent
+import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.ViewModel
+import brigitte.BaseDaggerFragment
 import org.slf4j.LoggerFactory
 import java.lang.Exception
 
@@ -128,6 +130,26 @@ inline fun WebView.defaultSetting(params: WebViewSettingParams) = params.run {
     }
 
     webChromeClient = object: WebChromeClient() {
+        override fun onJsAlert(
+            view: WebView?,
+            url: String?,
+            message: String?,
+            result: JsResult?
+        ): Boolean {
+            // FIXME 변경 필요
+            return super.onJsAlert(view, url, message, result)
+        }
+
+        override fun onJsConfirm(
+            view: WebView?,
+            url: String?,
+            message: String?,
+            result: JsResult?
+        ): Boolean {
+            // FIXME 변경 필요
+            return super.onJsConfirm(view, url, message, result)
+        }
+
         override fun onProgressChanged(view: WebView?, newProgress: Int) {
             super.onProgressChanged(view, newProgress)
 
@@ -161,7 +183,7 @@ inline fun WebView.free() {
     }
 }
 
-data class WebViewSettingParams @JvmOverloads constructor (
+data class WebViewSettingParams constructor (
     val urlLoading      : ((WebView?, String?) -> Unit)? = null,
     val pageFinished    : ((String?) -> Unit)? = null,
     val pageStarted     : ((String?) -> Unit)? = null,

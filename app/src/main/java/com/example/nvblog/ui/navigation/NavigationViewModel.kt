@@ -6,7 +6,6 @@ import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.recyclerview.widget.RecyclerView
 import brigitte.RecyclerViewModel
-import brigitte.app
 import brigitte.numberFormat
 import brigitte.widget.viewpager.PositionDividerItemDecoration
 import com.example.nvblog.R

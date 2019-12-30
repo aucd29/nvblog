@@ -1,25 +1,40 @@
+/*
+ * Copyright (C) Hanwha S&C Ltd., 2019. All rights reserved.
+ *
+ * This software is covered by the license agreement between
+ * the end user and Hanwha S&C Ltd., and may be
+ * used and copied only in accordance with the terms of the
+ * said agreement.
+ *
+ * Hanwha S&C Ltd., assumes no responsibility or
+ * liability for any errors or inaccuracies in this software,
+ * or any consequential, incidental or indirect damage arising
+ * out of the use of the software.
+ */
+
 package com.example.nvblog
 
 import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
 import brigitte.string
+import brigitte.widget.pageradapter.FragmentStatePagerAdapter
 import com.example.nvblog.ui.main.MainFragment
 import com.example.nvblog.ui.myblog.MyblogFragment
 import com.example.nvblog.ui.notification.NotificationFragment
 import com.example.nvblog.ui.recommended.RecommendedFragment
-import com.example.nvblog.ui.write.WriteFragment
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
+import javax.inject.Named
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-08-09 <p/>
  */
 
 
-class MainAdapter @Inject constructor(fm: FragmentManager
-    , val context: Context
+class MainAdapter @Inject constructor(
+    fm: FragmentManager,
+    val context: Context
 ) : FragmentStatePagerAdapter(fm) {
     companion object {
         private val mLog = LoggerFactory.getLogger(MainAdapter::class.java)
@@ -30,11 +45,6 @@ class MainAdapter @Inject constructor(fm: FragmentManager
 
     private val mTitleList = arrayListOf<String>()
 
-    @Inject lateinit var mMain: MainFragment
-    @Inject lateinit var mRecommended: RecommendedFragment
-    @Inject lateinit var mNotification: NotificationFragment
-    @Inject lateinit var mMyblog: MyblogFragment
-
     init {
         mTitleList.add(context.string(R.string.nav_new_article))
         mTitleList.add(context.string(R.string.nav_recommended))
@@ -44,11 +54,10 @@ class MainAdapter @Inject constructor(fm: FragmentManager
 
     override fun getItem(position: Int): Fragment {
         return when (position) {
-            0 -> mMain
-            1 -> mRecommended
-            2 -> mNotification
-            3 -> mMyblog
-            else -> throw RuntimeException()
+            0    -> MainFragment.create()
+            1    -> RecommendedFragment.create()
+            2    -> NotificationFragment.create()
+            else -> MyblogFragment.create()
         }
     }
 

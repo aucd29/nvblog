@@ -12,10 +12,10 @@ import androidx.recyclerview.widget.RecyclerView
 import brigitte.dpToPx
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-07-25 <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019-07-25 <p/>
  */
 
-class SpaceItemDecoration @JvmOverloads constructor(
+class SpaceItemDecoration constructor(
     private val mMargin: Rect,
     private val mLastMargin: Rect? = null
 ): RecyclerView.ItemDecoration() {

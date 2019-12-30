@@ -7,6 +7,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
+import androidx.annotation.IdRes
+import androidx.annotation.IntDef
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDialogFragment
@@ -15,7 +18,10 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.*
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.viewpager.widget.PagerAdapter
+import brigitte.viewmodel.CommandEventViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.reactivex.disposables.CompositeDisposable
@@ -28,20 +34,11 @@ import org.slf4j.LoggerFactory
 private const val SET_VIEW_MODEL  = "setModel"       // view model 을 설정하기 위한 메소드 명
 private const val LAYOUT          = "layout"         // 레이아웃
 
+const val SCOPE_ACTIVITY = 0
+const val SCOPE_FRAGMENT = 1
 
-////////////////////////////////////////////////////////////////////////////////////
-//
-// VIEW MODEL
-//
-////////////////////////////////////////////////////////////////////////////////////
-
-inline fun <reified T : ViewModel> FragmentActivity.obtainViewModel(provider: ViewModelProvider.Factory? = null) =
-    provider?.let {
-        ViewModelProviders.of(this, it).get(T::class.java)
-    } ?: ViewModelProviders.of(this).get(T::class.java)
-
-inline fun <reified T : ViewModel> Fragment.obtainViewModel(provider: ViewModelProvider.Factory? = null) =
-    activity?.obtainViewModel<T>( provider)
+@IntDef(value = [SCOPE_ACTIVITY, SCOPE_FRAGMENT])
+annotation class ViewModelScope
 
 ////////////////////////////////////////////////////////////////////////////////////
 //
@@ -49,17 +46,16 @@ inline fun <reified T : ViewModel> Fragment.obtainViewModel(provider: ViewModelP
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-
 inline fun <T : ViewDataBinding> Fragment.dataBinding(@LayoutRes layoutid: Int, parent: ViewGroup? = null,
                                                       attachToParent: Boolean = false): T =
-        DataBindingUtil.inflate(layoutInflater, layoutid, parent, attachToParent)
+    DataBindingUtil.inflate(layoutInflater, layoutid, parent, attachToParent)
 
 inline fun <T : ViewDataBinding> Activity.dataBinding(@LayoutRes layoutid: Int, parent: ViewGroup? = null,
                                                       attachToParent: Boolean = false): T =
-        DataBindingUtil.inflate(layoutInflater, layoutid, parent, attachToParent)
+    DataBindingUtil.inflate(layoutInflater, layoutid, parent, attachToParent)
 
 inline fun <T : ViewDataBinding> Activity.dataBindingView(@LayoutRes layoutid: Int): T =
-        DataBindingUtil.setContentView(this, layoutid)
+    DataBindingUtil.setContentView(this, layoutid)
 
 inline fun <T: ViewDataBinding> PagerAdapter.dataBinding(@LayoutRes resid: Int, parent: ViewGroup? = null,
                                                          attachToParent: Boolean = false): T =
@@ -72,11 +68,9 @@ inline fun <T: ViewDataBinding> PagerAdapter.dataBinding(@LayoutRes resid: Int, 
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-
 interface OnBackPressedListener {
     fun onBackPressed(): Boolean
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////////
 //
@@ -84,26 +78,27 @@ interface OnBackPressedListener {
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-abstract class BaseActivity<T : ViewDataBinding, M: ViewModel> @JvmOverloads constructor()
+abstract class BaseActivity<T : ViewDataBinding, M: ViewModel>
     : AppCompatActivity(), BaseEventAware {
     companion object {
         const val SCOPE_ACTIVITY = 0
         const val SCOPE_FRAGMENT = 1
     }
 
-    private var mLayoutName   = generateLayoutName()
     private val mDisposable = CompositeDisposable()
+    private lateinit var mBackPressed: BackPressedManager
 
+    @get:LayoutRes
+    protected abstract val layoutId: Int
     protected lateinit var mBinding: T
-    protected lateinit var mBackPressed: BackPressedManager
 
-    protected val mViewModel: M by lazy { initViewModel() }
+    protected val mViewModelClass = Reflect.classType<Class<M>>(this, 1)
+    protected val mViewModel: M by lazy(LazyThreadSafetyMode.NONE) { initViewModel() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mBinding = dataBindingView(layoutId())
-
+        mBinding = dataBindingView(layoutId)
         initBackPressed()
         bindViewModel()
 
@@ -115,9 +110,19 @@ abstract class BaseActivity<T : ViewDataBinding, M: ViewModel> @JvmOverloads con
         initViewModelEvents()
     }
 
-    // 기본 값은 파일 명으로 얻을 수 있지만 직접 레이아웃 아이디를 지정할 수도 있다.
-    @LayoutRes
-    open fun layoutId() = resources.getIdentifier(mLayoutName, LAYOUT, packageName)
+//    override fun onBackPressed() {
+//        // 현재의 문제점 부분
+//        // callback 을 등록했다는 의미는 callback 을 상위에서 쓰겠다는 의미이고
+//        // 안쓰면 그 이후 처리를 해야 되는데
+//        // 지금 구조는 무조건 적으로 onBackPressed 가 호출되어야지만
+//        // 되는 거라 =_ = 이상함 다른 방법이 있나? [aucd29][2019-09-05]
+//        if (!onBackPressedDispatcher.hasEnabledCallbacks()) {
+//            mBackPressed.onBackPressed()
+//            return
+//        }
+//
+//        super.onBackPressed()
+//    }
 
     override fun onBackPressed() {
         // 현재 fragment 가 OnBackPressedListener 를 상속 받고 return true 를 하면 인터페이스에서
@@ -132,44 +137,25 @@ abstract class BaseActivity<T : ViewDataBinding, M: ViewModel> @JvmOverloads con
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-
-        mCommandEventModels.forEach {
-            if (it is ILifeCycle) it.onPause()
-        }
-    }
-
-    override fun onResume() {
-        mCommandEventModels.forEach {
-            if (it is ILifeCycle) it.onResume()
-        }
-
-        super.onResume()
-    }
-
     /**
      * 앱 종료 시 CompositeDisposable 를 clear 한다.
      */
     override fun onDestroy() {
-        mCommandEventModels.forEach {
-            if (it is ILifeCycle) it.onDestroy()
-        }
-
         // https://stackoverflow.com/questions/47057885/when-to-call-dispose-and-clear-on-compositedisposable
         mDisposable.dispose()
-        mCommandEventModels.clear()
+        removeCommandEventObservers(this@BaseActivity)
 
         super.onDestroy()
     }
-
-    protected fun viewModelClass() = Reflect.classType(this, 1) as Class<M>
 
     /**
      * brigitte.viewModel 을 ViewDataBinding 에 설정 한다.
      */
     protected open fun bindViewModel() {
-        Reflect.method(mBinding, SET_VIEW_MODEL, Reflect.Params(viewModelClass(), mViewModel))
+        Reflect.method(mBinding, SET_VIEW_MODEL, Reflect.Params(mViewModelClass, mViewModel))
+
+        // live data 를 xml 에서 data binding 하기 위해서는 lifecycleOwner 를 등록해야 함
+        mBinding.lifecycleOwner = this
     }
 
     protected open fun initBackPressed() {
@@ -194,7 +180,7 @@ abstract class BaseActivity<T : ViewDataBinding, M: ViewModel> @JvmOverloads con
 
     override val mCommandEventModels: ArrayList<ICommandEventAware> = arrayListOf()
     override fun disposable() = mDisposable
-    override fun activity() = this
+    override fun activity() = this@BaseActivity
     override fun rootView() = mBinding.root
 }
 
@@ -204,27 +190,24 @@ abstract class BaseActivity<T : ViewDataBinding, M: ViewModel> @JvmOverloads con
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-abstract class BaseFragment<T: ViewDataBinding, M: ViewModel> @JvmOverloads constructor()
+abstract class BaseFragment<T: ViewDataBinding, M: ViewModel>
     : Fragment(), BaseEventAware {
-    companion object {
-        const val SCOPE_ACTIVITY = 0
-        const val SCOPE_FRAGMENT = 1
-    }
+    private val mDisposable = CompositeDisposable()
 
-    private var mLayoutName = generateLayoutName()
-
+    protected abstract val layoutId: Int
     protected lateinit var mBinding : T
-    protected val mViewModel: M by lazy { initViewModel() }
-    protected val mDisposable = CompositeDisposable()
+
+    @ViewModelScope
     protected var mViewModelScope = SCOPE_FRAGMENT
+    protected val mViewModelClass = Reflect.classType<Class<M>>(this, 1)
+    protected val mViewModel: M by lazy(LazyThreadSafetyMode.NONE) { initViewModel() }
+    protected var mStateViewModelFactory: AbstractSavedStateViewModelFactory? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val layoutId = layoutId()
-        if (layoutId == 0) {
-            return generateEmptyLayout(mLayoutName)
-        }
+//    private var mOnBackPressedCallback: OnBackPressedCallback? = null
 
-        mBinding = dataBinding(layoutId, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        mBinding = dataBinding(layoutId, container)
         mBinding.root.isClickable = true
 
         bindViewModel()
@@ -232,11 +215,8 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel> @JvmOverloads cons
         return mBinding.root
     }
 
-    // 기본 값은 파일 명으로 얻을 수 있지만 직접 레이아웃 아이디를 지정할 수도 있다.
-    @LayoutRes
-    open fun layoutId() = resources.getIdentifier(mLayoutName, LAYOUT, requireActivity().packageName)
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
+//        initBackPressedDispatcher()
         super.onActivityCreated(savedInstanceState)
 
         addCommandEventModel(mViewModel)
@@ -247,39 +227,52 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel> @JvmOverloads cons
         initViewModelEvents()
     }
 
-    override fun onPause() {
-        super.onPause()
-
-        mCommandEventModels.forEach {
-            if (it is ILifeCycle) it.onPause()
-        }
-    }
-
-    override fun onResume() {
-        mCommandEventModels.forEach {
-            if (it is ILifeCycle) it.onResume()
-        }
-
-        super.onResume()
-    }
-
     override fun onDestroyView() {
-        mCommandEventModels.forEach {
-            if (it is ILifeCycle) it.onDestroy()
-        }
-
         // https://stackoverflow.com/questions/47057885/when-to-call-dispose-and-clear-on-compositedisposable
         mDisposable.dispose()
-        mCommandEventModels.clear()
+        removeCommandEventObservers(this@BaseFragment)
 
         super.onDestroyView()
     }
 
-    protected fun viewModelClass() = Reflect.classType(this, 1) as Class<M>
-
     protected open fun bindViewModel() {
-        Reflect.method(mBinding, SET_VIEW_MODEL, Reflect.Params(viewModelClass(), mViewModel))
+        Reflect.method(mBinding, SET_VIEW_MODEL, Reflect.Params(mViewModelClass, mViewModel))
+
+        // live data 를 xml 에서 data binding 하기 위해서는 lifecycleOwner 를 등록해야 함
+        mBinding.lifecycleOwner = this
     }
+
+//    private fun initBackPressedDispatcher() {
+//        if (this is OnBackPressedListener) {
+//            mOnBackPressedCallback = object: OnBackPressedCallback(false) {
+//                override fun handleOnBackPressed() {
+//                    mOnBackPressedCallback?.isEnabled = !onBackPressed()
+//                }
+//            }
+//
+//            mOnBackPressedCallback?.let {
+//                requireActivity().onBackPressedDispatcher.addCallback(this@BaseFragment, it)
+//            }
+//        }
+//    }
+
+//    protected fun backPressedCallback(enableCallback: Boolean = true) {
+//        mOnBackPressedCallback?.isEnabled = enableCallback
+//    }
+
+//    ////////////////////////////////////////////////////////////////////////////////////
+//    //
+//    // NAVIGATE
+//    //
+//    ////////////////////////////////////////////////////////////////////////////////////
+//
+//    protected inline fun navigate(@IdRes actionId: Int, bundle: Bundle? = null) {
+//        mBinding.root.findNavController().navigate(actionId, bundle)
+//    }
+//
+//    protected inline fun navigate(view: View, actionId: Int, bundle: Bundle? = null) {
+//        Navigation.findNavController(view).navigate(actionId, bundle)
+//    }
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
@@ -301,6 +294,9 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel> @JvmOverloads cons
     override fun disposable() = mDisposable
     override fun activity() = requireActivity()
     override fun rootView() = mBinding.root
+    override fun commandFinish() = finish()
+    override fun lifecycle() = lifecycle
+    override fun lifecycleOwner() = this@BaseFragment
 }
 
 
@@ -311,22 +307,21 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel> @JvmOverloads cons
 ////////////////////////////////////////////////////////////////////////////////////
 
 
-abstract class BaseDialogFragment<T: ViewDataBinding, M: ViewModel> @JvmOverloads constructor()
+abstract class BaseDialogFragment<T: ViewDataBinding, M: ViewModel> constructor()
     : AppCompatDialogFragment(), BaseEventAware {
-    private var mLayoutName = generateLayoutName()
+    private val mDisposable = CompositeDisposable()
 
+    @get:LayoutRes
+    protected abstract val layoutId: Int
     protected lateinit var mBinding : T
-    protected val mDisposable = CompositeDisposable()
-    protected val mViewModel: M by lazy { initViewModel() }
-    protected var mViewModelScope = BaseFragment.SCOPE_FRAGMENT
+
+    @ViewModelScope
+    protected var mViewModelScope = SCOPE_FRAGMENT
+    protected val mViewModelClass = Reflect.classType<Class<M>>(this, 1)
+    protected val mViewModel: M by lazy(LazyThreadSafetyMode.NONE) { initViewModel() }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val layoutId = layoutId()
-        if (layoutId == 0) {
-            return generateEmptyLayout(mLayoutName)
-        }
-
         mBinding = dataBinding(layoutId, container, false)
         mBinding.root.isClickable = true
 
@@ -334,10 +329,6 @@ abstract class BaseDialogFragment<T: ViewDataBinding, M: ViewModel> @JvmOverload
 
         return mBinding.root
     }
-
-    // 기본 값은 파일 명으로 얻을 수 있지만 직접 레이아웃 아이디를 지정할 수도 있다.
-    @LayoutRes
-    open fun layoutId() = resources.getIdentifier(mLayoutName, LAYOUT, requireActivity().packageName)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -352,15 +343,31 @@ abstract class BaseDialogFragment<T: ViewDataBinding, M: ViewModel> @JvmOverload
     override fun onDestroyView() {
         // https://stackoverflow.com/questions/47057885/when-to-call-dispose-and-clear-on-compositedisposable
         mDisposable.dispose()
+        removeCommandEventObservers(this@BaseDialogFragment)
 
         super.onDestroyView()
     }
 
-    protected fun viewModelClass() = Reflect.classType(this, 1) as Class<M>
+    protected open fun bindViewModel() {
+        Reflect.method(mBinding, SET_VIEW_MODEL, Reflect.Params(mViewModelClass, mViewModel))
 
-    open protected fun bindViewModel() {
-        Reflect.method(mBinding, SET_VIEW_MODEL, Reflect.Params(viewModelClass(), mViewModel))
+        // live data 를 xml 에서 data binding 하기 위해서는 lifecycleOwner 를 등록해야 함
+        mBinding.lifecycleOwner = this
     }
+
+//    ////////////////////////////////////////////////////////////////////////////////////
+//    //
+//    // NAVIGATE
+//    //
+//    ////////////////////////////////////////////////////////////////////////////////////
+//
+//    protected inline fun navigate(@IdRes actionId: Int, bundle: Bundle? = null) {
+//        mBinding.root.findNavController().navigate(actionId, bundle)
+//    }
+//
+//    protected inline fun navigate(view: View, actionId: Int, bundle: Bundle? = null) {
+//        Navigation.findNavController(view).navigate(actionId, bundle)
+//    }
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
@@ -382,6 +389,9 @@ abstract class BaseDialogFragment<T: ViewDataBinding, M: ViewModel> @JvmOverload
     override fun disposable() = mDisposable
     override fun activity() = requireActivity()
     override fun rootView() = mBinding.root
+    override fun commandFinish() = dismiss()
+    override fun lifecycle() = lifecycle
+    override fun lifecycleOwner() = this@BaseDialogFragment
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -390,26 +400,25 @@ abstract class BaseDialogFragment<T: ViewDataBinding, M: ViewModel> @JvmOverload
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding, M: ViewModel> @JvmOverloads constructor()
+abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding, M: ViewModel> constructor()
     : BottomSheetDialogFragment(), BaseEventAware {
 
     companion object {
         private val mLog = LoggerFactory.getLogger(BaseBottomSheetDialogFragment::class.java)
     }
 
-    private var mLayoutName = generateLayoutName()
-
-    protected lateinit var mBinding : T
     protected val mDisposable = CompositeDisposable()
+
+    @get:LayoutRes
+    protected abstract val layoutId: Int
+    protected lateinit var mBinding : T
+
+    @ViewModelScope
+    protected var mViewModelScope = SCOPE_FRAGMENT
+    protected val mViewModelClass = Reflect.classType<Class<M>>(this, 1)
     protected val mViewModel: M by lazy { initViewModel() }
-    protected var mViewModelScope = BaseFragment.SCOPE_FRAGMENT
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val layoutId = layoutId()
-        if (layoutId == 0) {
-            return generateEmptyLayout(mLayoutName)
-        }
-
         mBinding = dataBinding(layoutId, container, false)
         mBinding.root.isClickable = true
 
@@ -418,10 +427,6 @@ abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding, M: ViewModel> @
 
         return mBinding.root
     }
-
-    // 기본 값은 파일 명으로 얻을 수 있지만 직접 레이아웃 아이디를 지정할 수도 있다.
-    @LayoutRes
-    open fun layoutId() = resources.getIdentifier(mLayoutName, LAYOUT, requireActivity().packageName)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -442,15 +447,16 @@ abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding, M: ViewModel> @
     override fun onDestroyView() {
         // https://stackoverflow.com/questions/47057885/when-to-call-dispose-and-clear-on-compositedisposable
         mDisposable.dispose()
+        removeCommandEventObservers(this@BaseBottomSheetDialogFragment)
 
         super.onDestroyView()
     }
 
-    protected fun viewModelClass() = Reflect.classType(this, 1) as Class<M>
-
     protected open fun bindViewModel() {
-//        mBinding.setVariable(BR.setModel, mViewModel)
-        Reflect.method(mBinding, SET_VIEW_MODEL, Reflect.Params(viewModelClass(), mViewModel))
+        Reflect.method(mBinding, SET_VIEW_MODEL, Reflect.Params(mViewModelClass, mViewModel))
+
+        // live data 를 xml 에서 data binding 하기 위해서는 lifecycleOwner 를 등록해야 함
+        mBinding.lifecycleOwner = this
     }
 
     private fun stateCallback() {
@@ -515,6 +521,8 @@ abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding, M: ViewModel> @
     override fun disposable() = mDisposable
     override fun activity() = requireActivity()
     override fun rootView() = mBinding.root
+    override fun lifecycle() = lifecycle
+    override fun lifecycleOwner() = this@BaseBottomSheetDialogFragment
 }
 
 /**
@@ -528,7 +536,27 @@ interface BaseEventAware {
     fun rootView(): View
 
     fun <T> observe(data: LiveData<T>, observer: (T) -> Unit) {
-        data.observe(activity(), Observer { observer(it) })
+        data.observe(lifecycleOwner(), Observer { observer(it) })
+    }
+
+    fun <T> editPreference(data: LiveData<T>, key: String, observer: ((T) -> Unit)?) {
+        if (data.hasObservers()) {
+            return
+        }
+
+        data.observe(lifecycleOwner(), Observer {
+            activity().prefs().edit {
+                when (it) {
+                    is String  -> putString(key, it)
+                    is Int     -> putInt(key, it)
+                    is Boolean -> putBoolean(key, it)
+                    is Float   -> putFloat(key, it)
+                    is Long    -> putLong(key, it)
+                }
+
+                observer?.invoke(it)
+            }
+        })
     }
 
     /**
@@ -547,38 +575,49 @@ interface BaseEventAware {
      */
     fun commandEventAware() {
         mCommandEventModels.forEach { vm ->
-            if (vm is ICommandEventAware) {
-                observe(vm.commandEvent) {
-                    when (it.first) {
-                        ICommandEventAware.CMD_FINISH   -> commandFinish()
-                        ICommandEventAware.CMD_TOAST    -> commandToast(it.second.toString())
-                        ICommandEventAware.CMD_SNACKBAR -> commandSnackbar(it.second.toString())
+            observe(vm.commandEvent) {
+                when (it.first) {
+                    ICommandEventAware.CMD_FINISH   -> commandFinish()
+                    ICommandEventAware.CMD_TOAST    -> commandToast(it.second.toString())
+                    ICommandEventAware.CMD_SNACKBAR -> commandSnackbar(it.second.toString())
 
-                        else -> onCommandEvent(it.first, it.second)
-                    }
+                    else -> onCommandEvent(it.first, it.second)
                 }
             }
         }
     }
 
-    fun addCommandEventModel(viewModel: ViewModel) {
-        if (viewModel is ICommandEventAware) { mCommandEventModels.add(viewModel) }
-    }
-
-    fun addCommandEventModels(vararg viewModels: ViewModel) {
-        for (viewModel in viewModels) {
-            addCommandEventModel(viewModel)
+    fun addCommandEventModel(viewmodel: ViewModel) {
+        if (viewmodel is ICommandEventAware) { mCommandEventModels.add(viewmodel) }
+        if (viewmodel is LifecycleObserver) {
+            lifecycle().addObserver(viewmodel)
         }
     }
 
-    fun removeCommandEventModel(viewModel: ViewModel) {
-        if (viewModel is ICommandEventAware) { mCommandEventModels.remove(viewModel) }
+    fun addCommandEventModels(vararg viewmodels: ViewModel) {
+        viewmodels.forEach(::addCommandEventModel)
     }
 
-    fun removeCommandEventModels(vararg viewModels: ViewModel) {
-        for (viewModel in viewModels) {
-            removeCommandEventModel(viewModel)
+    fun removeCommandEventModel(viewmodel: ViewModel) {
+        if (viewmodel is ICommandEventAware) {
+            mCommandEventModels.remove(viewmodel)
         }
+        if (viewmodel is LifecycleObserver) {
+            lifecycle().removeObserver(viewmodel)
+        }
+    }
+
+    fun removeCommandEventModels(vararg viewmodels: ViewModel) {
+        viewmodels.forEach(::removeCommandEventModel)
+    }
+
+    fun removeCommandEventObservers(owner: LifecycleOwner) {
+        mCommandEventModels.forEach {
+            if (it is CommandEventViewModel) {
+                it.commandEvent.removeObservers(owner)
+            }
+        }
+        mCommandEventModels.clear()
     }
 
     fun onCommandEvent(cmd: String, data: Any) { }
@@ -586,4 +625,6 @@ interface BaseEventAware {
     fun commandToast(message: String) = activity().toast(message)
     fun commandSnackbar(message: String) =
         activity().snackbar(rootView(), message).show()
+    fun lifecycle() = activity().lifecycle
+    fun lifecycleOwner(): LifecycleOwner = activity()
 }

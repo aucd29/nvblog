@@ -24,7 +24,7 @@
                 app:titlebarModel="@{titlebarModel}"
         />
 
-        <brigitte.widget.VerticalSwipeRefreshLayout
+        <brigitte.widget.swiperefresh.VerticalSwipeRefreshLayout
                 android:id="@+id/main_swipe_refresh"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -36,6 +36,7 @@
                 app:bindSwipeRefreshListener="@{model.swipeRefresh.listener}"
                 app:refreshing="@{model.swipeRefresh.isRefresh}"
         >
+
             <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/main_content_recycler"
                     android:layout_width="match_parent"
@@ -51,6 +52,6 @@
                     app:bindItemDecoration="@{model.itemDecoration}"
                     android:background="@android:color/white"
             />
-        </brigitte.widget.VerticalSwipeRefreshLayout>
+        </brigitte.widget.swiperefresh.VerticalSwipeRefreshLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

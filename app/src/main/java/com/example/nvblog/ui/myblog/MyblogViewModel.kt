@@ -4,11 +4,9 @@ import android.app.Application
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableFloat
-import brigitte.CommandEventViewModel
-import brigitte.app
-import brigitte.arch.SingleLiveEvent
+import brigitte.viewmodel.CommandEventViewModel
 import brigitte.numberFormat
-import brigitte.widget.SwipeRefreshController
+import brigitte.widget.swiperefresh.SwipeRefreshController
 import com.example.nvblog.R
 import com.example.nvblog.common.PreloadConfig
 import io.reactivex.disposables.CompositeDisposable

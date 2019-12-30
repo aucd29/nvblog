@@ -4,7 +4,8 @@ import android.view.View
 import android.webkit.WebView
 import android.widget.ProgressBar
 import brigitte.*
-import brigitte.widget.VerticalSwipeRefreshLayout
+import brigitte.widget.*
+import brigitte.widget.swiperefresh.VerticalSwipeRefreshLayout
 import com.example.nvblog.common.Config
 import com.example.nvblog.databinding.BrowserFragmentBinding
 import dagger.Module
@@ -12,6 +13,7 @@ import dagger.android.ContributesAndroidInjector
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
+import com.example.nvblog.R
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-08-09 <p/>
@@ -19,6 +21,8 @@ import javax.inject.Inject
 
 class BrowserFragment @Inject constructor(
 ): BaseDaggerFragment<BrowserFragmentBinding, BrowserViewModel>(), OnBackPressedListener {
+    override val layoutId = R.layout.browser_fragment
+
     companion object {
         private val mLog = LoggerFactory.getLogger(BrowserFragment::class.java)
 
@@ -41,7 +45,7 @@ class BrowserFragment @Inject constructor(
         super.onPause()
 
         webview.pause()
-        mDisposable.clear()
+        disposable().clear()
     }
 
     override fun onResume() {
@@ -68,7 +72,7 @@ class BrowserFragment @Inject constructor(
                     if (isRefreshing) {
                         isRefreshing = false     // hide refresh icon
 
-                        mDisposable.clear()
+                        disposable().clear()
 
                         if (mLog.isDebugEnabled) {
                             mLog.debug("HIDE REFRESH ICON")
@@ -90,8 +94,8 @@ class BrowserFragment @Inject constructor(
 
             webview.reload()
 
-            mDisposable.clear()
-            mDisposable.add(singleTimer(config.TIMEOUT_RELOAD_ICO)
+            disposable().clear()
+            disposable().add(singleTimer(config.TIMEOUT_RELOAD_ICO)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe { _ ->
                         if (mLog.isInfoEnabled) {

@@ -74,7 +74,6 @@
                     android:background="@drawable/splash_background"
                     android:clickable="true"
                     android:focusable="true"
-                    android:visibility="@{model.viewSplash}"
             />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,7 @@
 package com.example.nvblog.ui.main.search
 
 import brigitte.BaseDaggerFragment
+import com.example.nvblog.R
 import com.example.nvblog.databinding.SearchFragmentBinding
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -12,6 +13,8 @@ import javax.inject.Inject
 
 class SearchFragment @Inject constructor(
 ): BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>() {
+    override val layoutId = R.layout.search_fragment
+
     override fun initViewBinding() {
     }
 

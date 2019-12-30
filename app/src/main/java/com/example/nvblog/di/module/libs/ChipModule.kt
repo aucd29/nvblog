@@ -1,4 +1,4 @@
-package com.example.nvblog.di.module
+package com.example.nvblog.di.module.libs
 
 import android.content.Context
 import android.view.Gravity

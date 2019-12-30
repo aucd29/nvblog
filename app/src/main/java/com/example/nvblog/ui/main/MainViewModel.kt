@@ -5,7 +5,7 @@ import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import brigitte.*
-import brigitte.widget.SwipeRefreshController
+import brigitte.widget.swiperefresh.SwipeRefreshController
 import brigitte.widget.viewpager.OffsetDividerItemDecoration
 import com.example.nvblog.R
 import com.example.nvblog.common.PreloadConfig

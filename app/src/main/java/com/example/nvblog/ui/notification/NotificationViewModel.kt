@@ -8,7 +8,7 @@ import androidx.databinding.ObservableInt
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import brigitte.*
-import brigitte.widget.SwipeRefreshController
+import brigitte.widget.swiperefresh.SwipeRefreshController
 import brigitte.widget.viewpager.OffsetDividerItemDecoration
 import com.example.nvblog.R
 import com.example.nvblog.common.PreloadConfig
@@ -46,7 +46,7 @@ class NotificationViewModel @Inject @JvmOverloads constructor(
     val viewTypeLive = MutableLiveData<Int>()
 
     val noticeData   = ObservableField<String>(string(R.string.noti_lorem))
-    val viewNotice   = ObservableInt(prefs().getInt(PREF_NOTI_VISIBILITY, View.VISIBLE))
+    val viewNotice   = ObservableInt(app.prefs().getInt(PREF_NOTI_VISIBILITY, View.VISIBLE))
     val viewNotRead  = ObservableInt(View.VISIBLE)
     val viewProgress = ObservableInt(View.GONE)
 
@@ -175,7 +175,7 @@ class NotificationViewModel @Inject @JvmOverloads constructor(
 
     private fun hideNotice() {
         viewNotice.gone()
-        prefs().edit { putInt(PREF_NOTI_VISIBILITY, View.GONE) }
+        app.prefs().edit { putInt(PREF_NOTI_VISIBILITY, View.GONE) }
     }
 
     private fun deleteItem(id: Int) {

@@ -1,16 +1,27 @@
+/*
+ * Copyright (C) Hanwha S&C Ltd., 2019. All rights reserved.
+ *
+ * This software is covered by the license agreement between
+ * the end user and Hanwha S&C Ltd., and may be
+ * used and copied only in accordance with the terms of the
+ * said agreement.
+ *
+ * Hanwha S&C Ltd., assumes no responsibility or
+ * liability for any errors or inaccuracies in this software,
+ * or any consequential, incidental or indirect damage arising
+ * out of the use of the software.
+ */
+
 package com.example.nvblog.ui.notification
 
-import android.graphics.Typeface
-import android.widget.RadioButton
 import androidx.appcompat.widget.AppCompatRadioButton
 import androidx.core.view.children
 import brigitte.*
 import com.example.nvblog.databinding.NotificationFragmentBinding
 import com.example.nvblog.ui.titlebar.TitlebarViewModel
-import com.fasterxml.jackson.databind.type.TypeFactory
 import dagger.android.ContributesAndroidInjector
-import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
+import com.example.nvblog.R
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-08-08 <p/>
@@ -18,12 +29,12 @@ import javax.inject.Inject
 
 class NotificationFragment @Inject constructor(
 ): BaseDaggerFragment<NotificationFragmentBinding, NotificationViewModel>() {
-    private lateinit var mTitlebarModel: TitlebarViewModel
+    override val layoutId = R.layout.notification_fragment
+
+    private val mTitlebarModel: TitlebarViewModel by activityInject()
 
     override fun bindViewModel() {
         super.bindViewModel()
-
-        mTitlebarModel = inject(requireActivity())
 
         mBinding.apply {
             titlebarModel = mTitlebarModel
@@ -53,5 +64,9 @@ class NotificationFragment @Inject constructor(
     abstract class Module {
         @ContributesAndroidInjector
         abstract fun contributeNotificationFragmentInjector(): NotificationFragment
+    }
+
+    companion object {
+        fun create() = NotificationFragment()
     }
 }
