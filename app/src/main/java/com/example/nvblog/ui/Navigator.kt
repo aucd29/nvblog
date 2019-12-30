@@ -27,11 +27,11 @@ import javax.inject.Named
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 13. <p/>
  */
-class ViewController @Inject constructor(
+class Navigator @Inject constructor(
     @param:Named("activityFragmentManager") private val manager: FragmentManager
 ) {
     companion object {
-        private val mLog = LoggerFactory.getLogger(ViewController::class.java)
+        private val mLog = LoggerFactory.getLogger(Navigator::class.java)
 
         const val CONTAINER  = R.id.root
     }

@@ -20,7 +20,7 @@ import brigitte.widget.*
 import brigitte.widget.swiperefresh.VerticalSwipeRefreshLayout
 import com.example.nvblog.common.Config
 import com.example.nvblog.databinding.RecommendedFragmentBinding
-import com.example.nvblog.ui.ViewController
+import com.example.nvblog.ui.Navigator
 import com.example.nvblog.ui.titlebar.TitlebarViewModel
 import dagger.android.ContributesAndroidInjector
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -47,7 +47,7 @@ class RecommendedFragment @Inject constructor(
     }
 
     @Inject lateinit var config: Config
-    @Inject lateinit var viewController: ViewController
+    @Inject lateinit var navigator: Navigator
 
     private val mTitlebarModel: TitlebarViewModel by activityInject()
 
@@ -103,7 +103,7 @@ class RecommendedFragment @Inject constructor(
                             mLog.debug("OPEN BROWSER FRAGMENT : $url")
                         }
 
-                        viewController.browserFragment(it)
+                        navigator.browserFragment(it)
                     } else {
                         webview.loadUrl(url)
                     }

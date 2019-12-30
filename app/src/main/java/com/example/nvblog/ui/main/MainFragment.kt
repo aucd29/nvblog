@@ -18,12 +18,11 @@ import brigitte.BaseDaggerFragment
 import com.example.nvblog.R
 import com.example.nvblog.ui.titlebar.TitlebarViewModel
 import com.example.nvblog.databinding.MainFragmentBinding
-import com.example.nvblog.ui.ViewController
+import com.example.nvblog.ui.Navigator
 import com.example.nvblog.ui.navigation.NavigationViewModel
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-08-08 <p/>
@@ -42,7 +41,7 @@ class MainFragment @Inject constructor(
     private val mTitlebarModel: TitlebarViewModel by activityInject()
     private val mNaviViewModel: NavigationViewModel by activityInject()
 
-    @Inject lateinit var viewController: ViewController
+    @Inject lateinit var navigator: Navigator
 
     override fun bindViewModel() {
         super.bindViewModel()
@@ -71,7 +70,7 @@ class MainFragment @Inject constructor(
         }
 
         when (cmd) {
-            CMD_OPEN_BRS -> viewController.browserFragment(data)
+            CMD_OPEN_BRS -> navigator.browserFragment(data)
         }
     }
 

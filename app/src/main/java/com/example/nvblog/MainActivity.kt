@@ -18,13 +18,12 @@ import android.content.Context
 import android.os.Bundle
 import androidx.annotation.VisibleForTesting
 import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import brigitte.*
 import brigitte.viewmodel.SplashViewModel
 import brigitte.widget.VerticalDrawerLayout
 import com.example.nvblog.common.Config
 import com.example.nvblog.databinding.MainActivityBinding
-import com.example.nvblog.ui.ViewController
+import com.example.nvblog.ui.Navigator
 import com.example.nvblog.ui.navigation.NavigationViewModel
 import com.example.nvblog.ui.titlebar.TitlebarViewModel
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
@@ -43,7 +42,7 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() 
     }
 
     @Inject lateinit var config: Config
-    @Inject lateinit var viewController: ViewController
+    @Inject lateinit var navigator: Navigator
 
     private val adapter: MainAdapter by lazy{ MainAdapter(supportFragmentManager, applicationContext) }
 
@@ -136,7 +135,7 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() 
     }
 
     private fun showWriteFragment() {
-        viewController.writeFragment()
+        navigator.writeFragment()
 
         disposable().add(singleTimer(200)
             .observeOn(AndroidSchedulers.mainThread())

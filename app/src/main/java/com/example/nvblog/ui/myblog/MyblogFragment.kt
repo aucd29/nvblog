@@ -15,11 +15,10 @@
 package com.example.nvblog.ui.myblog
 
 import brigitte.BaseDaggerFragment
-import brigitte.interval
 import brigitte.singleTimer
 import com.example.nvblog.R
 import com.example.nvblog.databinding.MyblogFragmentBinding
-import com.example.nvblog.ui.ViewController
+import com.example.nvblog.ui.Navigator
 import com.example.nvblog.ui.titlebar.TitlebarViewModel
 import dagger.android.ContributesAndroidInjector
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -43,7 +42,7 @@ class MyblogFragment @Inject constructor(
     private val mMyblogPopularPostViewModel: MyblogPopularPostViewModel by inject()
     private val mMyblogAllPostViewModel: MyblogAllPostViewModel by inject()
 
-    @Inject lateinit var viewController: ViewController
+    @Inject lateinit var navigator: Navigator
 
     override fun bindViewModel() {
         super.bindViewModel()
@@ -96,7 +95,7 @@ class MyblogFragment @Inject constructor(
 
     override fun onCommandEvent(cmd: String, data: Any) {
         when (cmd) {
-            "open-brs" -> viewController.browserFragment(data)
+            "open-brs" -> navigator.browserFragment(data)
         }
     }
 
