@@ -146,6 +146,13 @@ class NotificationViewModel @Inject @JvmOverloads constructor(
         items.set(mNewList)
     }
 
+    fun viewNoDataContainer() =
+        if (viewProgress.get() == View.VISIBLE)
+            View.VISIBLE
+        else {
+            if (items.get()?.size == 0) View.VISIBLE else View.GONE
+        }
+
     @VisibleForTesting
     fun postedDummyData() =
         mPostedList
