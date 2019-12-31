@@ -10,7 +10,6 @@ import android.content.res.Resources
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
 import brigitte.shield.*
-import brigitte.app
 import brigitte.numberFormat
 import com.example.nvblog.R
 import com.example.nvblog.common.PreloadConfig

@@ -1,10 +1,24 @@
+/*
+ * Copyright (C) Hanwha S&C Ltd., 2019. All rights reserved.
+ *
+ * This software is covered by the license agreement between
+ * the end user and Hanwha S&C Ltd., and may be
+ * used and copied only in accordance with the terms of the
+ * said agreement.
+ *
+ * Hanwha S&C Ltd., assumes no responsibility or
+ * liability for any errors or inaccuracies in this software,
+ * or any consequential, incidental or indirect damage arising
+ * out of the use of the software.
+ */
+
 package com.example.nvblog.ui.myblog
 
 import brigitte.BaseDaggerFragment
-import brigitte.interval
 import brigitte.singleTimer
+import com.example.nvblog.R
 import com.example.nvblog.databinding.MyblogFragmentBinding
-import com.example.nvblog.ui.ViewController
+import com.example.nvblog.ui.Navigator
 import com.example.nvblog.ui.titlebar.TitlebarViewModel
 import dagger.android.ContributesAndroidInjector
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -17,22 +31,21 @@ import javax.inject.Inject
 
 class MyblogFragment @Inject constructor(
 ): BaseDaggerFragment<MyblogFragmentBinding, MyblogViewModel>() {
+    override val layoutId = R.layout.myblog_fragment
+
     companion object {
         private val mLog = LoggerFactory.getLogger(MyblogFragment::class.java)
+        fun create() = MyblogFragment()
     }
 
-    private lateinit var mTitlebarModel: TitlebarViewModel
-    private lateinit var mMyblogPopularPostViewModel: MyblogPopularPostViewModel
-    private lateinit var mMyblogAllPostViewModel: MyblogAllPostViewModel
+    private val mTitlebarModel: TitlebarViewModel by activityInject()
+    private val mMyblogPopularPostViewModel: MyblogPopularPostViewModel by inject()
+    private val mMyblogAllPostViewModel: MyblogAllPostViewModel by inject()
 
-    @Inject lateinit var viewController: ViewController
+    @Inject lateinit var navigator: Navigator
 
     override fun bindViewModel() {
         super.bindViewModel()
-
-        mTitlebarModel              = inject(requireActivity())
-        mMyblogPopularPostViewModel = inject()
-        mMyblogAllPostViewModel     = inject()
 
         mBinding.apply {
             titlebarModel    = mTitlebarModel
@@ -40,7 +53,7 @@ class MyblogFragment @Inject constructor(
             allPostModel     = mMyblogAllPostViewModel
         }
 
-        mDisposable.let {
+        disposable().let {
             mViewModel.disposable = it
             mMyblogPopularPostViewModel.disposable = it
             mMyblogAllPostViewModel.disposable = it
@@ -56,8 +69,8 @@ class MyblogFragment @Inject constructor(
 
     override fun initViewModelEvents() {
         observe(mViewModel.swipeRefresh.refreshLive) {
-            mDisposable.clear()
-            mDisposable.add(singleTimer(500)
+            disposable().clear()
+            disposable().add(singleTimer(500)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     // 여러 데이터를 로드 했다고 가정 하에
@@ -82,7 +95,7 @@ class MyblogFragment @Inject constructor(
 
     override fun onCommandEvent(cmd: String, data: Any) {
         when (cmd) {
-            "open-brs" -> viewController.browserFragment(data)
+            "open-brs" -> navigator.browserFragment(data)
         }
     }
 

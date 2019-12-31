@@ -1,6 +1,7 @@
 package com.example.nvblog.ui.write
 
 import brigitte.BaseDaggerFragment
+import com.example.nvblog.R
 import com.example.nvblog.databinding.WriteFragmentBinding
 import com.example.nvblog.ui.titlebar.TitlebarViewModel
 import dagger.Module
@@ -12,14 +13,9 @@ import javax.inject.Inject
  */
 class WriteFragment @Inject constructor(
 ): BaseDaggerFragment<WriteFragmentBinding, WriteViewModel>() {
+    override val layoutId = R.layout.write_fragment
 
-    private lateinit var mTitlebarModel: TitlebarViewModel
-
-    override fun bindViewModel() {
-        super.bindViewModel()
-
-        mTitlebarModel = inject(requireActivity())
-    }
+    private val mTitlebarModel: TitlebarViewModel by activityInject()
 
     override fun initViewBinding() {
     }

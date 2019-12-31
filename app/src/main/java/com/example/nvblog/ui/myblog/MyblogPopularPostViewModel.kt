@@ -4,7 +4,6 @@ import android.app.Application
 import android.graphics.Rect
 import androidx.databinding.ObservableField
 import brigitte.RecyclerViewModel
-import brigitte.app
 import brigitte.dpToPx
 import brigitte.widget.viewpager.SpaceItemDecoration
 import com.example.nvblog.R

@@ -1,11 +1,10 @@
+@file:Suppress("NOTHING_TO_INLINE", "unused")
 package brigitte
 
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStoreOwner
-import io.reactivex.disposables.CompositeDisposable
-import org.koin.android.ext.android.get
 import org.koin.android.ext.android.getKoin
 import org.koin.androidx.viewmodel.ViewModelParameters
 import org.koin.androidx.viewmodel.ViewModelStoreOwnerDefinition
@@ -16,7 +15,7 @@ import org.koin.core.qualifier.Qualifier
 import kotlin.reflect.KClass
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-05-22 <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019-05-22 <p/>
  *
  *
  * https://github.com/InsertKoinIO/koin/issues/56
@@ -53,7 +52,7 @@ private const val LAYOUT         = "layout"         // 레이아웃
 
 abstract class BaseKoinActivity<T: ViewDataBinding, M: ViewModel>
     : BaseActivity<T, M>() {
-    override fun initViewModel() = getViewModel(viewModelClass().kotlin)
+    override fun initViewModel() = getViewModel(mViewModelClass.kotlin)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -66,9 +65,9 @@ abstract class BaseKoinFragment<T: ViewDataBinding, M: ViewModel>
     : BaseFragment<T, M>() {
     override fun initViewModel() =
         if (mViewModelScope == SCOPE_FRAGMENT)
-            getViewModel(viewModelClass().kotlin)
+            getViewModel(mViewModelClass.kotlin)
         else
-            getSharedViewModel(viewModelClass().kotlin)
+            getSharedViewModel(mViewModelClass.kotlin)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -81,10 +80,10 @@ abstract class BaseKoinDialogFragment<T: ViewDataBinding, M: ViewModel>
     : BaseDialogFragment<T, M>() {
 
     override fun initViewModel() =
-        if (mViewModelScope == BaseFragment.SCOPE_FRAGMENT)
-            getViewModel(viewModelClass().kotlin)
+        if (mViewModelScope == SCOPE_FRAGMENT)
+            getViewModel(mViewModelClass.kotlin)
         else
-            getSharedViewModel(viewModelClass().kotlin)
+            getSharedViewModel(mViewModelClass.kotlin)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -97,9 +96,9 @@ abstract class BaseKoinBottomSheetDialogFragment<T: ViewDataBinding, M: ViewMode
     : BaseBottomSheetDialogFragment<T, M>() {
 
     override fun initViewModel() =
-        if (mViewModelScope == BaseFragment.SCOPE_FRAGMENT)
-            getViewModel(viewModelClass().kotlin)
+        if (mViewModelScope == SCOPE_FRAGMENT)
+            getViewModel(mViewModelClass.kotlin)
         else
-            getSharedViewModel(viewModelClass().kotlin)
+            getSharedViewModel(mViewModelClass.kotlin)
 }
 

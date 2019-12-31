@@ -1,16 +1,32 @@
+/*
+ * Copyright (C) Hanwha S&C Ltd., 2019. All rights reserved.
+ *
+ * This software is covered by the license agreement between
+ * the end user and Hanwha S&C Ltd., and may be
+ * used and copied only in accordance with the terms of the
+ * said agreement.
+ *
+ * Hanwha S&C Ltd., assumes no responsibility or
+ * liability for any errors or inaccuracies in this software,
+ * or any consequential, incidental or indirect damage arising
+ * out of the use of the software.
+ */
+
 package com.example.nvblog.ui.recommended
 
 import android.webkit.WebView
 import brigitte.*
-import brigitte.widget.VerticalSwipeRefreshLayout
+import brigitte.widget.*
+import brigitte.widget.swiperefresh.VerticalSwipeRefreshLayout
 import com.example.nvblog.common.Config
 import com.example.nvblog.databinding.RecommendedFragmentBinding
-import com.example.nvblog.ui.ViewController
+import com.example.nvblog.ui.Navigator
 import com.example.nvblog.ui.titlebar.TitlebarViewModel
 import dagger.android.ContributesAndroidInjector
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
+import com.example.nvblog.R
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-08-08 <p/>
@@ -18,8 +34,12 @@ import javax.inject.Inject
 
 class RecommendedFragment @Inject constructor(
 ): BaseDaggerFragment<RecommendedFragmentBinding, RecommendedViewModel>(), OnBackPressedListener {
+    override val layoutId = R.layout.recommended_fragment
+
     companion object {
         private val mLog = LoggerFactory.getLogger(RecommendedFragment::class.java)
+
+        fun create() = RecommendedFragment()
 
         // 타이틀을 날릴 수 있는 옵션이 있을거 같은데?
         private const val LOAD_URL = "https://m.blog.naver.com/Recommendation.nhn"
@@ -27,9 +47,9 @@ class RecommendedFragment @Inject constructor(
     }
 
     @Inject lateinit var config: Config
-    @Inject lateinit var viewController: ViewController
+    @Inject lateinit var navigator: Navigator
 
-    private lateinit var mTitlebarModel: TitlebarViewModel
+    private val mTitlebarModel: TitlebarViewModel by activityInject()
 
     private val webview: WebView
         get() = mBinding.recommendedWebview
@@ -41,7 +61,7 @@ class RecommendedFragment @Inject constructor(
         super.onPause()
 
         webview.pause()
-        mDisposable.clear()
+        disposable().clear()
     }
 
     override fun onResume() {
@@ -65,8 +85,6 @@ class RecommendedFragment @Inject constructor(
     override fun bindViewModel() {
         super.bindViewModel()
 
-        mTitlebarModel = inject(requireActivity())
-
         mBinding.apply {
             titlebarModel = mTitlebarModel
         }
@@ -85,7 +103,7 @@ class RecommendedFragment @Inject constructor(
                             mLog.debug("OPEN BROWSER FRAGMENT : $url")
                         }
 
-                        viewController.browserFragment(it)
+                        navigator.browserFragment(it)
                     } else {
                         webview.loadUrl(url)
                     }
@@ -96,7 +114,7 @@ class RecommendedFragment @Inject constructor(
                     if (isRefreshing) {
                         isRefreshing = false     // hide refresh icon
 
-                        mDisposable.clear()
+                        disposable().clear()
 
                         if (mLog.isDebugEnabled) {
                             mLog.debug("HIDE REFRESH ICON")
@@ -115,8 +133,8 @@ class RecommendedFragment @Inject constructor(
 
             webview.reload()
 
-            mDisposable.clear()
-            mDisposable.add(singleTimer(config.TIMEOUT_RELOAD_ICO)
+            disposable().clear()
+            disposable().add(singleTimer(config.TIMEOUT_RELOAD_ICO)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { _ ->
                     if (mLog.isInfoEnabled) {
@@ -158,4 +176,5 @@ class RecommendedFragment @Inject constructor(
         @ContributesAndroidInjector
         abstract fun contributeRecommendedFragmentInjector(): RecommendedFragment
     }
+
 }

@@ -12,6 +12,7 @@ import androidx.databinding.ObservableField
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.*
+import brigitte.viewmodel.CommandEventViewModel
 import org.slf4j.LoggerFactory
 import java.util.*
 import kotlin.collections.ArrayList
@@ -95,7 +96,7 @@ interface IRecyclerExpandable<T> : IRecyclerItem, IRecyclerDiff {
 }
 
 /** view holder */
-class RecyclerHolder @JvmOverloads constructor (itemView: View) : RecyclerView.ViewHolder(itemView) {
+class RecyclerHolder constructor (itemView: View) : RecyclerView.ViewHolder(itemView) {
     lateinit var mBinding: ViewDataBinding
 }
 
@@ -103,7 +104,7 @@ class RecyclerHolder @JvmOverloads constructor (itemView: View) : RecyclerView.V
  * xml 에서 event 와 data 를 binding 하므로 obtainViewModel 과 출력할 데이터를 내부적으로 알아서 설정 하도록
  * 한다.
  */
-class RecyclerAdapter<T: IRecyclerDiff> @JvmOverloads constructor (
+class RecyclerAdapter<T: IRecyclerDiff> constructor (
     val mLayouts: Array<Int>
 ) : RecyclerView.Adapter<RecyclerHolder>() {
     companion object {
@@ -114,30 +115,6 @@ class RecyclerAdapter<T: IRecyclerDiff> @JvmOverloads constructor (
         private const val METHOD_NAME_BIND       = "bind"
         private const val CLASS_DATA_BINDING     = ".databinding."
         private const val CLASS_BINDING          = "Binding"
-
-//        fun bindingClassName(context: Context, layoutId: String): String {
-//            var classPath = context.packageName
-//            classPath += CLASS_DATA_BINDING
-//            classPath += Character.toUpperCase(layoutId[0])
-//
-//            var i = 1
-//            while (i < layoutId.length) {
-//                var c = layoutId[i]
-//
-//                if (c == '_') {
-//                    c = layoutId[++i]
-//                    classPath += Character.toUpperCase(c)
-//                } else {
-//                    classPath += c
-//                }
-//
-//                ++i
-//            }
-//
-//            classPath += CLASS_BINDING
-//
-//            return classPath
-//        }
 
         fun invokeMethod(binding: ViewDataBinding, methodName: String, argType: Class<*>, argValue: Any, log: Boolean) {
             try {
@@ -195,14 +172,6 @@ class RecyclerAdapter<T: IRecyclerDiff> @JvmOverloads constructor (
         viewHolderCallback?.invoke(holder, position)
     }
 
-//    override fun onBindViewHolder(holder: RecyclerHolder, position: Int, payloads: MutableList<Any>) {
-//        if (payloads.isEmpty()) {
-//            super.onBindViewHolder(holder, position, payloads)
-//        } else {
-//// TODO
-//        }
-//    }
-
     /**
      * 화면에 출력해야할 아이템의 총 개수를 반환 한다.
      */
@@ -254,7 +223,6 @@ class RecyclerAdapter<T: IRecyclerDiff> @JvmOverloads constructor (
         val newItems = if (oldItems.hashCode() == list.hashCode()) { ArrayList(list) } else { list }
 
         // FIXME 이곳의 구현 방식이 일반적이지 않다라고 들었고 관련 내용을 다시 찾아봄
-        //
         // https://blog.kmshack.kr/RecyclerView-DiffUtil%EB%A1%9C-%EC%84%B1%EB%8A%A5-%ED%96%A5%EC%83%81%ED%95%98%EA%B8%B0/
         val result = DiffUtil.calculateDiff(object: DiffUtil.Callback() {
             // 이전 목록 개수 반환
@@ -347,7 +315,7 @@ class RecyclerAdapter<T: IRecyclerDiff> @JvmOverloads constructor (
 /**
  * Recycler View 에 사용될 items 정보와 adapter 를 쉽게 설정하게 만드는 ViewModel
  */
-open class RecyclerViewModel<T: IRecyclerDiff> @JvmOverloads constructor (app: Application)
+open class RecyclerViewModel<T: IRecyclerDiff> constructor (app: Application)
     : CommandEventViewModel(app) {
     companion object {
         private val mLog = LoggerFactory.getLogger(RecyclerViewModel::class.java)
@@ -481,7 +449,7 @@ open class RecyclerViewModel<T: IRecyclerDiff> @JvmOverloads constructor (app: A
     }
 }
 
-open class RecyclerExpandableViewModel<T: IRecyclerExpandable<T>> @JvmOverloads constructor (app: Application)
+open class RecyclerExpandableViewModel<T: IRecyclerExpandable<T>> constructor (app: Application)
     : RecyclerViewModel<T>(app) {
 
     fun toggle(item: T) {
@@ -499,7 +467,7 @@ inline fun <T: IRecyclerExpandable<T>> List<T>.toggleExpandableItems(type: Int,
     }
 }
 
-class InfiniteScrollListener @JvmOverloads constructor (val callback: (Int) -> Unit) : RecyclerView.OnScrollListener() {
+class InfiniteScrollListener constructor (val callback: (Int) -> Unit) : RecyclerView.OnScrollListener() {
     companion object {
         private val mLog = LoggerFactory.getLogger(InfiniteScrollListener::class.java)
     }

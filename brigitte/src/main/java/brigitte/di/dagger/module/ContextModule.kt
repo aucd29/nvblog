@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import javax.inject.Singleton
 
 /**
@@ -13,6 +14,12 @@ import javax.inject.Singleton
 @Module
 abstract class ContextModule {
     @Binds
-    @Singleton
     abstract fun provideContext(app: Application): Context
+
+    @Module
+    companion object {
+        @JvmStatic
+        @Provides
+        fun provideAssetManager(context: Context) = context.assets!!
+    }
 }

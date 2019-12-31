@@ -13,7 +13,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        <brigitte.widget.VerticalSwipeRefreshLayout
+        <brigitte.widget.swiperefresh.VerticalSwipeRefreshLayout
                 android:id="@+id/recommended_swipe_refresh"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -28,7 +28,7 @@
                     android:id="@+id/recommended_webview"
                     android:layout_width="match_parent" android:layout_height="match_parent"
             />
-        </brigitte.widget.VerticalSwipeRefreshLayout>
+        </brigitte.widget.swiperefresh.VerticalSwipeRefreshLayout>
 
         <include
                 android:id="@+id/titlebar"

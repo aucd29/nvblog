@@ -35,7 +35,7 @@ class NotificationViewModelTest: BaseRoboViewModelTest<NotificationViewModel>() 
     fun defaultValueTest() = viewmodel.run {
         viewType.assertEquals(R.id.noti_news)
         noticeData.assertEquals(string(R.string.noti_lorem))
-        viewNotice.assertEquals(prefs().getInt(NotificationViewModel.PREF_NOTI_VISIBILITY, View.VISIBLE))
+        viewNotice.assertEquals(app.prefs().getInt(NotificationViewModel.PREF_NOTI_VISIBILITY, View.VISIBLE))
         viewNotRead.assertEquals(View.VISIBLE)
         viewProgress.assertEquals(View.GONE)
     }

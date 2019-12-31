@@ -2,7 +2,6 @@ package brigitte.bindingadapter
 
 import androidx.databinding.BindingAdapter
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import brigitte.dpToPx
 import org.slf4j.LoggerFactory
 
 /**
@@ -42,27 +41,25 @@ object SwipeRefreshLayoutBindingAdapter {
         view.setProgressViewOffset(false, 0, offset)
     }
 
+    @JvmStatic
+    @BindingAdapter("bindSwipeRefreshingFalse")
+    fun bindSwipeRefreshingFalse(view: SwipeRefreshLayout, dumy: Boolean) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("bindSwipeRefreshingFalse")
+        }
 
+        view.isRefreshing = false
+    }
 
-//    @JvmStatic
-//    @BindingAdapter("bindSwipeIsRefreshing")
-//    fun bindSwipeRefreshingFalse(view: SwipeRefreshLayout, result: Boolean) {
-//        if (mLog.isDebugEnabled) {
-//            mLog.debug("bindSwipeRefreshingFalse $result")
-//        }
-//
-//        view.isRefreshing = result
-//    }
+    @JvmStatic
+    @BindingAdapter("bindSwipeIsRefreshing")
+    fun bindSwipeIsRefreshing(view: SwipeRefreshLayout, callback: ((Boolean) -> Unit)?) {
+        callback?.apply {
+            if (mLog.isDebugEnabled) {
+                mLog.debug("bindSwipeIsRefreshing")
+            }
 
-//    @JvmStatic
-//    @BindingAdapter("bindSwipeIsRefreshing")
-//    fun bindSwipeIsRefreshing(view: SwipeRefreshLayout, callback: ((Boolean) -> Unit)?) {
-//        callback?.apply {
-//            if (mLog.isDebugEnabled) {
-//                mLog.debug("bindSwipeIsRefreshing")
-//            }
-//
-//            invoke(view.isRefreshing)
-//        }
-//    }
+            invoke(view.isRefreshing)
+        }
+    }
 }

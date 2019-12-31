@@ -1,16 +1,29 @@
+/*
+ * Copyright (C) Hanwha S&C Ltd., 2019. All rights reserved.
+ *
+ * This software is covered by the license agreement between
+ * the end user and Hanwha S&C Ltd., and may be
+ * used and copied only in accordance with the terms of the
+ * said agreement.
+ *
+ * Hanwha S&C Ltd., assumes no responsibility or
+ * liability for any errors or inaccuracies in this software,
+ * or any consequential, incidental or indirect damage arising
+ * out of the use of the software.
+ */
+
 package com.example.nvblog
 
 import android.content.Context
 import android.os.Bundle
 import androidx.annotation.VisibleForTesting
 import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import brigitte.*
 import brigitte.viewmodel.SplashViewModel
 import brigitte.widget.VerticalDrawerLayout
 import com.example.nvblog.common.Config
 import com.example.nvblog.databinding.MainActivityBinding
-import com.example.nvblog.ui.ViewController
+import com.example.nvblog.ui.Navigator
 import com.example.nvblog.ui.navigation.NavigationViewModel
 import com.example.nvblog.ui.titlebar.TitlebarViewModel
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
@@ -20,6 +33,8 @@ import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
 class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() {
+    override val layoutId = R.layout.main_activity
+
     companion object {
         private val mLog = LoggerFactory.getLogger(MainActivity::class.java)
 
@@ -27,11 +42,12 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() 
     }
 
     @Inject lateinit var config: Config
-    @Inject lateinit var adapter: MainAdapter
-    @Inject lateinit var viewController: ViewController
+    @Inject lateinit var navigator: Navigator
 
-    private lateinit var mTitlebarModel: TitlebarViewModel
-    private lateinit var mNavigationModel: NavigationViewModel
+    private val adapter: MainAdapter by lazy { MainAdapter(supportFragmentManager, applicationContext) }
+
+    private val mTitlebarModel: TitlebarViewModel by inject()
+    private val mNavigationModel: NavigationViewModel by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         chromeInspector { if (mLog.isInfoEnabled) { mLog.info(it) }}
@@ -62,9 +78,6 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() 
     override fun bindViewModel() {
         super.bindViewModel()
 
-        mNavigationModel = inject()
-        mTitlebarModel   = inject()
-
         mBinding.apply {
             naviModel     = mNavigationModel
             titlebarModel = mTitlebarModel
@@ -91,7 +104,7 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() 
     override fun initViewModelEvents() {
         mViewModel.run {
             observe(closeEvent) {
-                viewSplash.gone()
+//                viewSplash.gone()
 
                 mBinding.root.removeView(mBinding.splash)
             }
@@ -122,7 +135,7 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() 
     }
 
     private fun showWriteFragment() {
-        viewController.writeFragment()
+        navigator.writeFragment()
 
         disposable().add(singleTimer(200)
             .observeOn(AndroidSchedulers.mainThread())

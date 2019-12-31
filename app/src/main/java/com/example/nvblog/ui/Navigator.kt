@@ -1,37 +1,48 @@
+/*
+ * Copyright (C) Hanwha S&C Ltd., 2019. All rights reserved.
+ *
+ * This software is covered by the license agreement between
+ * the end user and Hanwha S&C Ltd., and may be
+ * used and copied only in accordance with the terms of the
+ * said agreement.
+ *
+ * Hanwha S&C Ltd., assumes no responsibility or
+ * liability for any errors or inaccuracies in this software,
+ * or any consequential, incidental or indirect damage arising
+ * out of the use of the software.
+ */
+
 package com.example.nvblog.ui
 
 import android.os.Bundle
 import androidx.fragment.app.FragmentManager
-import brigitte.FragmentAnim
-import brigitte.FragmentCommit
-import brigitte.FragmentParams
-import brigitte.showBy
+import brigitte.*
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import com.example.nvblog.R
 import com.example.nvblog.ui.browser.BrowserFragment
 import com.example.nvblog.ui.write.WriteFragment
+import javax.inject.Named
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 13. <p/>
  */
-class ViewController @Inject constructor(private val manager: FragmentManager) {
+class Navigator @Inject constructor(
+    @param:Named("activityFragmentManager") private val manager: FragmentManager
+) {
     companion object {
-        private val mLog = LoggerFactory.getLogger(ViewController::class.java)
+        private val mLog = LoggerFactory.getLogger(Navigator::class.java)
 
         const val CONTAINER  = R.id.root
     }
-
-    @Inject lateinit var mWrite: dagger.Lazy<WriteFragment>
-    @Inject lateinit var mBrowserFragment: dagger.Lazy<BrowserFragment>
 
     fun writeFragment() {
         if (mLog.isInfoEnabled) {
             mLog.info("WRITE FRAGMENT")
         }
 
-        manager.showBy(FragmentParams(CONTAINER,
-            fragment = mWrite.get(), anim = FragmentAnim.UP))
+        manager.show<WriteFragment>(FragmentParams(CONTAINER,
+            anim = FragmentAnim.UP))
     }
 
     fun browserFragment(url: Any?) {
@@ -45,8 +56,8 @@ class ViewController @Inject constructor(private val manager: FragmentManager) {
             return
         }
 
-        manager.showBy(FragmentParams(CONTAINER,
-            fragment = mBrowserFragment.get(), anim = FragmentAnim.RIGHT_ALPHA,
+        manager.show<BrowserFragment>(FragmentParams(CONTAINER,
+            anim   = FragmentAnim.RIGHT_ALPHA,
             bundle = Bundle().apply {
                 putString(BrowserFragment.K_URL, url.toString())
             }))

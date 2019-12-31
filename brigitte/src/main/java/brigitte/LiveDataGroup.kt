@@ -1,11 +1,13 @@
+@file:Suppress("NOTHING_TO_INLINE", "unused")
 package brigitte
 
 import android.content.Context
 import android.content.DialogInterface
+import androidx.lifecycle.LiveData
 import brigitte.arch.SingleLiveEvent
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-07-03 <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019-07-03 <p/>
  */
 
 ////////////////////////////////////////////////////////////////////////////////////

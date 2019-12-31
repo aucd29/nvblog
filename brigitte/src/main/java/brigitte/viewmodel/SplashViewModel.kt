@@ -2,6 +2,7 @@ package brigitte.viewmodel
 
 import android.view.View
 import androidx.databinding.ObservableInt
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import brigitte.arch.SingleLiveEvent
 import brigitte.singleTimer
@@ -27,7 +28,6 @@ class SplashViewModel @Inject constructor(
     private var mState      = true
 
     val closeEvent = SingleLiveEvent<Void>()
-    val viewSplash = ObservableInt(View.VISIBLE)
 
     init {
         // splash view 를 만들까도 생각했는데 굳이? 라는 생각에 그냥 vm 으로만 하도록 함

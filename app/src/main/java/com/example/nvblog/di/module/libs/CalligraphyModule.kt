@@ -1,4 +1,4 @@
-package com.example.nvblog.di.module
+package com.example.nvblog.di.module.libs
 
 import com.example.nvblog.R
 import dagger.Module

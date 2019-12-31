@@ -1,19 +1,28 @@
+/*
+ * Copyright (C) Hanwha S&C Ltd., 2019. All rights reserved.
+ *
+ * This software is covered by the license agreement between
+ * the end user and Hanwha S&C Ltd., and may be
+ * used and copied only in accordance with the terms of the
+ * said agreement.
+ *
+ * Hanwha S&C Ltd., assumes no responsibility or
+ * liability for any errors or inaccuracies in this software,
+ * or any consequential, incidental or indirect damage arising
+ * out of the use of the software.
+ */
+
 package com.example.nvblog.ui.main
 
-import androidx.fragment.app.FragmentManager
 import brigitte.BaseDaggerFragment
-import brigitte.interval
-import brigitte.singleTimer
+import com.example.nvblog.R
 import com.example.nvblog.ui.titlebar.TitlebarViewModel
 import com.example.nvblog.databinding.MainFragmentBinding
-import com.example.nvblog.ui.ViewController
+import com.example.nvblog.ui.Navigator
 import com.example.nvblog.ui.navigation.NavigationViewModel
-import dagger.Provides
 import dagger.android.ContributesAndroidInjector
-import io.reactivex.android.schedulers.AndroidSchedulers
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-08-08 <p/>
@@ -21,20 +30,21 @@ import javax.inject.Named
 
 class MainFragment @Inject constructor(
 ):  BaseDaggerFragment<MainFragmentBinding, MainViewModel>() {
+    override val layoutId = R.layout.main_fragment
+
     companion object {
         private val mLog = LoggerFactory.getLogger(MainFragment::class.java)
+
+        fun create() = MainFragment()
     }
 
-    private lateinit var mTitlebarModel: TitlebarViewModel
-    private lateinit var mNaviViewModel: NavigationViewModel
+    private val mTitlebarModel: TitlebarViewModel by activityInject()
+    private val mNaviViewModel: NavigationViewModel by activityInject()
 
-    @Inject lateinit var viewController: ViewController
+    @Inject lateinit var navigator: Navigator
 
     override fun bindViewModel() {
         super.bindViewModel()
-
-        mTitlebarModel = inject(requireActivity())
-        mNaviViewModel = inject(requireActivity())
 
         mBinding.apply {
             naviModel     = mNaviViewModel
@@ -60,7 +70,7 @@ class MainFragment @Inject constructor(
         }
 
         when (cmd) {
-            CMD_OPEN_BRS -> viewController.browserFragment(data)
+            CMD_OPEN_BRS -> navigator.browserFragment(data)
         }
     }
 

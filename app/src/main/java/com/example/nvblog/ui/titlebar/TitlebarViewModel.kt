@@ -4,8 +4,8 @@ import android.app.Application
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
-import brigitte.CommandEventViewModel
 import brigitte.notify
+import brigitte.viewmodel.CommandEventViewModel
 import com.example.nvblog.R
 import org.slf4j.LoggerFactory
 import javax.inject.Inject

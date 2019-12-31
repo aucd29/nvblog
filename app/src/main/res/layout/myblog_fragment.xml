@@ -18,7 +18,7 @@
     >
 
         <!-- https://stackoverflow.com/questions/40960599/how-to-set-swiperefreshlayout-refreshing-property-using-android-data-binding -->
-        <brigitte.widget.VerticalSwipeRefreshLayout
+        <brigitte.widget.swiperefresh.VerticalSwipeRefreshLayout
                 android:id="@+id/myblog_swipe_refresh"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -410,7 +410,7 @@
                 </androidx.core.widget.NestedScrollView>
 
             </androidx.coordinatorlayout.widget.CoordinatorLayout>
-        </brigitte.widget.VerticalSwipeRefreshLayout>
+        </brigitte.widget.swiperefresh.VerticalSwipeRefreshLayout>
 
         <include
                 android:id="@+id/titlebar_transparent"
