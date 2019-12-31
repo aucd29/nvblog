@@ -44,7 +44,7 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() 
     @Inject lateinit var config: Config
     @Inject lateinit var navigator: Navigator
 
-    private val adapter: MainAdapter by lazy{ MainAdapter(supportFragmentManager, applicationContext) }
+    private val adapter: MainAdapter by lazy { MainAdapter(supportFragmentManager, applicationContext) }
 
     private val mTitlebarModel: TitlebarViewModel by inject()
     private val mNavigationModel: NavigationViewModel by inject()
